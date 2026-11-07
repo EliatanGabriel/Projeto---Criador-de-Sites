@@ -191,3 +191,98 @@ Migrations **nunca** devem ser executadas durante `docker build`. O procedimento
 5. Novo container sobe com `APP_ENV=production`, `APP_DEBUG=false`.
 6. Pós-deploy: verificar `/up`, filas, scheduler, logs.
 7. Se houver falha, promover build anterior e rodar `php artisan migrate:rollback --step=1` se necessário.
+## 15. Configuração do Environment Group no Render
+
+Esta seção descreve os passos manuais necessários no painel Render após o deploy do Dockerfile e do render.yaml. Não execute estas etapas antes de ler a seção completa.
+
+### 15.1. Criar Environment Group
+
+No painel Render, acesse **Environment Groups** e crie um novo group com o nome `webstudio-os`.
+
+As variáveis a serem adicionadas ao group (uma única vez):
+
+| Variável | Descrição | Formato |
+|---|---|---|
+| `APP_KEY` | Chave de criptografia base64 do Laravel | `base64:...` (gerar com `php artisan key:generate`) |
+| `DB_HOST` | Hostname do PostgreSQL Supabase | `db.xxx.supabase.com` (fornecido pelo Supabase) |
+| `DB_PASSWORD` | Senha do banco de dados | Definida no painel Render como **Secret** (chave `db-password`) |
+| `APP_URL` | URL base da aplicação HTTPS | `https://seu-dominio.com` ou o valor do `RENDER_EXTERNAL_URL` |
+| `SESSION_SECURE_COOKIE` | Marca cookie de sessão como seguro | `true` |
+| `APP_ENV` | Ambiente da aplicação | `production` |
+| `APP_DEBUG` | Modo de depuração | `false` |
+| `SESSION_LIFETIME` | Tempo de vida da sessão (minutos) | `120` |
+
+**Importante**: `APP_KEY` deve ser gerada **apenas uma vez** e depois compartilhada entre os três serviços. Não gere um APP_KEY diferente para cada serviço.
+
+### 15.2. Vincular Environment Group aos serviços
+
+Após criar o group, vincule-o aos três serviços no painel Render:
+
+1. **Web Service** (`webstudio-os`): No painel do serviço, vá em **Environment** e selecione o Environment Group `webstudio-os`.
+2. **Worker** (`webstudio-worker`): Mesmo processo — vincule o group `webstudio-os`.
+3. **Cron Job** (`webstudio-cron`): Vincule o group `webstudio-os`.
+
+As variáveis do group **sobreescrevem** as definidas inline no `render.yaml`. Ou seja:
+- `APP_KEY` definida no group substituirá o comentário "será injetada pelo Environment Group" no render.yaml
+- `DB_HOST` definida no group substituirá o comentário "Preencher no painel Render"
+- `APP_URL` definida no group substituirá o `fromService: external_url`
+
+### 15.3. Persistent Disk somente no Web Service
+
+No `render.yaml`, o disco persistente `webstudio-storage` com mountPath `/app/storage/app/private` está configurado **apenas no serviço Web**:
+
+```yaml
+services:
+  - type: web
+    ...
+    disk:
+      name: webstudio-storage
+      mountPath: /app/storage/app/private
+      sizeGB: 1
+  
+  - type: worker
+    ... # sem configuration de disk
+  
+  - type: cron
+    ... # sem configuration de disk
+```
+
+**Consequência**: Apenas o Web Service tem armazenamento persistente. Worker e Cron Job não têm acesso a esse disco (princípio do Render: disks são únicos por serviço).
+
+**Implicação para anexos**: Aplicativos que uploadem arquivos privados via Web Service terão os arquais armazenados no disco persistente desse serviço. Worker e Cron Job não conseguem ler esses arquivos diretamente (verificar se o fluxo de trabalho exige redesign ou re-fetch via URL/BD).
+
+### 15.4. Migrations de forma controlada
+
+As migrations **nunca** devem ser executadas durante `docker build`. Dois procedimentos estão disponíveis:
+
+**Opção A — Pre-Deploy Command (Render):**
+No painel do serviço Web, role até a seção **Pre-Deploy Command** e adicione:
+```
+php artisan migrate --force
+```
+Isso executa as migrations antes da nova versão ser liberada. Se falhar, o deploy não segue.
+
+**Opção B — Job manual controlado:**
+Se o plano Render não suportar Pre-Deploy Command, criar um Job de "runner" de migrations:
+1. Criar um Artisan command ou Job que execute `php artisan migrate --force`.
+2. Disparar o job manualmente após confirmar o deploy.
+3. Nunca rodar migrations simultaneamente em múltiplas instâncias.
+
+**Nunca usar**: `migrate:rollback` em produção automaticamente. Rollback manual apenas via `php artisan migrate:rollback --step=1` operado por OWNER/Admin, e apenas em staging.
+
+### 15.5. Verificar saúde após implantação
+
+Após o deploy e a aplicação das variáveis do Environment Group:
+
+1. Acessar o endpoint **Health-check**: `https://seu-dominio.com/up` ou o definido no `render.yaml` (`/up`). Deve retornar **200**.
+2. Verificar se as sessões funcionam: logar como OWNER e confirmar permanência da sessão.
+3. Verificar cookies: confirmar que o cookie `laravel_session` tem a flag `Secure` definida (exibir em DevTools do navegador).
+4. Testar a conexão com o banco: verificar se o Worker e o Cron Job conseguem conectar e processar filas.
+5. Verificar logs em `https://painel.render.com/services/seu-servico/logs`.
+
+**Se algum item falhar**:
+- Confirmar se o Environment Group está devidamente vinculado aos três serviços.
+- Verificar se `APP_KEY` é idêntica em todos os serviços (caso esteja definida inline, remova do inline e mantenha apenas no group).
+- Confirmar se `DB_HOST` foi preenchido corretamente no painel (sem `db-hostname`).
+- Verificar se o domínio/URL está correto.
+
