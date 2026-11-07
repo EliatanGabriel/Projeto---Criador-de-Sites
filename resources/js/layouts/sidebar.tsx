@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutDashboard, Users, Briefcase, FileText, FolderKanban, CheckSquare, Layers, Globe, Wallet, BarChart3, Settings, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { LayoutDashboard, Users, Briefcase, FileText, FolderKanban, CheckSquare, Layers, Globe, Wallet, BarChart3, Settings, ChevronLeft, ChevronRight, X, Bell } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { PageProps } from '@/types';
 
@@ -25,7 +25,9 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
     { label: 'Projetos', href: '/projects', icon: FolderKanban, visible: can('projects.view'), active: currentPath.startsWith('/projects'), disabled: false },
     { label: 'Tarefas', href: '/tasks', icon: CheckSquare, visible: can('tasks.view'), active: currentPath.startsWith('/tasks'), disabled: false },
     { label: 'Templates', href: '/templates', icon: Layers, visible: can('templates.view'), active: currentPath.startsWith('/templates'), disabled: false },
-    { label: 'Sites publicados', href: '#', icon: Globe, visible: can('websites.view'), active: false, disabled: true },
+    { label: 'Sites', href: '/sites', icon: Globe, visible: can('websites.view'), active: currentPath.startsWith('/sites'), disabled: false },
+    { label: 'Hospedagens', href: '/hostings', icon: Layers, visible: can('websites.view'), active: currentPath.startsWith('/hostings'), disabled: false },
+    { label: 'Alertas', href: '/alerts', icon: Bell, visible: can('alerts.view'), active: currentPath.startsWith('/alerts'), disabled: false },
     { label: 'Financeiro', href: '#', icon: Wallet, visible: can('finance.view'), active: false, disabled: true },
     { label: 'Relatórios', href: '#', icon: BarChart3, visible: can('reports.view'), active: false, disabled: true },
     { label: 'Equipe', href: '/team', icon: Users, visible: can('users.view'), active: currentPath.startsWith('/team'), disabled: false },

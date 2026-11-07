@@ -1,6 +1,6 @@
 # ARCHITECTURE — WebStudio OS
 
-**Versão:** 1.1 — Fase 5  
+**Versão:** 1.2 — Fase 6.2  
 **Fonte:** Doc.md v1.0 §4, §6, §9, §12, §15
 
 ## 1. Visão de Arquitetura

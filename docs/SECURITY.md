@@ -1,11 +1,11 @@
 # SECURITY — WebStudio OS
 
-**Versão:** 1.4 — Fase 5
+**Versão:** 1.5 — Fase 6.2
 **Fonte:** Doc.md v1.0 §1.3, §5 Módulo 01, §7
 
 ## 1.1 Permissões Fase 2
 
-`users.view/create/edit/delete` (OWNER), `clients.view/create/edit/delete` (OWNER completo, COMMERCIAL view/create/edit), `commercial.view/create/edit` (OWNER + COMMERCIAL). `demands.view/create/edit/send/analyze/approve/convert` (convert OWNER). `projects.view/create/edit` (OWNER gerencia, COMMERCIAL view de próprios, DEVELOPER view de projetos com acesso), `tasks.view/create/edit/assign` (OWNER total, DEVELOPER view/edit de próprias, sem assign). `templates.view` (OWNER + DEVELOPER leitura), `templates.manage` (OWNER). Verificação em middleware `can:` + Policies + FormRequests + Actions transacionais. `is_active` bloqueia login e invalida sessão em andamento via middleware `EnsureUserIsActive`. Último OWNER ativo protegido (422). Anexos em disco privado `local`, download via rota autenticada + policy, sem URL pública, whitelists MIME, 10 MB. Notificações `database` (sem e-mail), link de recurso, controle de dono. Templates inativos não selecionáveis; sem exclusão destrutiva (softDeletes + inativação).
+`users.view/create/edit/delete` (OWNER), `clients.view/create/edit/delete` (OWNER completo, COMMERCIAL view/create/edit), `commercial.view/create/edit` (OWNER + COMMERCIAL). `demands.view/create/edit/send/analyze/approve/convert` (convert OWNER). `projects.view/create/edit` (OWNER gerencia, COMMERCIAL view de próprios, DEVELOPER view de projetos com acesso), `tasks.view/create/edit/assign` (OWNER total, DEVELOPER view/edit de próprias, sem assign). `templates.view` (OWNER + DEVELOPER leitura), `templates.manage` (OWNER). `websites.view/manage/publications/maintenance` (OWNER manage; COMMERCIAL view escopado; DEVELOPER view/publications/maintenance de projetos acessíveis), `hostings.view/manage` (OWNER), `credentials.view` (OWNER). Verificação em middleware `can:` + Policies + FormRequests + Actions transacionais. `is_active` bloqueia login e invalida sessão em andamento via middleware `EnsureUserIsActive`. Último OWNER ativo protegido (422). Anexos em disco privado `local`, download via rota autenticada + policy, sem URL pública, whitelists MIME, 10 MB. Notificações `database` (sem e-mail), link de recurso, controle de dono. Templates inativos não selecionáveis; sem exclusão destrutiva (softDeletes + inativação). Credenciais: `encrypted` + hidden + reveal com current_password + audit logs + no-store.
 
 ## 1. Princípios
 

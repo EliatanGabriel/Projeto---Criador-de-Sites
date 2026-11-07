@@ -104,10 +104,14 @@ test('templates inativos não podem ser selecionados na conversão', function ()
     $template = makeTemplate($owner->id);
     $template->update(['is_active' => false]);
 
-    $this->actingAs($owner)->post('/projects', [
+    // Hoje retorna 422 via validação FormRequest (session errors) ou 302 com erro – ambos indicam bloqueio
+    $response = $this->actingAs($owner)->post('/projects', [
         'demand_id' => $demand->id,
         'template_id' => $template->id,
-    ])->assertStatus(422);
+    ]);
+    $project = Project::where('demand_id', $demand->id)->first();
+    expect($project)->toBeNull();
+    $response->assertSessionHasErrors();
 });
 
 test('seleção de template na conversão gera tarefas', function () {

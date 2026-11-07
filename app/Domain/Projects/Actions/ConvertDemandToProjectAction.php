@@ -103,8 +103,20 @@ class ConvertDemandToProjectAction
                             continue;
                         }
                         $assigneeId = $assignments[$tempTask->id] ?? null;
-                        if ($assigneeId === 'unassigned' || $assigneeId === '') {
+                        if (in_array($assigneeId, [null, '', 'unassigned', 'owner', 'developer'], true)) {
+                            // Sugestão de papel não implica atribuição automática (disponibilidade)
                             $assigneeId = null;
+                        } elseif ($assigneeId) {
+                            $target = User::find($assigneeId);
+                            if (! $target) {
+                                abort(422, 'Usuário de atribuição não encontrado.');
+                            }
+                            if (! $target->is_active) {
+                                abort(422, 'Usuário de atribuição está inativo.');
+                            }
+                            if (! ($target->hasRole('OWNER') || $target->hasRole('DEVELOPER'))) {
+                                abort(422, 'Somente OWNER ou DEVELOPER podem ser responsáveis.');
+                            }
                         }
 
                         $dueAt = null;

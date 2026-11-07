@@ -1,14 +1,19 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandController;
+use App\Http\Controllers\HostingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpportunityController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectTemplateController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WebsiteAlertController;
+use App\Http\Controllers\WebsiteAssetController;
+use App\Http\Controllers\WebsiteController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -95,4 +100,36 @@ Route::middleware(['auth'])->group(function () {
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::patch('notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
     Route::post('notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+
+    Route::get('sites', [WebsiteController::class, 'index'])->middleware('can:websites.view')->name('sites.index');
+    Route::get('sites/create', [WebsiteController::class, 'create'])->middleware('can:websites.manage')->name('sites.create');
+    Route::post('sites', [WebsiteController::class, 'store'])->middleware('can:websites.manage')->name('sites.store');
+    Route::get('sites/{website}', [WebsiteController::class, 'show'])->middleware('can:websites.view')->name('sites.show');
+    Route::get('sites/{website}/edit', [WebsiteController::class, 'edit'])->middleware('can:websites.manage')->name('sites.edit');
+    Route::put('sites/{website}', [WebsiteController::class, 'update'])->middleware('can:websites.manage')->name('sites.update');
+    Route::post('sites/{website}/projects', [WebsiteController::class, 'linkProject'])->middleware('can:websites.manage')->name('sites.projects.link');
+
+    Route::get('hostings', [HostingController::class, 'index'])->middleware('can:websites.view')->name('hostings.index');
+    Route::get('hostings/create', [HostingController::class, 'create'])->middleware('can:hostings.manage')->name('hostings.create');
+    Route::post('hostings', [HostingController::class, 'store'])->middleware('can:hostings.manage')->name('hostings.store');
+    Route::get('hostings/{hosting}', [HostingController::class, 'show'])->middleware('can:websites.view')->name('hostings.show');
+    Route::get('hostings/{hosting}/edit', [HostingController::class, 'edit'])->middleware('can:hostings.manage')->name('hostings.edit');
+    Route::put('hostings/{hosting}', [HostingController::class, 'update'])->middleware('can:hostings.manage')->name('hostings.update');
+
+    Route::post('sites/{website}/domains', [WebsiteAssetController::class, 'createDomain'])->middleware('can:websites.manage')->name('sites.domains.store');
+    Route::post('sites/{website}/environments', [WebsiteAssetController::class, 'createEnvironment'])->middleware('can:websites.manage')->name('sites.environments.store');
+    Route::post('sites/{website}/repositories', [WebsiteAssetController::class, 'createRepository'])->middleware('can:websites.manage')->name('sites.repositories.store');
+    Route::post('sites/{website}/publications', [WebsiteAssetController::class, 'storePublication'])->middleware('can:websites.publications')->name('sites.publications.store');
+    Route::post('sites/{website}/maintenance', [WebsiteAssetController::class, 'storeMaintenance'])->middleware('can:websites.maintenance')->name('sites.maintenance.store');
+
+    Route::get('alerts', [WebsiteAlertController::class, 'index'])->middleware('can:alerts.view')->name('alerts.index');
+    Route::get('alerts/{alert}', [WebsiteAlertController::class, 'show'])->middleware('can:alerts.view')->name('alerts.show');
+    Route::post('alerts/{alert}/read', [WebsiteAlertController::class, 'read'])->middleware('can:alerts.read')->name('alerts.read');
+    Route::post('alerts/{alert}/resolve', [WebsiteAlertController::class, 'resolve'])->middleware('can:alerts.resolve')->name('alerts.resolve');
+    Route::post('alerts/{alert}/dismiss', [WebsiteAlertController::class, 'dismiss'])->middleware('can:alerts.resolve')->name('alerts.dismiss');
+    Route::patch('alerts/{alert}/assign', [WebsiteAlertController::class, 'assign'])->middleware('can:alerts.read')->name('alerts.assign');
+
+    Route::post('credentials', [CredentialController::class, 'store'])->middleware('can:credentials.view')->name('credentials.store');
+    Route::post('credentials/{credential}/reveal', [CredentialController::class, 'reveal'])->middleware(['can:credentials.view', 'throttle:5,1'])->name('credentials.reveal');
+    Route::put('credentials/{credential}', [CredentialController::class, 'update'])->middleware('can:credentials.view')->name('credentials.update');
 });

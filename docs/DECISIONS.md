@@ -1,6 +1,6 @@
 # DECISIONS — WebStudio OS
 
-**Versão:** 1.5 — Fase 5 (atualizado)
+**Versão:** 1.6 — Fase 6.2 (atualizado)
 **Propósito:** registrar alterações importantes de escopo, arquitetura e tecnologia (Doc.md §11.2).
 
 ## Decisões Aprovadas
@@ -36,6 +36,7 @@
 | D-027 | Fase 3: demands (draft/submitted/under_review/needs_information/approved/rejected/cancelled via Action transacional, sem conversão auto), briefings 1-1 colunas, anexos local privado 10MB whitelist, histories imutáveis, oportunidade valida cliente | Prompt Fase 3 | Aprovada |
 | D-028 | Fase 4: ConvertDemandToProjectAction transacional (lockForUpdate + UNIQUE projects.demand_id + rollback, sem duplicidade), projects/tasks/histories/comments, notificações database (sem e-mail), projeções de progresso | Prompt Fase 4 | Aprovada |
 | D-029 | Fase 5: templates com fases/tarefas ordenadas, snapshot jsonb + phase_name/order nas tasks (independência do template), template opcional na conversão, sem hard delete | Prompt Fase 5 | Aprovada |
+| D-030 | Fase 6.2: websites + website_projects N:N (origem única, pivô fonte única), hostings independentes, domains/hosting/env/repos separados, publications append-only, maintenance via projects/tasks, credentials encrypted + audit | Prompt Fase 6.2 | Aprovada |
 
 ## Decisões Pendentes
 

@@ -1,6 +1,6 @@
 # PRD — WebStudio OS
 
-**Versão:** 1.1 — Fase 5
+**Versão:** 1.2 — Fase 6.2
 **Fonte:** Doc.md v1.0 §1, §2, §5, §8, §13, §15  
 **Status:** Aguardando aprovação antes de implementação
 

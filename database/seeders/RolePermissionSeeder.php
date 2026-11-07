@@ -23,7 +23,9 @@ class RolePermissionSeeder extends Seeder
             'projects.view', 'projects.create', 'projects.edit',
             'tasks.view', 'tasks.create', 'tasks.edit', 'tasks.assign',
             'templates.view', 'templates.manage',
-            'websites.view', 'websites.manage',
+            'websites.view', 'websites.manage', 'websites.publications', 'websites.maintenance', 'credentials.view',
+            'hostings.view', 'hostings.manage',
+            'alerts.view', 'alerts.read', 'alerts.resolve',
             'finance.view', 'finance.manage',
             'reports.view',
             'settings.view', 'settings.manage',
@@ -43,6 +45,7 @@ class RolePermissionSeeder extends Seeder
             'commercial.view', 'commercial.create', 'commercial.edit',
             'demands.view', 'demands.create', 'demands.edit', 'demands.send',
             'projects.view', 'reports.view',
+            'alerts.view', 'alerts.read',
         ]);
 
         $developer = Role::firstOrCreate(['name' => 'DEVELOPER', 'guard_name' => 'web']);
@@ -50,6 +53,7 @@ class RolePermissionSeeder extends Seeder
             'view-dashboard',
             'projects.view', 'tasks.view', 'tasks.edit',
             'templates.view', 'websites.view',
+            'alerts.view', 'alerts.read', 'alerts.resolve',
         ]);
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
