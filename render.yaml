@@ -1,3 +1,12 @@
+# Environment Group: webstudio-os
+# Variáveis compartilhadas entre Web, Worker e Cron:
+#   - APP_KEY (base64, definida uma única vez no grupo)
+#   - DB_HOST (hostname do Supabase)
+#   - DB_PASSWORD (segredo no painel Render)
+#   - APP_URL (URL HTTPS da aplicação)
+#   - SESSION_SECURE_COOKIE
+#   - APP_ENV, APP_DEBUG
+
 services:
   - type: web
     name: webstudio-os
@@ -11,12 +20,27 @@ services:
       - key: SESSION_SECURE_COOKIE
         value: "true"
       - key: APP_URL
-        value: render.com
-    healthCheckPath: /up
-    disk:
-      name: webstudio-storage
-      mountPath: /app/storage/app/private
-      sizeGB: 1
+        fromService:
+          name: webstudio-os
+          type: web
+          property: external_url
+      # APP_KEY será injetada pelo Environment Group (ver docs/OPERATIONS.md)
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        value: webstudio_os
+      - key: DB_USERNAME
+        value: webstudio
+      - key: DB_PASSWORD
+        fromSecret: db-password
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: database
 
   - type: worker
     name: webstudio-worker
@@ -28,10 +52,13 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+      # APP_KEY será injetada pelo Environment Group (sobrescreve valor vazio)
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: db-hostname
+        # Preencher no painel Render (hostname do Supabase,
+        # ex.: db.xxx.supabase.com). Centralizado via Environment Group.
+        # Sem placeholder: remova este comentário e configure no painel.
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
@@ -58,10 +85,12 @@ services:
         value: production
       - key: APP_DEBUG
         value: "false"
+      # APP_KEY será injetada pelo Environment Group (sobrescreve valor vazio)
       - key: DB_CONNECTION
         value: pgsql
       - key: DB_HOST
-        value: db-hostname
+        # Preencher no painel Render (hostname do Supabase).
+        # Centralizado via Environment Group — não usar placeholder.
       - key: DB_PORT
         value: "5432"
       - key: DB_DATABASE
