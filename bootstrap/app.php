@@ -23,10 +23,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
     })
-    ->withTrustedProxies(
-        fn ($request) => $request->getClientIp() === '127.0.0.1' ||
-            str_contains($request->headers->get('X-Forwarded-Proto', 'http'), 'https')
-    )
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
