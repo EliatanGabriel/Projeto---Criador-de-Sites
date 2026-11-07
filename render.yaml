@@ -1,0 +1,78 @@
+services:
+  - type: web
+    name: webstudio-os
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: SESSION_SECURE_COOKIE
+        value: "true"
+      - key: APP_URL
+        value: render.com
+    healthCheckPath: /up
+    disk:
+      name: webstudio-storage
+      mountPath: /app/storage/app/private
+      sizeGB: 1
+
+  - type: worker
+    name: webstudio-worker
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    startCommand: "php artisan queue:work database --sleep=3 --tries=3 --timeout=120"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        value: db-hostname
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        value: webstudio_os
+      - key: DB_USERNAME
+        value: webstudio
+      - key: DB_PASSWORD
+        fromSecret: db-password
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: database
+
+  - type: cron
+    name: webstudio-cron
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    startCommand: "php artisan schedule:run"
+    schedule: "* * * * *"
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        value: db-hostname
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        value: webstudio_os
+      - key: DB_USERNAME
+        value: webstudio
+      - key: DB_PASSWORD
+        fromSecret: db-password
+      - key: QUEUE_CONNECTION
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: database

@@ -1,7 +1,7 @@
 # OPERATIONS — WebStudio OS
 
-**Versão:** 1.0 — Fase 0  
-**Fonte:** Doc.md v1.0 §9
+**Versão:** 1.2 — Deploy Docker corrigido  
+**Fonte:** Doc.md v1.0 §9, ARCHITECTURE.md §2
 
 ## 1. Ambientes
 
@@ -25,20 +25,25 @@
 
 | Componente | Tecnologia / Provedor | Status |
 |---|---|---|
-| Aplicação web | Laravel 13 (PHP 8.3/8.4) + React build estático servido pelo Laravel | `PIPELINE: Vite build → public/build` |
-| Banco | PostgreSQL gerenciado (Render Postgres, Neon, Supabase, Hetzner...) | **[PENDENTE decisão final]** |
-| Storage | S3-compatível (AWS S3, Backblaze B2, Cloudflare R2, MinIO) via disco `s3` | **[PENDENTE fornecedor]** |
-| Filas | Worker Laravel (`php artisan queue:work`) — driver `database` ou `redis` | **[PENDENTE driver]** |
-| Scheduler | `schedule:run` via cron a cada minuto | Obrigatório (notificações, prazos, backups) |
-| Cache | `database`/`file` inicialmente; `redis` se disponível | **[PENDENTE]** |
+| Aplicação web | Laravel 13 (PHP 8.4) + React build estático servido pelo nginx | `Dockerfile` multi-stage |
+| Banco | PostgreSQL 17 gerenciado (Supabase) | Confirmado |
+| Storage | S3-compatível via disco `s3` (provider a definir, P-016) | provider pendente; MVP local ok |
+| Filas | Worker Laravel `database` (sem Redis) | Confirmado |
+| Scheduler | `schedule:run` via cron a cada minuto | Cron Render (1 min) |
+| Cache | `database` | Confirmado |
 | HTTPS | Certificado Let's Encrypt (automático na hospedagem) | Obrigatório |
 | Domínio | Domínio próprio + DNS | **[PENDENTE domínio]** |
-| Logs | `LOG_CHANNEL=stack` + driver de log do provedor | — |
+| Logs | `storage/logs` ou provedor | — |
 | Backups | Snapshot diário do PG + `storage` sync (rclone/s3 sync) | Obrigatório |
 | Monitoramento | Uptime (BetterStack/UptimeRobot), erro Sentry/Flare [PENDENTE] | Recomendado |
 
-### Hospedagem — decisão pendente
-Critérios (Doc.md §9.3): compatibilidade PHP 8.3+, PostgreSQL gerenciado, S3, HTTPS, domínio próprio, backups, persistência, suporte a filas/scheduler, custo, suporte. Avaliar **Render** (recomendado inicial no Doc.md), **Fly.io**, **Hetzner Cloud** (mais custo-benefício, exige DevOps manual). Não decidir nesta fase; registrar em `DECISIONS.md`.
+### Hospedagem — Render + Supabase (D-041)
+
+- **Web Service**: Render serviço Docker usa o `Dockerfile` do repositório; Build não roda migrations; variáveis `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_URL`, `SESSION_SECURE_COOKIE=true`, `DB_*` (Supabase) e demais segredos configurados via Render **env vars** (sem secrets no Docker).
+- **Worker**: `php artisan queue:work database --sleep=3 --tries=3 --timeout=120` (filas `database`).
+- **Cron**: `php artisan schedule:run` a cada minuto (funcionalidade agendada diária 06:30/07:00 + mensal 05:00).
+- **Health-check**: endpoint `/up` nativo Laravel (healthCheckPath no `render.yaml`).
+- **Migrations**: nunca no build; via **Pre-Deploy Command** (se habilitado no painel) ou Job manual controlado (`php artisan migrate --force`); se falhar, a publicação não segue. Rollback: voltar ao build anterior do Render, **sem** `migrate:rollback` destrutivo.
 
 ## 3. Estratégia de Deploy
 
@@ -91,9 +96,98 @@ Critérios (Doc.md §9.3): compatibilidade PHP 8.3+, PostgreSQL gerenciado, S3, 
 
 ## 9. Pendências de Operações
 
-- [PENDENTE] Hospedagem final (Render vs alternativa).
 - [PENDENTE] Domínio final e provedor de e-mail (transacional).
 - [PENDENTE] Driver de filas/cache (database vs Redis).
 - [PENDENTE] Fornecedor S3-compatível (R2/B2/AWS).
 - [PENDENTE] Serviço de monitoramento de erros (Sentry/Flare).
 - [PENDENTE] Política de retenção de backups e logs (LGPD).
+
+## 10. Configuração dos Processos Render
+
+### Web Service
+Executa a aplicação Laravel e atende requisições HTTP.
+- Uses the corrected multi-stage Dockerfile.
+- Env vars: `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_URL`, `SESSION_SECURE_COOKIE=true`, `DB_*`, `QUEUE_CONNECTION`, `CACHE_STORE`, `SESSION_DRIVER`.
+- Health-check: `/up` endpoint.
+- Disk mount: `webstudio-storage` mounted at `/app/storage/app/private`.
+
+### Background Worker
+Comando: `php artisan queue:work database --sleep=3 --tries=3 --timeout=120`
+- Usa a mesma imagem Docker do Web Service.
+- Variáveis de ambiente necessárias: `DB_CONNECTION`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`, `QUEUE_CONNECTION=CACHE_STORE=SESSION_DRIVER=database`.
+- Deve ser configurado no painel Render como tipo "Worker" com o `startCommand` acima.
+- Não requer Redis - usa driver `database` já configurado.
+
+### Cron Job
+Comando: `php artisan schedule:run`
+- Frequência: a cada minuto (`schedule: "* * * * *"`).
+- Usa a mesma imagem Docker do Web Service e variáveis de ambiente compartilhadas.
+- Configurado no painel Render como tipo "Cron" com schedule `* * * * *`.
+
+## 11. Variáveis de Ambiente Necessárias
+
+### Obrigatórias (Web Service):
+- `APP_NAME` - "WebStudio OS"
+- `APP_ENV` - "production"
+- `APP_DEBUG` - "false"
+- `APP_KEY` - base64 key (fornecida via Render env vars ou gerada na primeira inicialização)
+- `APP_URL` - "render.com" ou domínio próprio
+- `SESSION_SECURE_COOKIE` - "true"
+- `DB_CONNECTION` - "pgsql"
+- `DB_HOST` - hostname do Supabase
+- `DB_PORT` - "5432"
+- `DB_DATABASE` - "webstudio_os"
+- `DB_USERNAME` - "webstudio"
+- `DB_PASSWORD` - (fromSecret no Render)
+- `QUEUE_CONNECTION` - "database"
+- `CACHE_STORE` - "database"
+- `SESSION_DRIVER` - "database"
+- `SESSION_LIFETIME` - "120"
+- `PORT` - "8000" (ou porta definida pelo Render)
+
+### Opcional/Secreto:
+- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_BUCKET`, `AWS_DEFAULT_REGION` - para disco S3
+- `MAIL_HOST`, `MAIL_PORT`, `MAIL_USERNAME`, `MAIL_PASSWORD` - para e-mails
+- `REDIS_HOST`, `REDIS_PASSWORD`, `REDIS_PORT` - se mudar para Redis futuramente
+
+## 12. Processo de Migração de Produção
+
+Migrations **nunca** devem ser executadas durante `docker build`. O procedimento correto:
+
+1. **Pre-Deploy Command (Render)**: Se o plano Render suportar, configurar command `php artisan migrate --force` como Pre-Deploy Command. Isso executa antes da nova versão ser liberada.
+2. **Se Pre-Deploy não estiver disponível**: executar migrações via Job manual controlado.
+   - Criar um Job `RunMigrations` que executa `php artisan migrate --force`.
+   - Disparar o job após o deploy confirmação.
+3. **Não rodar simultaneamente em múltiplas instâncias**: 
+   - Apenas uma instância deve rodar migrations ao mesmo tempo.
+   - Usar `php artisan migrate --force` com lock ou garantir que apenas o Web Service recém-deployed rode as migrations.
+4. **Não rodar rollback destrutivo automaticamente**: 
+   - Rollback manual apenas via `php artisan migrate:rollback --step=1` operado por OWNER/Admin.
+   - Nunca `migrate:rollback` em produção automaticamente.
+5. **Fluxo**:
+   - Novo build subado no Render.
+   - Se houver Pre-Deploy Command, ele roda `migrate --force`.
+   - Se falhar, deploy é interrompido e build anterior mantido.
+   - Se sucesso, nova versão liberada.
+   - Pós-deploy: verificar se migrations aplicadas corretamente.
+
+## 13. Recuperação e Rollback
+
+- **Rollback por build**: Manter o build anterior no Render. Caso a nova versão apresente problemas, selecionar o build anterior no painel Render e promover para produção.
+- **Rollback de migrations**: Nunca use `migrate:rollback` em produção. Se for necessário reverter mudanças de schema, planejar uma migration de correção ou usar `migrate:rollback --step=1` apenas em staging, com aprovação OWNER.
+- **Recuperação após falha**:
+  1. Verificar logs em `storage/logs` ou painel Render.
+  2. Se o container não iniciar, verificar variáveis de ambiente e permissões.
+  3. Promover build anterior via painel Render.
+  4. Testar health-check em `/up`.
+- **Health-check**: Endpoint `/up` deve retornar 200 quando a aplicação estiver saudável. Configurado no `render.yaml` como `healthCheckPath: /up`.
+
+## 14. Deploy Procedure
+
+1. Push em `main` dispara GitHub Actions CI.
+2. CI roda: `composer install --no-dev --optimize-autoloader`, `npm ci && npm run build`, `php artisan test`.
+3. CI publica no Render (ou Render faz auto-deploy após push em `main`).
+4. Se houver Pre-Deploy Command, migrations são executadas.
+5. Novo container sobe com `APP_ENV=production`, `APP_DEBUG=false`.
+6. Pós-deploy: verificar `/up`, filas, scheduler, logs.
+7. Se houver falha, promover build anterior e rodar `php artisan migrate:rollback --step=1` se necessário.
