@@ -285,9 +285,9 @@ test('isolamento de acesso por projeto para DEVELOPER', function () {
     expect($site->fresh()->projects()->where('projects.id', $project->id)->exists())->toBeTrue();
 
     $this->actingAs($developer)->get("/sites/{$site->id}")->assertOk();
-    // outro site não contém projeto acessível – deve ser 403 mesmo que por rota de listagem ele apareça filtrado
-    // o show usa middleware can:websites.view + policy via authorize? rota atual usa middleware endast
-    // logo testamos via policy direta para isolamento
+    // Site sem projeto acessível: 403 (show autoriza via WebsitePolicy::view)
+    $this->actingAs($developer)->get("/sites/{$otherSite->id}")->assertForbidden();
+    // recarrega para garantir policy enxerga projeto
     expect($developer->can('view', $otherSite))->toBeFalse();
     expect($developer->can('view', $site))->toBeTrue();
 });

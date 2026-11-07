@@ -45,6 +45,7 @@ class RolePermissionSeeder extends Seeder
             'commercial.view', 'commercial.create', 'commercial.edit',
             'demands.view', 'demands.create', 'demands.edit', 'demands.send',
             'projects.view', 'reports.view',
+            'websites.view',
             'alerts.view', 'alerts.read',
         ]);
 

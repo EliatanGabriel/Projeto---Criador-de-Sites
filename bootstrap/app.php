@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'active' => \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
 
+        $middleware->validateCsrfTokens(except: ['webhooks/github']);
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \App\Http\Middleware\EnsureUserIsActive::class,

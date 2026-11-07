@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-export default function SitesShow({ site, canManage, canPublish, canMaintenance, canCredentials, hostings, users, projects }: { site: any; canManage: boolean; canPublish: boolean; canMaintenance: boolean; canCredentials: boolean; hostings: any[]; users: { id: string; name: string }[]; projects: { id: string; title: string }[] }) {
+export default function SitesShow({ site, healthStates, latestChecks, canManage, canPublish, canMaintenance, canCredentials, hostings, users, projects }: { site: any; healthStates: any[]; latestChecks: any[]; canManage: boolean; canPublish: boolean; canMaintenance: boolean; canCredentials: boolean; hostings: any[]; users: { id: string; name: string }[]; projects: { id: string; title: string }[] }) {
   const [tab, setTab] = useState('overview');
   const domainForm = useForm({ domain: '', registrar: '', registered_at: '', expires_at: '', status: 'ativo', is_primary: false, dns_notes: '' });
   const envForm = useForm({ name: '', type: 'production', url: '', hosting_id: '', status: 'ativo', notes: '' });
@@ -23,6 +23,7 @@ export default function SitesShow({ site, canManage, canPublish, canMaintenance,
     ['pubs', 'Publicações'],
     ['maint', 'Manutenção'],
     ['creds', 'Acesso'],
+    ['health', 'Saúde'],
   ];
 
   return (
@@ -263,26 +264,60 @@ export default function SitesShow({ site, canManage, canPublish, canMaintenance,
               <thead>
                 <tr className="border-b text-left text-gray-600">
                   <th className="pb-2">Nome</th>
-                  <th className="pb-2">Provedor</th>
+                  <th className="pb-2">GitHub</th>
                   <th className="pb-2">Branch</th>
-                  <th className="pb-2">URL</th>
+                  <th className="pb-2">Último commit</th>
+                  <th className="pb-2">PRs abertos</th>
+                  <th className="pb-2">Sincronização</th>
+                  {canManage && <th className="pb-2">Ação</th>}
                 </tr>
               </thead>
               <tbody>
                 {(site.repositories ?? []).map((r: any) => (
-                  <tr key={r.id} className="border-b last:border-0">
+                  <tr key={r.id} className="border-b last:border-0 align-top">
                     <td className="py-2 font-medium">{r.name}</td>
-                    <td className="py-2">{r.provider ?? '—'}</td>
-                    <td className="py-2">{r.default_branch ?? '—'}</td>
                     <td className="py-2">
                       <a href={r.url} target="_blank" className="text-blue-600 hover:underline">
-                        {r.url}
+                        {r.github_full_name ?? r.url}
                       </a>
                     </td>
+                    <td className="py-2">{r.default_branch ?? '—'}</td>
+                    <td className="py-2">
+                      {r.last_commit_sha ? (
+                        <>
+                          <code>{r.last_commit_sha.slice(0, 7)}</code>
+                          {r.last_commit_at && <span className="text-gray-500"> • {new Date(r.last_commit_at).toLocaleDateString('pt-BR')}</span>}
+                        </>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
+                    <td className="py-2">{r.open_pull_requests_count ?? '—'}</td>
+                    <td className="py-2 text-xs">
+                      {r.last_sync_status === 'ok' ? (
+                        <span className="text-green-700">OK {r.last_synced_at ? new Date(r.last_synced_at).toLocaleDateString('pt-BR') : ''}</span>
+                      ) : r.last_sync_status ? (
+                        <span className="text-red-600">{r.last_sync_error ?? 'Erro'}</span>
+                      ) : (
+                        <span className="text-gray-500">Não sincronizado</span>
+                      )}
+                      {r.last_sync_attempt_at && <div className="text-gray-400">{new Date(r.last_sync_attempt_at).toLocaleString('pt-BR')}</div>}
+                    </td>
+                    {canManage && (
+                      <td className="py-2">
+                        <form onSubmit={(e) => {
+                          e.preventDefault();
+                          useForm({}).post(`/sites/${site.id}/repositories/${r.id}/sync`);
+                        }}>
+                          <Button type="submit" variant="outline" size="sm">Sincronizar</Button>
+                        </form>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
+            {(site.repositories ?? []).length === 0 && <p className="text-sm text-gray-500">Nenhum repositório cadastrado.</p>}
           </CardContent>
         </Card>
       )}
@@ -488,6 +523,76 @@ export default function SitesShow({ site, canManage, canPublish, canMaintenance,
                 </div>
               </>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {tab === 'health' && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Saúde operacional</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {canManage && (
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                useForm({}).post(`/sites/${site.id}/health-check`);
+              }}>
+                <Button type="submit" variant="outline" size="sm">Executar verificação manual</Button>
+              </form>
+            )}
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b text-left text-gray-600">
+                  <th className="pb-2">Domínio</th>
+                  <th className="pb-2">Estado</th>
+                  <th className="pb-2">Falhas</th>
+                  <th className="pb-2">Última verificação</th>
+                  <th className="pb-2">Recuperado em</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(healthStates ?? []).map((s: any) => (
+                  <tr key={s.domain_id} className="border-b last:border-0">
+                    <td className="py-2 font-medium">{s.domain}</td>
+                    <td className="py-2"><span className={s.state === 'operational' ? 'text-green-700' : s.state === 'down' ? 'text-red-600' : 'text-amber-600'}>{s.state}</span></td>
+                    <td className="py-2">{s.consecutive_failures}</td>
+                    <td className="py-2">{s.last_checked_at ? new Date(s.last_checked_at).toLocaleString('pt-BR') : '—'}</td>
+                    <td className="py-2">{s.last_recovered_at ? new Date(s.last_recovered_at).toLocaleString('pt-BR') : '—'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {(healthStates ?? []).length === 0 && <p className="text-sm text-gray-500">Nenhuma verificação de saúde ainda.</p>}
+            <div>
+              <p className="mb-2 text-sm font-medium">Últimas verificações</p>
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-left text-gray-600">
+                    <th className="pb-2">Início</th>
+                    <th className="pb-2">Domínio</th>
+                    <th className="pb-2">Origem</th>
+                    <th className="pb-2">HTTP</th>
+                    <th className="pb-2">Duração</th>
+                    <th className="pb-2">SSL</th>
+                    <th className="pb-2">Erro</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(latestChecks ?? []).map((c: any) => (
+                    <tr key={c.id} className="border-b last:border-0">
+                      <td className="py-2">{c.checked_at ? new Date(c.checked_at).toLocaleString('pt-BR') : '—'}</td>
+                      <td className="py-2">{c.domain ?? '—'}</td>
+                      <td className="py-2">{c.trigger === 'scheduled' ? 'Agendada' : 'Manual'}</td>
+                      <td className="py-2">{c.ok ? <span className="text-green-700">OK{c.http_status ? ` (${c.http_status})` : ''}</span> : <span className="text-red-600">Falha{c.http_status ? ` (${c.http_status})` : ''}</span>}</td>
+                      <td className="py-2">{c.latency_ms != null ? `${c.latency_ms} ms` : '—'}</td>
+                      <td className="py-2">{c.ssl_valid == null ? '—' : c.ssl_valid ? 'Válido' : 'Inválido'}{c.ssl_expires_at ? ` • ${new Date(c.ssl_expires_at).toLocaleDateString('pt-BR')}` : ''}</td>
+                      <td className="py-2 text-xs">{c.error_code ?? '—'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </CardContent>
         </Card>
       )}

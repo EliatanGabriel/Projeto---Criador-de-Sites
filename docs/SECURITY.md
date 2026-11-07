@@ -1,6 +1,6 @@
 # SECURITY — WebStudio OS
 
-**Versão:** 1.5 — Fase 6.2
+**Versão:** 1.7 — Fase 8
 **Fonte:** Doc.md v1.0 §1.3, §5 Módulo 01, §7
 
 ## 1.1 Permissões Fase 2
@@ -89,6 +89,10 @@ Restrições: **não** aprovar demandas, **não** alterar negociações comercia
 - Teste de CSRF em rotas críticas (Laravel cobre por padrão, mas registrar).
 - Auditoria manual de dependências (`composer audit`, `npm audit`) no CI.
 
+## 9.1 Financeiro (Fase 8)
+
+- `finance.view/manage` OWNER-only; nenhum dado financeiro em props Inertia sem autorização; valores em `DECIMAL(12,2)` BRL; pagamentos parcelados em transação com trava e sem excesso do total; relatório separa previsto de recebido.
+
 ## 9. Pendências de Segurança
 
 - [PENDENTE] Breeze vs Fortify (decidir se precisa 2FA, tokens API).
@@ -97,3 +101,10 @@ Restrições: **não** aprovar demandas, **não** alterar negociações comercia
 - [PENDENTE] Política de senha (tamanho mínimo, complexidade, expiração) — definir com Eliatan.
 - [PENDENTE] Retenção de logs/atividades (LGPD).
 - [PENDENTE] Gestão de backups e restauração testada.
+
+## 10. Adendo Fase 7 — GitHub, webhooks e saúde
+
+- **GitHub (7.2):** PAT de escopo mínimo em `credentials` (`type service_token`, `encrypted`, `hidden`), `Authorization: Bearer` em memória; sync grava só metadados (commit/PR); `Http::fake` nos testes; timeout 10 s; falha preserva cache.
+- **Webhooks (7.3):** `POST /webhooks/github` fora do `auth`, CSRF exceto, `throttle:60,1`, limite 1 MB, HMAC `sha256=` com `hash_equals`; respostas 401/404/400 genéricas; idempotência `delivery_id unique` (23505 recuperada fora da transação).
+- **Health-check (7.4):** 06:30 `America/Sao_Paulo` via filas `database`; SSRF cURL com `CURLOPT_RESOLVE hostname:port:ip`, proxies desabilitados, redirect manual revalidado, `CURLINFO_PRIMARY_IP == IP validado`; sem persistir corpo nem IPs internos; manual só registra (sem estado/alerta); alertas `site_indisponivel`/`ssl_*` reusam `WebsiteAlert`/`Activity` (D-031/D-036/D-037).
+-.logs sem segredos: testes eliminam PAT/segredos das respostas, flashes e `payload_summary`.

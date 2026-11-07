@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['website_id', 'environment_id', 'version', 'published_at', 'responsible_id', 'description', 'commit_reference', 'result', 'notes'])]
+#[Fillable(['website_id', 'environment_id', 'version', 'published_at', 'responsible_id', 'description', 'commit_reference', 'result', 'source', 'github_deployment_id', 'notes'])]
 class WebsitePublication extends Model
 {
     /** @use HasFactory<WebsitePublicationFactory> */

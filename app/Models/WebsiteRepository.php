@@ -10,11 +10,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-#[Fillable(['website_id', 'environment_id', 'provider', 'name', 'url', 'default_branch', 'notes'])]
+#[Fillable(['website_id', 'environment_id', 'provider', 'name', 'url', 'default_branch', 'github_full_name', 'last_commit_sha', 'last_commit_at', 'last_synced_at', 'last_sync_attempt_at', 'last_sync_status', 'last_sync_error', 'open_pull_requests_count', 'notes'])]
 class WebsiteRepository extends Model
 {
     /** @use HasFactory<WebsiteRepositoryFactory> */
     use HasFactory, HasUuids, SoftDeletes;
+
+    protected $casts = [
+        'last_commit_at' => 'datetime',
+        'last_synced_at' => 'datetime',
+        'last_sync_attempt_at' => 'datetime',
+        'open_pull_requests_count' => 'integer',
+    ];
 
     public function uniqueIds(): array
     {
@@ -34,5 +41,10 @@ class WebsiteRepository extends Model
     public function environment(): BelongsTo
     {
         return $this->belongsTo(WebsiteEnvironment::class, 'environment_id');
+    }
+
+    public function events(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(WebsiteRepositoryEvent::class, 'repository_id');
     }
 }

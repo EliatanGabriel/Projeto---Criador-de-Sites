@@ -23,7 +23,7 @@ class CheckExpirationsAction
     {
         $due = \Carbon\Carbon::parse($dueAt)->startOfDay();
         $todayStart = $today->copy()->startOfDay();
-        $delta = $todayStart->diffInDays($due, false); // signed: $today - $due
+        $delta = $due->diffInDays($todayStart, false); // signed: $due - $today (Carbon retorna positivo quando $due é futuro em $today->diffInDays)
 
         if ($delta < 0) {
             // Data de vencimento em futuro: calcular dias restantes
@@ -37,6 +37,11 @@ class CheckExpirationsAction
             // Vencido ou hoje
             return 'critical';
         }
+    }
+
+    public function synchronizeExpirationAlert(Website $website, string $alertType, string $sourceType, string $sourceId, $dueAt, string $title, \Carbon\CarbonInterface $today): bool
+    {
+        return $this->evaluate($website, $alertType, $sourceType, $sourceId, $dueAt, $title, $today);
     }
 
     public function __invoke(?\Carbon\CarbonInterface $now = null): array
@@ -53,7 +58,7 @@ class CheckExpirationsAction
                     sourceId: $domain->id,
                     dueAt: $domain->expires_at,
                     title: "Domínio {$domain->domain} vencendo",
-                    $today,
+                    today: $today,
                 )) $stats['domains']++;
             }
 
@@ -65,7 +70,7 @@ class CheckExpirationsAction
                     sourceId: $env->id,
                     dueAt: $env->ssl_expires_at,
                     title: "SSL {$env->name} vencendo",
-                    $today,
+                    today: $today,
                 )) $stats['ssl']++;
             }
 
@@ -80,7 +85,7 @@ class CheckExpirationsAction
                         sourceId: $hosting->id,
                         dueAt: $hosting->next_renewal_at,
                         title: "Hospedagem {$hosting->name} renovando",
-                        $today,
+                        today: $today,
                     )) $stats['hostings']++;
                 }
             }

@@ -1,6 +1,6 @@
 # ROADMAP — WebStudio OS
 
-**Versão:** 1.2 — Fase 6.2  
+**Versão:** 1.4 — Fase 7.5 (fechamento)
 **Fonte:** Doc.md v1.0 §10, §13, §14
 
 ## Visão Geral
@@ -56,6 +56,14 @@ Desenvolvimento em fases independentes. Cada fase deve ser implementada, testada
 
 **Entregas:** inventário de sites (clientes, projetos origem, domínios, hospedagem, repositórios, URLs, datas, SSL, responsáveis, manutenção), histórico de publicação (deployments), integração básica com GitHub (links e metadados).  
 **Critério de conclusão:** plataforma centraliza informações dos sites produzidos e facilita publicação. (Integração de deploy automático é opcional nesta fase.)
+
+> **Nota Fase 7.1 (2026-11-07):** inventário/domínios/hospedagem/repositórios/publicações manuais já entregues nas Fases 6.2+6.3 (D-030, suíte 115/115 no PG17.11) — sem duplicação. A Fase 7 refoca em **integração GitHub + publicação assistida**, sem deploy automático via API da hospedagem (D-033, P-008 em aberto).
+>
+> - **7.1 Design/decisões (atual):** PD-701 eventos×implantações, PD-702 PAT mínimo em `credentials`, PD-703 sem auto-deploy, PD-704 health-check 06:30 com anti-SSRF → `docs/PHASE-7-DESIGN.md` (sem código).
+> - **7.2 Repositórios GitHub (leitura):** sync API, cache local (`last_commit_*`, `last_synced_at`), botão "Sincronizar GitHub" (OWNER).
+> - **7.3 Webhook GitHub:** `POST /webhooks/github` assinado HMAC, idempotência por `delivery_id`, `pending` só para implantação iniciada.
+> - **7.4 Publicação assistida + health-check:** checklist pré-publicação, Job diário 06:30 SSL/HTTP com anti-SSRF, evidência em `website_health_checks`.
+> - **7.5 Documentação + validação (CONCLUÍDA):** `DATABASE` §1.1 + `SECURITY` §10 + `DECISIONS` D-037–D-039, suíte PG17 **190 testes** + `typecheck` + `build` verdes; ressalva 7.4 encerrada por `SiteHealthRunIdsTest`.
 
 ## FASE 8 — Financeiro e relatórios
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandController;
+use App\Http\Controllers\GitHubWebhookController;
 use App\Http\Controllers\HostingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpportunityController;
@@ -13,7 +14,11 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebsiteAlertController;
 use App\Http\Controllers\WebsiteAssetController;
+use App\Http\Controllers\FinancialTransactionController;
+use App\Http\Controllers\FinancialCategoryController;
+use App\Http\Controllers\FinanceReportController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\WebsiteRepositoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +28,10 @@ Route::get('/', function () {
     }
     return redirect('/login');
 })->name('home');
+
+Route::post('/webhooks/github', GitHubWebhookController::class)
+    ->middleware('throttle:60,1')
+    ->name('webhooks.github');
 
 Route::get('/dashboard', DashboardController::class)
     ->middleware(['auth', 'can:view-dashboard'])
@@ -108,6 +117,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('sites/{website}/edit', [WebsiteController::class, 'edit'])->middleware('can:websites.manage')->name('sites.edit');
     Route::put('sites/{website}', [WebsiteController::class, 'update'])->middleware('can:websites.manage')->name('sites.update');
     Route::post('sites/{website}/projects', [WebsiteController::class, 'linkProject'])->middleware('can:websites.manage')->name('sites.projects.link');
+    Route::post('sites/{website}/health-check', [WebsiteController::class, 'runHealthCheck'])->middleware('can:websites.manage')->name('sites.health-check');
 
     Route::get('hostings', [HostingController::class, 'index'])->middleware('can:websites.view')->name('hostings.index');
     Route::get('hostings/create', [HostingController::class, 'create'])->middleware('can:hostings.manage')->name('hostings.create');
@@ -119,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('sites/{website}/domains', [WebsiteAssetController::class, 'createDomain'])->middleware('can:websites.manage')->name('sites.domains.store');
     Route::post('sites/{website}/environments', [WebsiteAssetController::class, 'createEnvironment'])->middleware('can:websites.manage')->name('sites.environments.store');
     Route::post('sites/{website}/repositories', [WebsiteAssetController::class, 'createRepository'])->middleware('can:websites.manage')->name('sites.repositories.store');
+    Route::post('sites/{website}/repositories/{repository}/sync', [WebsiteRepositoryController::class, 'sync'])->middleware('can:websites.manage')->name('sites.repositories.sync');
     Route::post('sites/{website}/publications', [WebsiteAssetController::class, 'storePublication'])->middleware('can:websites.publications')->name('sites.publications.store');
     Route::post('sites/{website}/maintenance', [WebsiteAssetController::class, 'storeMaintenance'])->middleware('can:websites.maintenance')->name('sites.maintenance.store');
 
@@ -132,4 +143,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('credentials', [CredentialController::class, 'store'])->middleware('can:credentials.view')->name('credentials.store');
     Route::post('credentials/{credential}/reveal', [CredentialController::class, 'reveal'])->middleware(['can:credentials.view', 'throttle:5,1'])->name('credentials.reveal');
     Route::put('credentials/{credential}', [CredentialController::class, 'update'])->middleware('can:credentials.view')->name('credentials.update');
+    Route::get('finance', [FinancialTransactionController::class, 'index'])->middleware('can:finance.view')->name('finance.index');
+    Route::get('finance/create', [FinancialTransactionController::class, 'create'])->middleware('can:finance.manage')->name('finance.create');
+    Route::post('finance', [FinancialTransactionController::class, 'store'])->middleware('can:finance.manage')->name('finance.store');
+    Route::get('finance/report', [FinanceReportController::class, 'show'])->middleware('can:finance.view')->name('finance.report');
+    Route::get('finance/categories', [FinancialCategoryController::class, 'index'])->middleware('can:finance.view')->name('finance.categories');
+    Route::post('finance/categories', [FinancialCategoryController::class, 'store'])->middleware('can:finance.manage')->name('finance.categories.store');
+    Route::get('finance/{transaction}', [FinancialTransactionController::class, 'show'])->middleware('can:finance.view')->name('finance.show');
+    Route::post('finance/{transaction}/payments', [FinancialTransactionController::class, 'payment'])->middleware('can:finance.manage')->name('finance.payments.store');
+    Route::post('finance/{transaction}/cancel', [FinancialTransactionController::class, 'cancel'])->middleware('can:finance.manage')->name('finance.cancel');
 });

@@ -111,6 +111,8 @@ class WebsiteController extends Controller
 
     public function show(Website $website)
     {
+        $this->authorize('view', $website);
+
         $website->load([
             'client',
             'technicalOwner:id,name',
@@ -126,6 +128,29 @@ class WebsiteController extends Controller
 
         return Inertia::render('sites/show', [
             'site' => $website,
+            'healthStates' => \App\Models\WebsiteDomainHealthState::query()->where('website_id', $website->id)->with('domain:id,domain')->get()->map(fn ($s) => [
+                'domain_id' => $s->domain_id,
+                'domain' => $s->domain->domain ?? null,
+                'state' => $s->state,
+                'consecutive_failures' => $s->consecutive_failures,
+                'cycle_id' => $s->cycle_id,
+                'last_checked_at' => $s->last_checked_at,
+                'last_ok_at' => $s->last_ok_at,
+                'last_recovered_at' => $s->last_recovered_at,
+            ]),
+            'latestChecks' => \App\Models\WebsiteHealthCheck::query()->where('website_id', $website->id)->with('domain:id,domain')->orderByDesc('checked_at')->limit(20)->get()->map(fn ($c) => [
+                'id' => $c->id,
+                'domain' => $c->domain->domain ?? null,
+                'trigger' => $c->trigger_source,
+                'ok' => $c->ok,
+                'http_status' => $c->http_status,
+                'latency_ms' => $c->latency_ms,
+                'ssl_valid' => $c->ssl_valid,
+                'ssl_expires_at' => $c->ssl_expires_at,
+                'error_code' => $c->error_code,
+                'checked_at' => $c->checked_at,
+                'cycle_id' => $c->cycle_id,
+            ]),
             'canManage' => auth()->user()->can('websites.manage'),
             'canPublish' => auth()->user()->can('publish', $website),
             'canMaintenance' => auth()->user()->can('maintenance', $website),
@@ -170,5 +195,30 @@ class WebsiteController extends Controller
         );
 
         return back()->with('success', 'Projeto vinculado ao site.');
+    }
+
+    public function runHealthCheck(Website $website, \App\Domain\Websites\Actions\RunSiteHealthCheckAction $action)
+    {
+        $this->authorize('update', $website);
+
+        $environment = \App\Models\WebsiteEnvironment::query()
+            ->where('website_id', $website->id)
+            ->where('type', 'production')
+            ->where('status', 'ativo')
+            ->whereNull('deleted_at')
+            ->first();
+
+        $domain = \App\Models\WebsiteDomain::query()
+            ->where('website_id', $website->id)
+            ->where('status', 'ativo')
+            ->whereNull('deleted_at')
+            ->orderByDesc('is_primary')
+            ->first();
+
+        if ($environment && $domain) {
+            $action->checkDomain($domain, $website, $environment, null, 'manual');
+        }
+
+        return back()->with('success', 'Verificação de saúde executada.');
     }
 }
