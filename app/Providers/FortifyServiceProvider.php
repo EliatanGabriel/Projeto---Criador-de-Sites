@@ -23,6 +23,23 @@ class FortifyServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = \App\Models\User::where('email', $request->email)->first();
+
+            if (! $user || ! \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+                return false;
+            }
+
+            if (! $user->is_active) {
+                session()->flash('error', 'Sua conta foi desativada. Fale com o administrador.');
+                return false;
+            }
+
+            $user->forceFill(['last_login_at' => now()])->save();
+
+            return $user;
+        });
+
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);

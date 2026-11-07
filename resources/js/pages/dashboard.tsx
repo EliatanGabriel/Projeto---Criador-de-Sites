@@ -1,66 +1,104 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
-export default function Dashboard() {
+export default function Dashboard({ stats, recentOpportunities }: { stats: { active_clients: number; open_opportunities: number; in_negotiation: number; won: number; lost: number; open_estimated_total: number }; recentOpportunities: { id: string; title: string; status: string; estimated_value: string | null; created_at: string; client?: { name: string } | null }[] }) {
+  const brl = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+
   return (
     <AuthenticatedLayout>
       <Head title="Dashboard" />
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-        <p className="mt-1 text-sm text-gray-600">Visão geral da operação — Fase 1 (fundação). Os módulos de negócio serão ativados nas próximas fases.</p>
+        <p className="mt-1 text-sm text-gray-600">Visão geral da operação — indicadores reais da base.</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardDescription>Clientes</CardDescription>
-            <CardTitle>Em breve</CardTitle>
+            <CardDescription>Clientes ativos</CardDescription>
+            <CardTitle className="text-3xl">{stats.active_clients}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Módulo disponível na Fase 3.</p>
+            <Link href="/clients" className="text-sm text-blue-600 hover:underline">
+              Ver clientes →
+            </Link>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardDescription>Demandas</CardDescription>
-            <CardTitle>Em breve</CardTitle>
+            <CardDescription>Oportunidades abertas</CardDescription>
+            <CardTitle className="text-3xl">{stats.open_opportunities}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Módulo disponível na Fase 4.</p>
+            <Link href="/opportunities" className="text-sm text-blue-600 hover:underline">
+              Ver oportunidades →
+            </Link>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardDescription>Projetos ativos</CardDescription>
-            <CardTitle>Em breve</CardTitle>
+            <CardDescription>Em negociação</CardDescription>
+            <CardTitle className="text-3xl">{stats.in_negotiation}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Módulo disponível na Fase 5.</p>
+            <p className="text-sm text-gray-500">Pipeline ativo</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardDescription>Tarefas pendentes</CardDescription>
-            <CardTitle>Em breve</CardTitle>
+            <CardDescription>Ganhas</CardDescription>
+            <CardTitle className="text-3xl text-emerald-600">{stats.won}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-600">Módulo disponível na Fase 5.</p>
+            <p className="text-sm text-gray-500">Vendas fechadas</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardDescription>Perdidas</CardDescription>
+            <CardTitle className="text-3xl text-red-600">{stats.lost}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-gray-500">Perdas registradas</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardDescription>Pipeline estimado (abertas)</CardDescription>
+            <CardTitle className="text-3xl">{brl(stats.open_estimated_total)}</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-gray-500">Soma dos valores estimados</p>
           </CardContent>
         </Card>
       </div>
 
       <Card className="mt-6">
         <CardHeader>
-          <CardTitle>Ambiente operacional</CardTitle>
-          <CardDescription>Base validada: autenticação, permissões, layout administrativo e navegação responsiva.</CardDescription>
+          <CardTitle>Oportunidades recentes</CardTitle>
+          <CardDescription>Últimas 5 criadas na plataforma</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-2 text-sm text-gray-700">
-          <p>✔ Autenticação via Laravel Fortify (login, logout, recuperação de senha).</p>
-          <p>✔ Autorização via Spatie Permission (roles: OWNER, COMMERCIAL, DEVELOPER) validada no backend.</p>
-          <p>✔ Layout administrativo com sidebar recolhível e navegação mobile.</p>
-          <p>✔ Feedback visual de sucesso/erro e estados de carregamento (botões desabilitados durante processamento).</p>
-          <p className="text-gray-500">Nenhum módulo de negócio foi implementado nesta fase, conforme restrições aprovadas.</p>
+        <CardContent>
+          {recentOpportunities.length === 0 ? (
+            <p className="text-sm text-gray-500">Nenhuma oportunidade registrada ainda.</p>
+          ) : (
+            <ul className="space-y-2 text-sm">
+              {recentOpportunities.map((o) => (
+                <li key={o.id} className="flex items-center justify-between border-b pb-2 last:border-0">
+                  <div>
+                    <Link href={`/opportunities/${o.id}`} className="font-medium text-blue-600 hover:underline">
+                      {o.title}
+                    </Link>
+                    <p className="text-xs text-gray-500">
+                      {o.client?.name ?? 'Sem cliente'} • {o.status}
+                    </p>
+                  </div>
+                  <span className="font-medium">{o.estimated_value ? brl(Number(o.estimated_value)) : '—'}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
     </AuthenticatedLayout>

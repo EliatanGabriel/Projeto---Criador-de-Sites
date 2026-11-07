@@ -1,6 +1,6 @@
 # DECISIONS — WebStudio OS
 
-**Versão:** 1.1 — Fase 1 (atualizado)  
+**Versão:** 1.5 — Fase 5 (atualizado)
 **Propósito:** registrar alterações importantes de escopo, arquitetura e tecnologia (Doc.md §11.2).
 
 ## Decisões Aprovadas
@@ -31,6 +31,11 @@
 | D-022 | Ambiente local via Docker Compose para PostgreSQL 17 + PHP nativo (porta compose 5432) | Fase 1 (P-007) | Aprovada |
 | D-023 | Testes backend via Pest 4 + PHPUnit 12 | Fase 1 aprovada (P-012) | Aprovada |
 | D-024 | Postgres 17-alpine via compose; SSR do Inertia desabilitado | Fase 1 | Aprovada |
+| D-025 | Fase 2: users (is_active, último OWNER protegido, toggle-active), clients (pf/pj, doc opcional, softDeletes), opportunities (7 status, sem conversão automática) | Prompt Fase 2 | Aprovada |
+| D-026 | Policies + FormRequests + middleware can: — sidebar filtra por permissions compartilhadas | Prompt Fase 2 §5 | Aprovada |
+| D-027 | Fase 3: demands (draft/submitted/under_review/needs_information/approved/rejected/cancelled via Action transacional, sem conversão auto), briefings 1-1 colunas, anexos local privado 10MB whitelist, histories imutáveis, oportunidade valida cliente | Prompt Fase 3 | Aprovada |
+| D-028 | Fase 4: ConvertDemandToProjectAction transacional (lockForUpdate + UNIQUE projects.demand_id + rollback, sem duplicidade), projects/tasks/histories/comments, notificações database (sem e-mail), projeções de progresso | Prompt Fase 4 | Aprovada |
+| D-029 | Fase 5: templates com fases/tarefas ordenadas, snapshot jsonb + phase_name/order nas tasks (independência do template), template opcional na conversão, sem hard delete | Prompt Fase 5 | Aprovada |
 
 ## Decisões Pendentes
 

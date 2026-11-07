@@ -3,21 +3,6 @@ import { LayoutDashboard, Users, Briefcase, FileText, FolderKanban, CheckSquare,
 import { cn } from '@/lib/utils';
 import type { PageProps } from '@/types';
 
-const NAV_ITEMS = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, active: true, disabled: false },
-  { label: 'Comercial', href: '#', icon: Briefcase, active: false, disabled: true },
-  { label: 'Clientes', href: '#', icon: Users, active: false, disabled: true },
-  { label: 'Demandas', href: '#', icon: FileText, active: false, disabled: true },
-  { label: 'Projetos', href: '#', icon: FolderKanban, active: false, disabled: true },
-  { label: 'Tarefas', href: '#', icon: CheckSquare, active: false, disabled: true },
-  { label: 'Templates', href: '#', icon: Layers, active: false, disabled: true },
-  { label: 'Sites publicados', href: '#', icon: Globe, active: false, disabled: true },
-  { label: 'Financeiro', href: '#', icon: Wallet, active: false, disabled: true },
-  { label: 'Relatórios', href: '#', icon: BarChart3, active: false, disabled: true },
-  { label: 'Equipe', href: '#', icon: Users, active: false, disabled: true },
-  { label: 'Configurações', href: '#', icon: Settings, active: false, disabled: true },
-];
-
 interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
@@ -27,6 +12,25 @@ interface SidebarProps {
 
 export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
   const { auth } = usePage<PageProps>().props;
+  const permissions = auth.user?.permissions ?? [];
+  const can = (p: string) => permissions.includes(p);
+
+  const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+
+  const items = [
+    { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, visible: can('view-dashboard'), active: currentPath === '/dashboard', disabled: false },
+    { label: 'Comercial', href: '/opportunities', icon: Briefcase, visible: can('commercial.view'), active: currentPath.startsWith('/opportunities'), disabled: false },
+    { label: 'Clientes', href: '/clients', icon: Users, visible: can('clients.view'), active: currentPath.startsWith('/clients'), disabled: false },
+    { label: 'Demandas', href: '/demands', icon: FileText, visible: can('demands.view'), active: currentPath.startsWith('/demands'), disabled: false },
+    { label: 'Projetos', href: '/projects', icon: FolderKanban, visible: can('projects.view'), active: currentPath.startsWith('/projects'), disabled: false },
+    { label: 'Tarefas', href: '/tasks', icon: CheckSquare, visible: can('tasks.view'), active: currentPath.startsWith('/tasks'), disabled: false },
+    { label: 'Templates', href: '/templates', icon: Layers, visible: can('templates.view'), active: currentPath.startsWith('/templates'), disabled: false },
+    { label: 'Sites publicados', href: '#', icon: Globe, visible: can('websites.view'), active: false, disabled: true },
+    { label: 'Financeiro', href: '#', icon: Wallet, visible: can('finance.view'), active: false, disabled: true },
+    { label: 'Relatórios', href: '#', icon: BarChart3, visible: can('reports.view'), active: false, disabled: true },
+    { label: 'Equipe', href: '/team', icon: Users, visible: can('users.view'), active: currentPath.startsWith('/team'), disabled: false },
+    { label: 'Configurações', href: '#', icon: Settings, visible: can('settings.view'), active: false, disabled: true },
+  ].filter((i) => i.visible);
 
   return (
     <>
@@ -72,7 +76,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
 
         <nav className="flex-1 overflow-y-auto p-3">
           <ul className="space-y-1">
-            {NAV_ITEMS.map((item) => {
+            {items.map((item) => {
               const Icon = item.icon;
               const content = (
                 <>
@@ -103,9 +107,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
                       title={collapsed ? item.label : undefined}
                       className={cn(
                         'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
-                        item.active
-                          ? 'bg-blue-600 text-white'
-                          : 'text-gray-300 hover:bg-white/10 hover:text-white',
+                        item.active ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-white/10 hover:text-white',
                         collapsed && 'justify-center px-2'
                       )}
                     >
@@ -118,8 +120,8 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
           </ul>
 
           <div className={cn('mt-6 rounded-lg border border-white/10 p-3 text-xs text-gray-400', collapsed && 'hidden')}>
-            <p className="font-medium text-gray-300">Fase 1 — Fundação</p>
-            <p className="mt-1 leading-relaxed">Módulos de negócio em breve. Estrutura, autenticação e permissões disponíveis.</p>
+            <p className="font-medium text-gray-300">Fase 2 — Gestão</p>
+            <p className="mt-1 leading-relaxed">Usuários, clientes e oportunidades disponíveis.</p>
           </div>
         </nav>
 

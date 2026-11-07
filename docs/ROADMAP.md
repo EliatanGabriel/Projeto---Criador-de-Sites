@@ -1,6 +1,6 @@
 # ROADMAP — WebStudio OS
 
-**Versão:** 1.0 — Fase 0  
+**Versão:** 1.1 — Fase 5  
 **Fonte:** Doc.md v1.0 §10, §13, §14
 
 ## Visão Geral

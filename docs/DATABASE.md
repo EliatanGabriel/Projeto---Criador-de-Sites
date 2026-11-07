@@ -1,8 +1,20 @@
 # DATABASE — WebStudio OS
 
-**Versão:** 1.0 — Fase 0  
+**Versão:** 1.4 — Fase 5
 **Fonte:** Doc.md v1.0 §6  
-**Banco:** PostgreSQL (Laravel driver `pgsql`, `pdo_pgsql`)
+**Banco:** PostgreSQL 17 (driver `pgsql`, `pdo_pgsql`) + testes SQLite
+
+## 1.1 Modelo implementado Fase 2
+
+**Fase 5:** `project_templates(id uuid, name index, description, category index, version, is_active index, created/updated_by, timestamps, softDeletes)` + `project_template_phases(id uuid, template cascade, name, order)` + `project_template_tasks(id uuid, phase cascade, title, description, priority, suggested_role owner/developer, estimated_days, order, is_required)` + `projects.template_id/version/snapshot jsonb` + `tasks.template_task_id/phase_name/phase_order`  
+`projects(id uuid, demand_id unique restrict, client_id, title index, description, scope, technical_owner_id, started_at, planned_deadline, completed_at, status planning/in_progress/in_review/blocked/completed/cancelled index, priority low/medium/high/urgent, contracted_value, internal_notes, blocked_reason, converted_by/at, softDeletes)` + `project_members` + `project_histories` + `tasks(id uuid, project cascade, title, assignee/created_by, priority, status todo/in_progress/in_review/blocked/done/cancelled, started/due/completed, completed_by, blocked_reason, notes, softDeletes)` + `task_histories` + `task_comments` + `notifications(uuid, notifiable uuid)`
+`demands(id uuid, title index, client_id restrictOnDelete, opportunity_id nullable nullOnDelete, commercial_owner_id, service_type, description, contracted_scope, negotiated_value numeric(12,2), contracted_at, desired_deadline, priority baixa/normal/alta/urgente, status draft/submitted/under_review/needs_information/approved/rejected/cancelled index, internal_notes, technical_owner_id, submitted/reviewed/approved/rejected timestamps, created_by, softDeletes)`
+`demand_briefings(id uuid, demand_id unique cascade, objectives, target_audience, business_description, products_services, desired_pages, desired_features, references, visual_identity, colors_preferences, available_content, domain_info, hosting_info, additional_notes)`  
+`demand_attachments(id uuid, demand_id cascade, disk local, path, original_name, mime, size, uploaded_by)`  
+`demand_histories(id uuid, demand_id cascade index, user_id, event, description, from/to_status, metadata jsonb, timestamps)`  
+`clients(id uuid, name, type pf/pj, document nullable index, email, phone, contact_name, address, city, state(2), zip, notes, status ativo/inativo index, created_by->users, timestamps, softDeletes)`
+`opportunities(id uuid, title, client_id->clients nullOnDelete, contact_name, responsible_id->users, service_type, description, estimated_value numeric(12,2), negotiated_value numeric(12,2), opened_at date, expected_close_at date, status nova/em_contato/em_negociacao/aguardando_cliente/ganha/perdida/cancelada index, notes, created_by->users, timestamps, softDeletes)`  
+`opportunity_activities(id uuid, opportunity_id cascadeOnDelete, user_id nullOnDelete, action, description, from_status, to_status, timestamps)`
 
 ## 1. Princípios
 
