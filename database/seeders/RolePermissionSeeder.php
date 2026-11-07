@@ -53,7 +53,7 @@ class RolePermissionSeeder extends Seeder
             'view-dashboard',
             'projects.view', 'tasks.view', 'tasks.edit',
             'templates.view', 'websites.view',
-            'alerts.view', 'alerts.read', 'alerts.resolve',
+            'alerts.view', 'alerts.read',
         ]);
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();

@@ -14,7 +14,7 @@ class CheckExpirationsAction
     public const THRESHOLDS = [
         ['days' => 30, 'severity' => 'info'],
         ['days' => 15, 'severity' => 'warning'],
-        ['days' => 7, 'severity' => 'warning'],
+        ['days' => 7, 'severity' => 'critical'],
         ['days' => 1, 'severity' => 'critical'],
         ['days' => 0, 'severity' => 'critical'],
     ];
@@ -22,13 +22,21 @@ class CheckExpirationsAction
     public function severityFor(string $dueAt, \Carbon\CarbonInterface $today): string
     {
         $due = \Carbon\Carbon::parse($dueAt)->startOfDay();
-        $delta = $today->copy()->startOfDay()->diffInDays($due, false);
-        if ($delta < 0) return 'critical';
-        if ($delta <= 1) return 'critical';
-        if ($delta <= 7) return 'warning';
-        if ($delta <= 15) return 'warning';
-        if ($delta <= 30) return 'info';
-        return 'none';
+        $todayStart = $today->copy()->startOfDay();
+        $delta = $todayStart->diffInDays($due, false); // signed: $today - $due
+
+        if ($delta < 0) {
+            // Data de vencimento em futuro: calcular dias restantes
+            $daysRemaining = -$delta; // positivo
+            if ($daysRemaining <= 1) return 'critical';
+            if ($daysRemaining <= 7) return 'critical';
+            if ($daysRemaining <= 15) return 'warning';
+            if ($daysRemaining <= 30) return 'info';
+            return 'none';
+        } else {
+            // Vencido ou hoje
+            return 'critical';
+        }
     }
 
     public function __invoke(?\Carbon\CarbonInterface $now = null): array

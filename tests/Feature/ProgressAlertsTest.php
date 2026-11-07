@@ -83,7 +83,7 @@ test('alertas: geração por fonte e severidade', function () {
     expect(\App\Models\WebsiteAlert::count())->toBe(1);
     $alert = \App\Models\WebsiteAlert::first();
     expect($alert->alert_type)->toBe('dominio_vencendo');
-    expect($alert->severity)->toBe('warning'); // 5 dias → warning
+    expect($alert->severity)->toBe('critical'); // 5 dias → critical (≤7d e >1d)
 });
 
 test('alertas: idempotência em execuções repetidas', function () {
