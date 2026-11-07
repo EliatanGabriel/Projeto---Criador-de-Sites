@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: webstudio_os_test
+          POSTGRES_USER: webstudio
+          POSTGRES_PASSWORD: secret
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U webstudio -d webstudio_os_test"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, pgsql, mbstring, bcmath, curl, fileinfo, xml, tokenizer
+      - name: Install Composer deps
+        run: composer install --no-interaction --prefer-dist
+      - name: Setup .env
+        run: cp .env.example .env && php artisan key:generate
+      - name: Migrate
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: webstudio_os_test
+          DB_USERNAME: webstudio
+          DB_PASSWORD: secret
+        run: php artisan migrate --force
+      - name: Run tests
+        env:
+          DB_CONNECTION: pgsql
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: webstudio_os_test
+          DB_USERNAME: webstudio
+          DB_PASSWORD: secret
+          APP_ENV: testing
+        run: php artisan test
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install deps
+        run: npm install
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Build
+        env:
+          VITE_APP_NAME: "WebStudio OS"
+        run: npm run build
