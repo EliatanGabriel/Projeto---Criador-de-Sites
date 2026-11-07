@@ -28,10 +28,10 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
     { label: 'Sites', href: '/sites', icon: Globe, visible: can('websites.view'), active: currentPath.startsWith('/sites'), disabled: false },
     { label: 'Hospedagens', href: '/hostings', icon: Layers, visible: can('websites.view'), active: currentPath.startsWith('/hostings'), disabled: false },
     { label: 'Alertas', href: '/alerts', icon: Bell, visible: can('alerts.view'), active: currentPath.startsWith('/alerts'), disabled: false },
-    { label: 'Financeiro', href: '#', icon: Wallet, visible: can('finance.view'), active: false, disabled: true },
-    { label: 'Relatórios', href: '#', icon: BarChart3, visible: can('reports.view'), active: false, disabled: true },
+    { label: 'Financeiro', href: '/finance', icon: Wallet, visible: can('finance.view'), active: currentPath.startsWith('/finance'), disabled: false },
+    { label: 'Relatórios', href: '/finance/report', icon: BarChart3, visible: can('reports.view') || can('finance.view'), active: currentPath.startsWith('/finance/report'), disabled: false },
     { label: 'Equipe', href: '/team', icon: Users, visible: can('users.view'), active: currentPath.startsWith('/team'), disabled: false },
-    { label: 'Configurações', href: '#', icon: Settings, visible: can('settings.view'), active: false, disabled: true },
+    { label: 'Configurações', href: '/settings', icon: Settings, visible: can('settings.view'), active: currentPath.startsWith('/settings'), disabled: false },
   ].filter((i) => i.visible);
 
   return (

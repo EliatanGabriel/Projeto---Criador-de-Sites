@@ -18,6 +18,7 @@ use App\Http\Controllers\FinancialTransactionController;
 use App\Http\Controllers\FinancialCategoryController;
 use App\Http\Controllers\FinanceReportController;
 use App\Http\Controllers\WebsiteController;
+use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\WebsiteRepositoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -139,6 +140,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('alerts/{alert}/resolve', [WebsiteAlertController::class, 'resolve'])->middleware('can:alerts.resolve')->name('alerts.resolve');
     Route::post('alerts/{alert}/dismiss', [WebsiteAlertController::class, 'dismiss'])->middleware('can:alerts.resolve')->name('alerts.dismiss');
     Route::patch('alerts/{alert}/assign', [WebsiteAlertController::class, 'assign'])->middleware('can:alerts.read')->name('alerts.assign');
+
+    Route::get('settings', [SettingsController::class, 'index'])->middleware('can:settings.view')->name('settings.index');
+    Route::put('settings', [SettingsController::class, 'update'])->middleware('can:settings.manage')->name('settings.update');
 
     Route::post('credentials', [CredentialController::class, 'store'])->middleware('can:credentials.view')->name('credentials.store');
     Route::post('credentials/{credential}/reveal', [CredentialController::class, 'reveal'])->middleware(['can:credentials.view', 'throttle:5,1'])->name('credentials.reveal');
