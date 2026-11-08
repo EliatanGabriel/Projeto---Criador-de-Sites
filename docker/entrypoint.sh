@@ -26,4 +26,4 @@ fi
 # Ensure log directory exists for supervisor
 mkdir -p /var/log/supervisor
 
-exec supervisord -c /etc/supervisor/supervisord.conf
+exec "$@"
