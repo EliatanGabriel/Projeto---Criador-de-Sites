@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AdminPanelController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\CommercialPanelController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandController;
@@ -22,13 +24,39 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\WebsiteRepositoryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect('/dashboard');
+        return redirect(Auth::user()->hasRole('OWNER') ? '/admin' : '/commercial');
     }
     return redirect('/login');
 })->name('home');
+
+foreach (['admin' => '/admin', 'commercial' => '/commercial'] as $panel => $target) {
+    Route::get("/login/{$panel}", function () use ($panel, $target) {
+        if (Auth::check()) {
+            $user = Auth::user();
+            if ($panel === 'admin' && ! $user->hasRole('OWNER')) {
+                return redirect('/commercial');
+            }
+            if ($panel === 'commercial' && ! ($user->hasRole('COMMERCIAL') || $user->hasRole('OWNER'))) {
+                return redirect('/dashboard');
+            }
+            return redirect($target);
+        }
+        session(['url.intended' => $target]);
+        return Inertia::render('auth/login', [
+            'status' => session('status'),
+            'canResetPassword' => true,
+            'error' => session('error'),
+            'panel' => $panel,
+        ]);
+    })->name("login.{$panel}");
+}
+
+Route::get('/admin', AdminPanelController::class)->middleware('auth')->name('admin.dashboard');
+Route::get('/commercial', CommercialPanelController::class)->middleware('auth')->name('commercial.dashboard');
 
 Route::post('/webhooks/github', GitHubWebhookController::class)
     ->middleware('throttle:60,1')

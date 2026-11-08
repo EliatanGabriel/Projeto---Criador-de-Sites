@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-export default function Login({ status, canResetPassword }: { status?: string; canResetPassword?: boolean }) {
+export default function Login({ status, canResetPassword, panel }: { status?: string; canResetPassword?: boolean; panel?: string | null }) {
   const form = useForm({
     email: '',
     password: '',
@@ -20,7 +20,9 @@ export default function Login({ status, canResetPassword }: { status?: string; c
   return (
     <GuestLayout>
       <Head title="Entrar" />
-      <h1 className="text-xl font-semibold text-gray-900">Entrar na plataforma</h1>
+      <h1 className="text-xl font-semibold text-gray-900">
+        {panel === 'admin' ? 'Entrar no Painel Admin' : panel === 'commercial' ? 'Entrar no Painel Comercial' : 'Entrar na plataforma'}
+      </h1>
       <p className="mt-1 text-sm text-gray-600">Informe suas credenciais de acesso.</p>
 
       {status && (
