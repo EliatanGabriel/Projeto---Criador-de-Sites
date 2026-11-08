@@ -1,5 +1,5 @@
 import { Link, usePage } from '@inertiajs/react';
-import { LayoutDashboard, Users, Briefcase, FileText, FolderKanban, CheckSquare, Layers, Globe, Wallet, BarChart3, Settings, ChevronLeft, ChevronRight, X, Bell } from 'lucide-react';
+import { LayoutDashboard, Users, Briefcase, FileText, FolderKanban, CheckSquare, Layers, Globe, Wallet, BarChart3, Settings, ChevronLeft, ChevronRight, X, Bell, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { PageProps } from '@/types';
 
@@ -35,6 +35,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
     { label: 'Alertas', href: '/alerts', icon: Bell, visible: can('alerts.view'), active: currentPath.startsWith('/alerts'), disabled: false },
     { label: 'Financeiro', href: '/finance', icon: Wallet, visible: can('finance.view'), active: currentPath.startsWith('/finance'), disabled: false },
     { label: 'Relatórios', href: '/finance/report', icon: BarChart3, visible: can('reports.view') || can('finance.view'), active: currentPath.startsWith('/finance/report'), disabled: false },
+    { label: 'Meu Perfil', href: '/profile', icon: User, visible: true, active: currentPath.startsWith('/profile'), disabled: false },
     { label: 'Equipe', href: '/team', icon: Users, visible: can('users.view'), active: currentPath.startsWith('/team'), disabled: false },
     { label: 'Configurações', href: '/settings', icon: Settings, visible: can('settings.view'), active: currentPath.startsWith('/settings'), disabled: false },
   ].filter((i) => i.visible);
@@ -133,17 +134,18 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
         </nav>
 
         <div className="border-t border-white/10 p-3">
-          <div className={cn('flex items-center gap-3', collapsed && 'justify-center')}>
+          <Link href="/profile" title="Meu Perfil" className={cn('flex items-center gap-3 rounded-lg p-1 hover:bg-white/10', collapsed && 'justify-center')}>
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold">
               {auth.user?.name?.charAt(0).toUpperCase() ?? '?'}
             </div>
             {!collapsed && (
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium">{auth.user?.name ?? 'Usuário'}</p>
-                <p className="truncate text-xs text-gray-400">{auth.user?.roles?.join(', ') ?? ''}</p>
+                <p className="truncate text-xs text-gray-400">{auth.user?.email ?? ''}</p>
+                <p className="truncate text-xs text-gray-500">{auth.user?.roles?.join(', ') ?? ''}</p>
               </div>
             )}
-          </div>
+          </Link>
         </div>
       </aside>
     </>

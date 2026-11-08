@@ -11,6 +11,7 @@ use App\Http\Controllers\GitHubWebhookController;
 use App\Http\Controllers\HostingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OpportunityController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectTemplateController;
 use App\Http\Controllers\TaskController;
@@ -73,6 +74,7 @@ Route::get('/dashboard', DashboardController::class)
     ->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('team', [UserController::class, 'index'])->middleware('can:users.view')->name('team.index');
     Route::get('team/create', [UserController::class, 'create'])->middleware('can:users.create')->name('team.create');
     Route::post('team', [UserController::class, 'store'])->middleware('can:users.create')->name('team.store');
@@ -184,7 +186,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('finance', [FinancialTransactionController::class, 'index'])->middleware('can:finance.view')->name('finance.index');
     Route::get('finance/create', [FinancialTransactionController::class, 'create'])->middleware('can:finance.manage')->name('finance.create');
     Route::post('finance', [FinancialTransactionController::class, 'store'])->middleware('can:finance.manage')->name('finance.store');
-    Route::get('finance/report', [FinanceReportController::class, 'show'])->middleware('can:finance.view')->name('finance.report');
+    Route::get('finance/report', [FinanceReportController::class, 'show'])->middleware('can:view-reports')->name('finance.report');
     Route::get('finance/categories', [FinancialCategoryController::class, 'index'])->middleware('can:finance.view')->name('finance.categories');
     Route::post('finance/categories', [FinancialCategoryController::class, 'store'])->middleware('can:finance.manage')->name('finance.categories.store');
     Route::get('finance/{transaction}', [FinancialTransactionController::class, 'show'])->middleware('can:finance.view')->name('finance.show');

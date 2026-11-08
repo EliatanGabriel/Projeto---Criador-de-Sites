@@ -165,3 +165,11 @@ test('relatório mensal: receitas e resultado operacional (recebido menos pago)'
         });
     });
 });
+
+test('relatório mensal: COMMERCIAL com reports.view acessa, DEVELOPER não', function () {
+    $commercial = fCommercial();
+    $developer = fDeveloper();
+
+    $this->actingAs($commercial)->get('/finance/report')->assertOk();
+    $this->actingAs($developer)->get('/finance/report')->assertForbidden();
+});

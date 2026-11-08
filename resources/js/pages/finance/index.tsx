@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 
 const fmt = (v: string) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(parseFloat(v));
 
-export default function FinanceIndex({ transactions, filters, categories, canManage }: { transactions: any; filters: any; categories: any[]; canManage: boolean }) {
+export default function FinanceIndex({ transactions, filters, canManage }: { transactions: any; filters: any; canManage: boolean }) {
   const [month, setMonth] = useState(filters.month ?? new Date().toISOString().slice(0, 7));
   const form = useForm({ month: '', type: '', status: '', search: '' });
   const search = (e: React.FormEvent) => {

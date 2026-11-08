@@ -13,26 +13,32 @@ class CommercialPanelController extends Controller
         $user = $request->user();
         abort_unless($user->hasRole('COMMERCIAL') || $user->hasRole('OWNER'), 403);
 
-        $query = Demand::query()
-            ->with(['client:id,name', 'opportunity:id,title'])
-            ->orderByDesc('created_at');
-
+        $base = Demand::query();
         if (! $user->hasRole('OWNER')) {
-            $query->where(function ($q) use ($user) {
+            $base->where(function ($q) use ($user) {
                 $q->where('commercial_owner_id', $user->id)
                     ->orWhere('created_by', $user->id);
             });
         }
 
+        $counts = (clone $base)
+            ->groupBy('status')
+            ->selectRaw('status, COUNT(*) as total')
+            ->pluck('total', 'status')
+            ->toArray();
+
         $stats = [
-            'draft' => (clone $query)->where('status', 'draft')->count(),
-            'submitted' => (clone $query)->whereIn('status', ['submitted', 'under_review'])->count(),
-            'needs_information' => (clone $query)->where('status', 'needs_information')->count(),
-            'approved' => (clone $query)->where('status', 'approved')->count(),
-            'total' => (clone $query)->count(),
+            'draft' => $counts['draft'] ?? 0,
+            'submitted' => ($counts['submitted'] ?? 0) + ($counts['under_review'] ?? 0),
+            'needs_information' => $counts['needs_information'] ?? 0,
+            'approved' => $counts['approved'] ?? 0,
+            'total' => array_sum($counts),
         ];
 
-        $demands = $query->limit(15)->get(['id', 'title', 'status', 'priority', 'submitted_at', 'created_at', 'client_id', 'opportunity_id']);
+        $demands = $base->with(['client:id,name'])
+            ->orderByDesc('created_at')
+            ->limit(15)
+            ->get(['id', 'title', 'status', 'priority', 'submitted_at', 'created_at', 'client_id']);
 
         return Inertia::render('commercial/dashboard', compact('stats', 'demands'));
     }

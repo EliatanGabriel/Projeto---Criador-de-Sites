@@ -52,11 +52,19 @@ class WebsiteAlertController extends Controller
         if ($request->assigned_to) $query->where('assigned_to', $request->assigned_to);
 
         $alerts = $query->paginate(15)->withQueryString();
+
+        $openCounts = (clone $query)
+            ->where('status', 'open')
+            ->groupBy('severity')
+            ->selectRaw('severity, COUNT(*) as total')
+            ->pluck('total', 'severity')
+            ->toArray();
+
         $summary = [
-            'open' => (clone $query)->where('status', 'open')->count(),
-            'info' => (clone $query)->where('severity', 'info')->where('status', 'open')->count(),
-            'warning' => (clone $query)->where('severity', 'warning')->where('status', 'open')->count(),
-            'critical' => (clone $query)->where('severity', 'critical')->where('status', 'open')->count(),
+            'open' => array_sum($openCounts),
+            'info' => $openCounts['info'] ?? 0,
+            'warning' => $openCounts['warning'] ?? 0,
+            'critical' => $openCounts['critical'] ?? 0,
         ];
 
         return Inertia::render('alerts/index', [

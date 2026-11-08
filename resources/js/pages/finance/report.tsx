@@ -1,10 +1,10 @@
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
-export default function FinanceReport({ month, summary, custosPorProjeto, transactions }: { month: string; summary: any; custosPorProjeto: any[]; transactions: any }) {
+export default function FinanceReport({ month, summary, custosPorProjeto }: { month: string; summary: any; custosPorProjeto: any[] }) {
   return (
     <AuthenticatedLayout>
       <Head title={`Relatório ${month}`} />

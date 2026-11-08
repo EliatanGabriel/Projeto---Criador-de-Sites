@@ -52,5 +52,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Hosting::class, HostingPolicy::class);
         Gate::policy(Credential::class, CredentialPolicy::class);
         Gate::policy(WebsiteAlert::class, WebsiteAlertPolicy::class);
+        Gate::define('view-reports', fn (User $user) => $user->can('reports.view') || $user->can('finance.view'));
     }
 }

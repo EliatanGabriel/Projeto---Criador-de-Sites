@@ -14,39 +14,60 @@ class DeveloperPanelController extends Controller
         $user = $request->user();
         abort_unless($user->hasRole('DEVELOPER') || $user->hasRole('OWNER'), 403);
 
-        $tasks = Task::query()
-            ->with(['project:id,title,status'])
+        $today = now()->toDateString();
+
+        $taskCounts = Task::query()
             ->where('assignee_id', $user->id)
-            ->orderByDesc('created_at');
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status')
+            ->toArray();
 
-        $projects = Project::query()
-            ->with(['client:id,name'])
-            ->orderByDesc('created_at');
+        $overdue = Task::query()
+            ->where('assignee_id', $user->id)
+            ->whereNotIn('status', ['done', 'cancelled'])
+            ->whereNotNull('due_at')
+            ->where('due_at', '<', $today)
+            ->count();
 
+        $projectsQuery = Project::query();
         if (! $user->hasRole('OWNER')) {
-            $projects->where(function ($q) use ($user) {
+            $projectsQuery->where(function ($q) use ($user) {
                 $q->where('technical_owner_id', $user->id)
                     ->orWhereHas('members', fn ($qq) => $qq->where('user_id', $user->id))
                     ->orWhereHas('tasks', fn ($qq) => $qq->where('assignee_id', $user->id));
             });
         }
 
+        $projectTotals = $projectsQuery
+            ->selectRaw("COUNT(*) as total, COALESCE(SUM(CASE WHEN status IN ('in_progress', 'in_review', 'blocked') THEN 1 ELSE 0 END), 0) as active")
+            ->first();
+
         $stats = [
-            'todo' => (clone $tasks)->where('status', 'todo')->count(),
-            'in_progress' => (clone $tasks)->where('status', 'in_progress')->count(),
-            'in_review' => (clone $tasks)->where('status', 'in_review')->count(),
-            'blocked' => (clone $tasks)->where('status', 'blocked')->count(),
-            'overdue' => (clone $tasks)->whereNotIn('status', ['done', 'cancelled'])->whereNotNull('due_at')->whereDate('due_at', '<', now()->toDateString())->count(),
-            'done' => (clone $tasks)->where('status', 'done')->count(),
-            'projects' => (clone $projects)->count(),
-            'active_projects' => (clone $projects)->whereIn('status', ['in_progress', 'in_review', 'blocked'])->count(),
+            'todo' => $taskCounts['todo'] ?? 0,
+            'in_progress' => $taskCounts['in_progress'] ?? 0,
+            'in_review' => $taskCounts['in_review'] ?? 0,
+            'blocked' => $taskCounts['blocked'] ?? 0,
+            'overdue' => $overdue,
+            'done' => $taskCounts['done'] ?? 0,
+            'projects' => (int) ($projectTotals?->total ?? 0),
+            'active_projects' => (int) ($projectTotals?->active ?? 0),
         ];
+
+        $tasksQuery = Task::query()
+            ->with(['project:id,title,status'])
+            ->where('assignee_id', $user->id)
+            ->orderByDesc('created_at');
 
         return Inertia::render('developer/dashboard', [
             'stats' => $stats,
-            'myTasks' => $tasks->limit(15)->get(['id', 'title', 'status', 'priority', 'due_at', 'blocked_reason', 'project_id', 'created_at']),
-            'blockedTasks' => (clone $tasks)->where('status', 'blocked')->limit(10)->get(['id', 'title', 'status', 'priority', 'due_at', 'blocked_reason', 'project_id']),
-            'myProjects' => $projects->limit(10)->get(['id', 'title', 'status', 'priority', 'client_id', 'technical_owner_id']),
+            'myTasks' => (clone $tasksQuery)->limit(15)->get(['id', 'title', 'status', 'priority', 'due_at', 'blocked_reason', 'project_id', 'created_at']),
+            'blockedTasks' => (clone $tasksQuery)->where('status', 'blocked')->limit(10)->get(['id', 'title', 'status', 'priority', 'due_at', 'blocked_reason', 'project_id']),
+            'myProjects' => $projectsQuery
+                ->with(['client:id,name'])
+                ->orderByDesc('created_at')
+                ->limit(10)
+                ->get(['id', 'title', 'status', 'priority', 'client_id', 'technical_owner_id']),
         ]);
     }
 }

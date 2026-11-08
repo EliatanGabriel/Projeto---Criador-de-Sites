@@ -50,9 +50,6 @@ class FinancialTransactionController extends Controller
         return Inertia::render('finance/index', [
             'transactions' => $query->paginate(15)->withQueryString(),
             'filters' => $request->only(['month', 'type', 'status', 'search']),
-            'categories' => FinancialCategory::all(),
-            'clients' => Client::orderBy('name')->get(['id', 'name']),
-            'projects' => Project::orderByDesc('created_at')->limit(100)->get(['id', 'title', 'client_id']),
             'canManage' => auth()->user()->can('finance.manage'),
         ]);
     }

@@ -14,13 +14,23 @@ class AdminPanelController extends Controller
     {
         abort_unless($request->user()->hasRole('OWNER'), 403);
 
+        $demandCounts = Demand::query()
+            ->groupBy('status')
+            ->selectRaw('status, COUNT(*) as total')
+            ->pluck('total', 'status')
+            ->toArray();
+
+        $opportunityOpen = Opportunity::query()->open()
+            ->selectRaw('COUNT(*) as total, COALESCE(SUM(estimated_value), 0) as estimated')
+            ->first();
+
         $stats = [
             'active_clients' => Client::where('status', 'ativo')->count(),
-            'open_opportunities' => Opportunity::open()->count(),
-            'pending_demands' => Demand::whereIn('status', ['submitted', 'under_review'])->count(),
-            'draft_demands' => Demand::where('status', 'draft')->count(),
-            'approved_demands' => Demand::where('status', 'approved')->count(),
-            'open_estimated_total' => (float) Opportunity::open()->sum('estimated_value'),
+            'open_opportunities' => (int) ($opportunityOpen?->total ?? 0),
+            'pending_demands' => ($demandCounts['submitted'] ?? 0) + ($demandCounts['under_review'] ?? 0),
+            'draft_demands' => $demandCounts['draft'] ?? 0,
+            'approved_demands' => $demandCounts['approved'] ?? 0,
+            'open_estimated_total' => (float) ($opportunityOpen?->estimated ?? 0),
         ];
 
         $pendingDemands = Demand::with(['client:id,name', 'commercialOwner:id,name'])
