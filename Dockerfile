@@ -67,6 +67,9 @@ ENV COMPOSER_ALLOW_SUPERUSER=1 \
     APP_ENV=production \
     APP_DEBUG=false
 
+COPY docker/nginx.conf /etc/nginx/http.d/app.conf.template
+COPY docker/supervisord.conf /etc/supervisor/supervisord.conf
+
 # Set entrypoint
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
