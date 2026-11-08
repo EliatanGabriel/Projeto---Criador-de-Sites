@@ -52,7 +52,7 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
                   <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{auth.user.roles.join(', ')}</p>
                 )}
               </div>
-              <Link href="/profile" className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-gray-800" onClick={() => setOpen(false)}>
+              <Link href="/profile" prefetch className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-gray-800" onClick={() => setOpen(false)}>
                 <User className="h-4 w-4" /> Meu Perfil
               </Link>
               <button className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-gray-800" onClick={() => logout.post('/logout')} disabled={logout.processing}>

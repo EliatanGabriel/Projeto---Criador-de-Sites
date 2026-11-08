@@ -35,7 +35,12 @@ RUN apk add --no-cache \
         mbstring \
         zip \
         bcmath \
-        xml
+        xml \
+        opcache \
+    && docker-php-ext-enable opcache
+
+# OPcache (produção): cacheia bytecode para reduzir tempo de resposta por requisição
+RUN printf '\n[opcache]\nopcache.enable=1\nopcache.enable_cli=0\nopcache.validate_timestamps=0\nopcache.revalidate_freq=30\nopcache.memory_consumption=128\nopcache.interned_strings_buffer=8\n' >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
 
 # Set working directory
 WORKDIR /app

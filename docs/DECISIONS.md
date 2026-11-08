@@ -53,6 +53,7 @@
 | D-044 | Relatório mensal financeiro (`/finance/report`) liberado para COMMERCIAL via Gate `view-reports` (`reports.view` OU `finance.view`); demais rotas financeiras seguem `finance.view/manage` OWNER-only (D-040 preservada). Exceção aprovada pelo usuário em 2026-11-08 ao corrigir 403 no painel Comercial (antes sidebar exibia `reports.view` mas rota exigia só `finance.view`). Testes: `FinancialTest` (COMMERCIAL OK, DEVELOPER 403) | Pedido do usuário em 2026-11-08 | Aprovada |
 | D-045 | Página compartilhada `/profile` (leitura) para qualquer usuário autenticado (OWNER/COMMERCIAL/DEVELOPER): nome, e-mail, status, último login, perfis, painéis e permissões do próprio logado; sem edição/alteração de dados. Acesso via menu lateral e avatar do header (layout compartilhado vale para todos os painéis) | Pedido do usuário em 2026-11-08 | Aprovada |
 | D-046 | Performance: agregações em SQL (`SUM(CASE)`/`GROUP BY`) em `/finance/report`, dashboards (Admin/Comercial/Developer) e `/alerts` (1 query vs 4-8 counts); removal de props não utilizadas (`transactions` em report, `categories/clients/projects` em `/finance`) e eager `opportunity` não usada no Comercial — sem mudança de regras de negócio | Demora relatada ao abrir Relatórios em 2026-11-08 | Aprovada |
+| D-047 | Performance produção (Render): OPcache (`validate_timestamps=0`), `php artisan optimize` no entrypoint, nginx `gzip` + `Cache-Control: immutable` em `/build/`, cache `file` (Spatie/permissão local reduz latência Render→Supabase) e `prefetch` hover nos links da sidebar/perfil — sem mudar regras de negócio. Limite restante: spin-down do plano free do Render (20-50s na 1ª carga após 15min parado) exige plano pago para eliminar | Demora relatada na navegação em produção em 2026-11-08 | Aprovada |
 
 ## Decisões Pendentes
 
@@ -83,3 +84,4 @@
 - **2026-11-08 (Relatórios Comercial):** D-044 (Gate `view-reports` para `/finance/report`; ver `tests/Feature/FinancialTest.php`).
 - **2026-11-08 (Meu Perfil):** D-045 (`/profile` leitura para todos os perfis; ver `tests/Feature/ProfileTest.php`).
 - **2026-11-08 (Performance):** D-046 (agregações SQL + props enxutas; ver controllers).
+- **2026-11-08 (Performance prod):** D-047 (OPcache/optimize/gzip/cache file/prefetch; ver `Dockerfile`, `docker/`, `render.yaml`, `sidebar.tsx`).

@@ -50,7 +50,7 @@ services:
       - key: QUEUE_CONNECTION
         value: database
       - key: CACHE_STORE
-        value: database
+        value: file
       - key: SESSION_DRIVER
         value: database
     # Persistência de uploads locais (storage/app/private) — plano pago no Render

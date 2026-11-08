@@ -29,5 +29,6 @@ mkdir -p /var/log/supervisor
 cd /app
 php artisan migrate --force --no-interaction
 php artisan webstudio:ensure-admin --no-interaction
+php artisan optimize --no-interaction
 
 exec "$@"
