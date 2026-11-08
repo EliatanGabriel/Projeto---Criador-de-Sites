@@ -1,11 +1,14 @@
+import { useState } from 'react';
 import { useForm, Head, Link } from '@inertiajs/react';
 import GuestLayout from '@/layouts/guest-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Login({ status, canResetPassword, panel }: { status?: string; canResetPassword?: boolean; panel?: string | null }) {
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm({
     email: '',
     password: '',
@@ -39,7 +42,12 @@ export default function Login({ status, canResetPassword, panel }: { status?: st
         </div>
         <div className="space-y-2">
           <Label htmlFor="password">Senha</Label>
-          <Input id="password" type="password" autoComplete="current-password" required value={form.data.password} onChange={(e) => form.setData('password', e.target.value)} placeholder="••••••••" />
+          <div className="relative">
+            <Input id="password" type={showPassword ? 'text' : 'password'} autoComplete="current-password" required value={form.data.password} onChange={(e) => form.setData('password', e.target.value)} placeholder="••••••••" className="pr-10" />
+            <button type="button" onClick={() => setShowPassword((v) => !v)} aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'} aria-pressed={showPassword} className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded text-gray-500 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:hover:text-gray-300">
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
           {form.errors.password && <p className="text-sm text-red-600">{form.errors.password}</p>}
         </div>
         <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
