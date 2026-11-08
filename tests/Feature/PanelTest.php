@@ -45,6 +45,24 @@ test('commercial acessa painel comercial mas nao admin', function () {
     $this->actingAs($commercial)->get('/login/admin')->assertRedirect('/commercial');
 });
 
+test('ensure-admin cria owner a partir do ambiente e e idempotente', function () {
+    putenv('INITIAL_ADMIN_EMAIL=admin@studio.com');
+    putenv('INITIAL_ADMIN_PASSWORD=studio0708-test');
+    $_ENV['INITIAL_ADMIN_EMAIL'] = 'admin@studio.com';
+    $_ENV['INITIAL_ADMIN_PASSWORD'] = 'studio0708-test';
+    config(['app.env' => 'testing']);
+
+    $this->artisan('webstudio:ensure-admin')->assertSuccessful();
+    $this->artisan('webstudio:ensure-admin')->assertSuccessful();
+
+    $user = User::where('email', 'admin@studio.com')->first();
+    expect($user)->not->toBeNull()
+        ->and($user->hasRole('OWNER'))->toBeTrue()
+        ->and(User::where('email', 'admin@studio.com')->count())->toBe(1);
+
+    $this->actingAs($user)->get('/admin')->assertOk();
+});
+
 test('developer nao acessa nenhum painel', function () {
     $developer = panelUser('DEVELOPER');
 

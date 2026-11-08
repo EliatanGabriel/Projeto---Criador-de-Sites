@@ -33,5 +33,6 @@ chmod 664 /app/database/database.sqlite
 
 cd /app
 php artisan migrate --force --no-interaction
+php artisan webstudio:ensure-admin --no-interaction
 
 exec "$@"

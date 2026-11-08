@@ -29,6 +29,12 @@ services:
         value: stderr
       - key: APP_KEY
         sync: false
+      - key: INITIAL_ADMIN_EMAIL
+        sync: false
+      - key: INITIAL_ADMIN_NAME
+        value: Admin
+      - key: INITIAL_ADMIN_PASSWORD
+        sync: false
       - key: SESSION_SECURE_COOKIE
         value: "true"
       - key: APP_URL
