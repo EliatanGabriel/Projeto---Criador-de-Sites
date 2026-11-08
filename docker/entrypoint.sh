@@ -26,4 +26,12 @@ fi
 # Ensure log directory exists for supervisor
 mkdir -p /var/log/supervisor
 
+mkdir -p /app/database
+touch /app/database/database.sqlite
+chown -R www-data:www-data /app/database
+chmod 664 /app/database/database.sqlite
+
+cd /app
+php artisan migrate --force --no-interaction
+
 exec "$@"

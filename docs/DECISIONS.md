@@ -46,6 +46,7 @@
 | D-037 | Fase 7.4: SSRF via cURL hostname + `CURLOPT_RESOLVE hostname:port:ip` (pin) + `CURLINFO_PRIMARY_IP` igual ao validado; manual só registra (sem estado/alerta); `scheduled_run_id` estável por execução lógica (payload, retries); ciclos UUID; retenção 365 dias | Prompt Fase 7.4 | Aprovada |
 | D-038 | Fase 7.4-correção: identidade persistente `site_health_runs` por domínio/slot (coordenador recupera/cria e despacha 1 Job/domínio com runId no payload); runId exclusivo por domínio (sequência global monotônica); `UNIQUE(scheduled_run_id)` mantida sem compartilhamento | Prompt 7.4 correção | Aprovada |
 | D-040 | Fase 8: financeiro com categorias+lancamentos, pagamentos parcelados transacionais (lockForUpdate, nunca exceder total), cancelamento por status, DECIMAL(12,2) BRL, relatórios mensais, finance.view/manage OWNER-only | Prompt Fase 8 | Aprovada |
+| D-041 | Simplificacao pos-deploy: 100% SQLite (substitui PostgreSQL/Supabase aprovados anteriormente); 1 servico no Render, fila+scheduler no mesmo container via supervisord, migrate automatico no entrypoint; sem persistencia entre redeploys sem Persistent Disk | Pedido do usuario em 2026-11-08 | Aprovada |
 | D-039 | Fase 7.4-reconciliação: janela móvel 7 dias (America/Sao_Paulo); `pending` commitada antes do dispatch; `dispatched` abandonado (>10 min) reenfileirado com mesmo runId; triagem de elegibilidade histórica (created_at/deleted_at ≤ slot); 1 domínio não bloqueia os demais | Prompt 7.4 reconciliação | Aprovada |
 
 ## Decisões Pendentes

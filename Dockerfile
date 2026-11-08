@@ -22,15 +22,11 @@ FROM docker.io/library/php:8.4-fpm-alpine AS app
 RUN apk add --no-cache \
     nginx \
     supervisor \
-    postgresql-dev \
-    postgresql-client \
     libzip-dev \
     oniguruma-dev \
     zip \
     gettext \
     && docker-php-ext-install \
-        pdo_pgsql \
-        pgsql \
         zip \
         bcmath
 
@@ -52,9 +48,11 @@ COPY --from=web /app/public/build ./public/build
 # Do NOT copy vendor deps or node_modules
 
 # Set up directories that Laravel needs to write to
-RUN mkdir -p /app/storage/framework/sessions /app/storage/framework/cache /app/storage/framework/views /app/storage/logs /app/storage/app/private /app/bootstrap/cache && \
-    chown -R www-data:www-data /app/storage /app/bootstrap/cache && \
-    chmod -R 775 /app/storage /app/bootstrap/cache
+RUN mkdir -p /app/storage/framework/sessions /app/storage/framework/cache /app/storage/framework/views /app/storage/logs /app/storage/app/private /app/bootstrap/cache /app/database && \
+    touch /app/database/database.sqlite && \
+    chown -R www-data:www-data /app/storage /app/bootstrap/cache /app/database && \
+    chmod -R 775 /app/storage /app/bootstrap/cache && \
+    chmod 664 /app/database/database.sqlite
 
 # Configure nginx to listen on port specified by PORT env var
 # The entrypoint will template the nginx config with $PORT
