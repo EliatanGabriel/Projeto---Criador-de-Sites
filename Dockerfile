@@ -43,15 +43,15 @@ RUN apk add --no-cache \
 # Set working directory
 WORKDIR /app
 
+# Copy application code (excluding dockerignore'd files)
+COPY . .
+
 # Copy composer dependencies from composer stage
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-COPY --from=composer /app/vendor ./vendor
+COPY --from=composer /tmp/composer/vendor ./vendor
 
 # Copy built frontend assets from web stage
 COPY --from=web /app/public/build ./public/build
-
-# Copy application code (excluding dockerignore'd files)
-COPY . .
 
 # Configure PHP-FPM
 # Do NOT copy .env - use environment variables from runtime
