@@ -29,16 +29,10 @@ RUN apk add --no-cache \
     zip \
     gettext \
     && docker-php-ext-install \
-        pdo \
         pdo_pgsql \
         pgsql \
-        mbstring \
         zip \
-        bcmath \
-        openssl \
-        tokenizer \
-        xml \
-    && apk add --no-cache --virtual .php-extra-gettext gettext
+        bcmath
 
 # Set working directory
 WORKDIR /app
