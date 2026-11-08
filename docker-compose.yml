@@ -1,4 +1,22 @@
-# 100% SQLite (D-041): nenhum servico externo necessario.
-# A aplicacao corre no host com `php artisan serve` usando
-# database/database.sqlite (ver .env.example).
-services: {}
+services:
+  pgsql:
+    image: postgres:17-alpine
+    container_name: webstudio-pgsql
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-webstudio_os}
+      POSTGRES_USER: ${DB_USERNAME:-webstudio}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      PGDATA: /data/postgres
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - pgsql-data:/data/postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-webstudio} -d ${DB_DATABASE:-webstudio_os}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgsql-data:

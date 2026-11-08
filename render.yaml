@@ -1,12 +1,11 @@
-# 100% SQLite (D-041): sem Postgres/Supabase, sem worker/cron separados.
+# PostgreSQL via Supabase (D-043): banco persistente gerenciado.
 # Fila e scheduler rodam dentro do mesmo container (supervisord),
-# compartilhando o mesmo ficheiro SQLite.
-# ATENÇÃO: o filesystem do Render é efémero — os dados do SQLite
-# são perdidos a cada redeploy/restart. Para persistir, monte um
-# Persistent Disk (plano pago) em /app/database.
-# Variáveis no painel Render (Environment):
+# compartilhando a mesma conexao Postgres.
+# Variáveis no painel Render (Environment) — NUNCA versionar segredos:
 #   - APP_KEY (base64, fixa — credenciais cifradas dependem dela)
+#   - DB_URL (connection string do Supabase, ex.: postgresql://postgres:<senha>@db.<ref>.supabase.co:5432/postgres?sslmode=require)
 #   - APP_URL (URL HTTPS da aplicação)
+#   - INITIAL_ADMIN_EMAIL / INITIAL_ADMIN_PASSWORD (cria o OWNER inicial via webstudio:ensure-admin)
 
 services:
   - type: web
@@ -43,17 +42,19 @@ services:
           type: web
           property: external_url
       - key: DB_CONNECTION
-        value: sqlite
-      - key: DB_DATABASE
-        value: /app/database/database.sqlite
+        value: pgsql
+      - key: DB_URL
+        sync: false
+      - key: DB_SSLMODE
+        value: require
       - key: QUEUE_CONNECTION
         value: database
       - key: CACHE_STORE
         value: database
       - key: SESSION_DRIVER
         value: database
-    # Opcional (persistência): descomentar com plano pago no Render
-    # disk:
-    #   name: webstudio-db
-    #   mountPath: /app/database
-    #   sizeGB: 1
+    # Persistência de uploads locais (storage/app/private) — plano pago no Render
+    disk:
+      name: webstudio-storage
+      mountPath: /app/storage/app/private
+      sizeGB: 1

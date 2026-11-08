@@ -1,6 +1,6 @@
 # DECISIONS — WebStudio OS
 
-**Versão:** 2.2 — Fase 8 (atualizado)
+**Versão:** 2.3 — Migração Postgres/Supabase (atualizado)
 **Propósito:** registrar alterações importantes de escopo, arquitetura e tecnologia (Doc.md §11.2).
 
 ## Decisões Aprovadas
@@ -49,6 +49,7 @@
 | D-041 | Simplificacao pos-deploy: 100% SQLite (substitui PostgreSQL/Supabase aprovados anteriormente); 1 servico no Render, fila+scheduler no mesmo container via supervisord, migrate automatico no entrypoint; sem persistencia entre redeploys sem Persistent Disk | Pedido do usuario em 2026-11-08 | Aprovada |
 | D-039 | Fase 7.4-reconciliação: janela móvel 7 dias (America/Sao_Paulo); `pending` commitada antes do dispatch; `dispatched` abandonado (>10 min) reenfileirado com mesmo runId; triagem de elegibilidade histórica (created_at/deleted_at ≤ slot); 1 domínio não bloqueia os demais | Prompt 7.4 reconciliação | Aprovada |
 | D-042 | Painéis separados mas conectados: rotas `/admin`, `/commercial`, `/developer` com dashboards/queries próprias e roles estritas; módulos compartilhados (clients/demands/projects/tasks/notifications) com escopo por vínculo (comercial: demandas/projetos próprios; developer: projetos/tarefas atribuídos, briefing vinculado sem `negotiated_value`/`internal_notes`); `authorize('view'/'update')` por ID em Project/Task/Demand (show/edit/comment/store); `PATCH projects/{project}/status` com `can:projects.view`; `/dashboard` genérico redireciona DEVELOPER puro para `/developer`; conexão via Demand→Project transacional + notificações cruzadas | Pedido de certificação em 2026-11-08 + Doc.md §3/§7 | Aprovada |
+| D-043 | Migração SQLite→PostgreSQL/Supabase para persistência real: `DB_CONNECTION=pgsql` + `DB_URL` (connection string Supabase, `sync:false` no Render, nunca versionar); Dockerfile com `postgresql-dev` + `pdo_pgsql/pgsql`; `docker-compose.yml` com `postgres:17-alpine` local; `render.yaml` com Persistent Disk só para uploads (`/app/storage/app/private`); testes mantêm SQLite `:memory:` (PG validado com migrations+seed em Postgres 17 local) | Perda de dados por redeploy em SQLite efêmero + pedido do usuário em 2026-11-08 | Aprovada |
 
 ## Decisões Pendentes
 
@@ -75,3 +76,4 @@
 - **2026-11-07 (Reconciliação):** D-039 (backfill 7 dias + reenvio mesmo ID).
 - **2026-11-07 (Fase 8):** D-040 (financeiro transacional).
 - **2026-11-08 (Painéis):** D-042 (isolamento por ID + dashboard por perfil; ver `tests/Feature/PanelIsolationTest.php`).
+- **2026-11-08 (Migração DB):** D-043 (Postgres/Supabase; ver `docs/OPERATIONS.md §16`).

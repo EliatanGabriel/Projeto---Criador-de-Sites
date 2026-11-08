@@ -286,3 +286,27 @@ Após o deploy e a aplicação das variáveis do Environment Group:
 - Confirmar se `DB_HOST` foi preenchido corretamente no painel (sem `db-hostname`).
 - Verificar se o domínio/URL está correto.
 
+## 16. Execução da Migração SQLite → Postgres/Supabase (D-043)
+
+**Por quê:** no SQLite (`DB_CONNECTION=sqlite` em arquivo no container), o filesystem do Render é efêmero — cada redeploy/restart recria `/app/database/database.sqlite` e todos os dados do admin somem. Postgres/Supabase é persistente e não some no deploy.
+
+### 16.1 Arquitetura atual (após D-043)
+- **1 serviço** no Render (web + fila + scheduler via supervisord no mesmo container).
+- **Banco:** PostgreSQL gerenciado (Supabase) via `DB_URL` (connection string). `DB_CONNECTION=pgsql`, `DB_SSLMODE=require`.
+- **Uploads:** disco `local` em `/app/storage/app/private` + **Persistent Disk** `webstudio-storage` no `render.yaml` (plano pago) — sem ele, anexos também somem no redeploy.
+- **Local dev:** `docker-compose.yml` com `postgres:17-alpine` (`webstudio_os`/`webstudio`/`secret`, porta 5432) + `.env.example` com `DB_HOST=127.0.0.1`. Testes Pest continuam em SQLite `:memory:` (`phpunit.xml`); PG foi validado com migrations+seed em Postgres 17 local.
+
+### 16.2 Passo a passo no Supabase + Render (manual, uma vez)
+1. **Supabase → seu projeto → Project Settings → Database → Connection string (URI):** copie a string (formato `postgresql://postgres:<senha>@db.<ref>.supabase.co:5432/postgres`). Se for usar o pooler (IPv4), use a URL do pooler (`aws-0-<regiao>.pooler.supabase.com:6543`). Nunca commite essa senha.
+2. **Render → serviço `webstudio-os` → Environment:** adicione/sobrescreva `DB_URL` com a string do passo 1. Mantenha `DB_CONNECTION=pgsql` e `DB_SSLMODE=require` (já no `render.yaml`). Confirme `APP_KEY` fixa (não regenere — credenciais cifradas dependem dela).
+3. **Render → Disks:** confirme o disco `webstudio-storage` (1 GB, mount `/app/storage/app/private`) criado a partir do `render.yaml`. Sem plano pago/convidado, o deploy falha ao aplicar o disco — nesse caso, crie o disco no painel antes do deploy.
+4. **Deploy:** novos deploys rodam `php artisan migrate --force` + `webstudio:ensure-admin` no entrypoint. Acesse `/up` (esperado 200) e faça login com `INITIAL_ADMIN_EMAIL`/`INITIAL_ADMIN_PASSWORD`.
+5. **Validação pós-deploy:** crie um cliente/demanda no admin, faça um redeploy manual (Manual Deploy → Deploy last commit) e confirme que o registro **persiste** (antes sumia). Verifique filas (`queue:work` via supervisord) e scheduler (`schedule:work`) nos logs.
+6. **Uploads:** anexe um arquivo a uma demanda, redeploy e confirme que o download continua funcionando (valida o Persistent Disk).
+
+### 16.3 Migração de dados antigos (SQLite local → Supabase)
+- Dados criados **apenas no SQLite do Render perdido** não são recuperáveis (o arquivo foi descartado no redeploy). Se houver dados no SQLite **local** (`database/database.sqlite`) que precisam ir para produção:
+  1. Local: gere dump de dados via `php artisan` export ou `sqlite3 database/database.sqlite .dump` (ou exporte tabelas via tinker).
+  2. Produção: após o deploy com PG vazio, insira os registros via seed/exportação — **nunca** copie o arquivo `.sqlite` para dentro do PG.
+- A partir daqui, o backup passa a ser o do Supabase (Dashboard → Database → Backups) + exportação periódica de dados críticos.
+
