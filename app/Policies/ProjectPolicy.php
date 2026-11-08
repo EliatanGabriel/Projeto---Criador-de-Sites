@@ -36,6 +36,18 @@ class ProjectPolicy
         return $user->can('projects.edit');
     }
 
+    public function updateStatus(User $user, Project $project): bool
+    {
+        if ($user->can('projects.edit')) {
+            return true;
+        }
+        if (! $user->hasRole('DEVELOPER')) {
+            return false;
+        }
+
+        return $this->view($user, $project);
+    }
+
     public function delete(User $user, Project $project): bool
     {
         return $user->can('projects.edit');

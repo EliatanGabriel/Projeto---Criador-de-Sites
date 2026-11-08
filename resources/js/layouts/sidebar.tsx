@@ -22,6 +22,7 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
   const items = [
     { label: 'Painel Admin', href: '/admin', icon: LayoutDashboard, visible: roles.includes('OWNER'), active: currentPath === '/admin', disabled: false },
     { label: 'Painel Comercial', href: '/commercial', icon: Briefcase, visible: roles.includes('COMMERCIAL') || roles.includes('OWNER'), active: currentPath === '/commercial', disabled: false },
+    { label: 'Painel Developer', href: '/developer', icon: FolderKanban, visible: roles.includes('DEVELOPER') || roles.includes('OWNER'), active: currentPath === '/developer', disabled: false },
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, visible: can('view-dashboard'), active: currentPath === '/dashboard', disabled: false },
     { label: 'Comercial', href: '/opportunities', icon: Briefcase, visible: can('commercial.view'), active: currentPath.startsWith('/opportunities'), disabled: false },
     { label: 'Clientes', href: '/clients', icon: Users, visible: can('clients.view'), active: currentPath.startsWith('/clients'), disabled: false },

@@ -21,7 +21,7 @@ export default function Login({ status, canResetPassword, panel }: { status?: st
     <GuestLayout>
       <Head title="Entrar" />
       <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-        {panel === 'admin' ? 'Entrar no Painel Admin' : panel === 'commercial' ? 'Entrar no Painel Comercial' : 'Entrar na plataforma'}
+        {panel === 'admin' ? 'Entrar no Painel Admin' : panel === 'commercial' ? 'Entrar no Painel Comercial' : panel === 'developer' ? 'Entrar no Painel Developer' : 'Entrar na plataforma'}
       </h1>
       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Informe suas credenciais de acesso.</p>
 

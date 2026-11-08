@@ -173,15 +173,16 @@ test('transições inválidas são bloqueadas', function () {
     $this->actingAs($commercial)->post("/demands/{$approved->id}/submit")->assertForbidden();
 });
 
-test('proteção por perfil: commercial não aprova, developer não acessa', function () {
+test('proteção por perfil: commercial não aprova, developer só acessa demanda do seu projeto', function () {
     $commercial = commercialUserSale();
     $developer = developerUserSale();
     $client = Client::factory()->create();
     $demand = Demand::factory()->create(['client_id' => $client->id, 'status' => 'under_review']);
 
     $this->actingAs($commercial)->post("/demands/{$demand->id}/approve", [])->assertForbidden();
-    $this->actingAs($developer)->get('/demands')->assertForbidden();
+    $this->actingAs($developer)->get('/demands')->assertOk();
     $this->actingAs($developer)->get("/demands/{$demand->id}")->assertForbidden();
+    $this->actingAs($developer)->post("/demands/{$demand->id}/approve", [])->assertForbidden();
 });
 
 test('listagem filtra por status e cliente', function () {

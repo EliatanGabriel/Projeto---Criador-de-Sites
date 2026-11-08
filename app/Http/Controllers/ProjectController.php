@@ -101,10 +101,14 @@ class ProjectController extends Controller
             'histories.user:id,name',
         ]);
         $progress = $project->progressData();
+        if (! auth()->user()->hasRole('OWNER')) {
+            $project->contracted_value = null;
+        }
         return Inertia::render('projects/show', [
             'project' => $project,
             'progress' => $progress,
             'canManage' => auth()->user()->can('projects.edit'),
+            'canUpdateStatus' => auth()->user()->can('updateStatus', $project),
         ]);
     }
 
@@ -142,6 +146,7 @@ class ProjectController extends Controller
 
     public function updateStatus(Request $request, Project $project)
     {
+        $this->authorize('updateStatus', $project);
         $request->validate([
             'status' => 'required|in:planning,in_progress,in_review,blocked,completed,cancelled',
             'blocked_reason' => 'nullable|string|max:1000',

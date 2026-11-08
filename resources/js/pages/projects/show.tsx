@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 const P_STATUS: Record<string, string> = { planning: 'Planejamento', in_progress: 'Em andamento', in_review: 'Em revisão', blocked: 'Bloqueado', completed: 'Concluído', cancelled: 'Cancelado' };
 const T_STATUS: Record<string, string> = { todo: 'A fazer', in_progress: 'Em andamento', in_review: 'Em revisão', blocked: 'Bloqueada', done: 'Concluída', cancelled: 'Cancelada' };
 
-export default function ProjectsShow({ project, progress, canManage }: { project: any; progress: any; canManage: boolean }) {
+export default function ProjectsShow({ project, progress, canManage, canUpdateStatus }: { project: any; progress: any; canManage: boolean; canUpdateStatus?: boolean }) {
   const [blockedReason, setBlockedReason] = useState('');
   const statusForm = useForm({ status: project.status, blocked_reason: '' });
 
@@ -79,7 +79,7 @@ export default function ProjectsShow({ project, progress, canManage }: { project
                 Ver todas as tarefas do projeto
               </Link>
             </div>
-            {canManage && (
+            {(canManage || canUpdateStatus) && (
               <div className="space-y-2 border-t pt-3">
                 <Label htmlFor="blocked">Bloquear (justificativa)</Label>
                 <Input id="blocked" value={blockedReason} onChange={(e) => setBlockedReason(e.target.value)} placeholder="Motivo do bloqueio" />

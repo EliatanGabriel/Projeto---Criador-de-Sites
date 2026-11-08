@@ -6,6 +6,7 @@ use App\Http\Controllers\CommercialPanelController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DemandController;
+use App\Http\Controllers\DeveloperPanelController;
 use App\Http\Controllers\GitHubWebhookController;
 use App\Http\Controllers\HostingController;
 use App\Http\Controllers\NotificationController;
@@ -28,20 +29,24 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect(Auth::user()->hasRole('OWNER') ? '/admin' : '/commercial');
+        $user = Auth::user();
+        return redirect($user->hasRole('OWNER') ? '/admin' : ($user->hasRole('DEVELOPER') ? '/developer' : '/commercial'));
     }
     return redirect('/login');
 })->name('home');
 
-foreach (['admin' => '/admin', 'commercial' => '/commercial'] as $panel => $target) {
+foreach (['admin' => '/admin', 'commercial' => '/commercial', 'developer' => '/developer'] as $panel => $target) {
     Route::get("/login/{$panel}", function () use ($panel, $target) {
         if (Auth::check()) {
             $user = Auth::user();
-            if ($panel === 'admin' && ! $user->hasRole('OWNER')) {
-                return redirect('/commercial');
-            }
-            if ($panel === 'commercial' && ! ($user->hasRole('COMMERCIAL') || $user->hasRole('OWNER'))) {
-                return redirect('/dashboard');
+            $allowed = match ($panel) {
+                'admin' => $user->hasRole('OWNER'),
+                'commercial' => $user->hasRole('COMMERCIAL') || $user->hasRole('OWNER'),
+                'developer' => $user->hasRole('DEVELOPER') || $user->hasRole('OWNER'),
+                default => false,
+            };
+            if (! $allowed) {
+                return redirect($user->hasRole('OWNER') ? '/admin' : ($user->hasRole('DEVELOPER') ? '/developer' : '/commercial'));
             }
             return redirect($target);
         }
@@ -57,6 +62,7 @@ foreach (['admin' => '/admin', 'commercial' => '/commercial'] as $panel => $targ
 
 Route::get('/admin', AdminPanelController::class)->middleware('auth')->name('admin.dashboard');
 Route::get('/commercial', CommercialPanelController::class)->middleware('auth')->name('commercial.dashboard');
+Route::get('/developer', DeveloperPanelController::class)->middleware('auth')->name('developer.dashboard');
 
 Route::post('/webhooks/github', GitHubWebhookController::class)
     ->middleware('throttle:60,1')
@@ -115,7 +121,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('projects/{project}', [ProjectController::class, 'show'])->middleware('can:projects.view')->name('projects.show');
     Route::get('projects/{project}/edit', [ProjectController::class, 'edit'])->middleware('can:projects.edit')->name('projects.edit');
     Route::put('projects/{project}', [ProjectController::class, 'update'])->middleware('can:projects.edit')->name('projects.update');
-    Route::patch('projects/{project}/status', [ProjectController::class, 'updateStatus'])->middleware('can:projects.edit')->name('projects.update-status');
+    Route::patch('projects/{project}/status', [ProjectController::class, 'updateStatus'])->name('projects.update-status');
 
     Route::get('tasks', [TaskController::class, 'index'])->middleware('can:tasks.view')->name('tasks.index');
     Route::get('tasks/my', [TaskController::class, 'myTasks'])->middleware('can:tasks.view')->name('tasks.my');

@@ -18,6 +18,8 @@ class EnsureAdminCommand extends Command
         $password = env('INITIAL_ADMIN_PASSWORD');
         $name = env('INITIAL_ADMIN_NAME', 'Admin');
 
+        (new RolePermissionSeeder)->run();
+
         if (! $email || ! $password) {
             $this->info('INITIAL_ADMIN_EMAIL/PASSWORD nao definidos; nada a fazer.');
 
@@ -29,8 +31,6 @@ class EnsureAdminCommand extends Command
 
             return self::SUCCESS;
         }
-
-        (new RolePermissionSeeder)->run();
 
         $user = User::create([
             'name' => $name,

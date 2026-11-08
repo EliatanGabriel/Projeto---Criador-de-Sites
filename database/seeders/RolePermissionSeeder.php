@@ -52,7 +52,8 @@ class RolePermissionSeeder extends Seeder
         $developer = Role::firstOrCreate(['name' => 'DEVELOPER', 'guard_name' => 'web']);
         $developer->syncPermissions([
             'view-dashboard',
-            'projects.view', 'tasks.view', 'tasks.edit',
+            'projects.view', 'tasks.view', 'tasks.create', 'tasks.edit',
+            'demands.view',
             'templates.view', 'websites.view',
             'alerts.view', 'alerts.read',
         ]);

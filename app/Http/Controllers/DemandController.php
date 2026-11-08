@@ -25,10 +25,25 @@ class DemandController extends Controller
 
         $user = $request->user();
         if (! $user->hasRole('OWNER')) {
-            $query->where(function ($q) use ($user) {
-                $q->where('commercial_owner_id', $user->id)
-                    ->orWhere('created_by', $user->id);
-            });
+            if ($user->hasRole('DEVELOPER')) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('technical_owner_id', $user->id)
+                        ->orWhereExists(function ($qq) use ($user) {
+                            $qq->selectRaw(1)->from('projects')
+                                ->whereColumn('projects.demand_id', 'demands.id')
+                                ->where(function ($p) use ($user) {
+                                    $p->where('projects.technical_owner_id', $user->id)
+                                        ->orWhereExists(fn ($m) => $m->selectRaw(1)->from('project_members')->whereColumn('project_members.project_id', 'projects.id')->where('project_members.user_id', $user->id))
+                                        ->orWhereExists(fn ($t) => $t->selectRaw(1)->from('tasks')->whereColumn('tasks.project_id', 'projects.id')->where('tasks.assignee_id', $user->id));
+                                });
+                        });
+                });
+            } else {
+                $query->where(function ($q) use ($user) {
+                    $q->where('commercial_owner_id', $user->id)
+                        ->orWhere('created_by', $user->id);
+                });
+            }
         }
 
         if ($request->search) {
@@ -121,6 +136,7 @@ class DemandController extends Controller
 
     public function show(Demand $demand)
     {
+        $this->authorize('view', $demand);
         $demand->load(['client', 'opportunity', 'commercialOwner:id,name', 'technicalOwner:id,name', 'creator:id,name', 'briefing', 'attachments.uploader:id,name', 'histories.user:id,name']);
 
         $statusEnum = DemandStatus::tryFrom($demand->status);

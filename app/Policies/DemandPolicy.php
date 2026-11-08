@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Demand;
+use App\Models\Project;
 use App\Models\User;
 
 class DemandPolicy
@@ -14,7 +15,23 @@ class DemandPolicy
 
     public function view(User $user, Demand $demand): bool
     {
-        return $user->can('demands.view');
+        if (! $user->can('demands.view')) {
+            return false;
+        }
+        if (! $user->hasRole('DEVELOPER')) {
+            return true;
+        }
+        if ($demand->technical_owner_id === $user->id) {
+            return true;
+        }
+        $project = Project::where('demand_id', $demand->id)->first();
+        if (! $project) {
+            return false;
+        }
+
+        return $project->technical_owner_id === $user->id
+            || $project->members()->where('user_id', $user->id)->exists()
+            || $project->tasks()->where('assignee_id', $user->id)->exists();
     }
 
     public function create(User $user): bool
@@ -68,7 +85,7 @@ class DemandPolicy
 
     public function download(User $user, Demand $demand): bool
     {
-        return $user->can('demands.view');
+        return $this->view($user, $demand);
     }
 
     public function upload(User $user, Demand $demand): bool
