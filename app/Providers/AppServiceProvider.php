@@ -25,6 +25,7 @@ use App\Policies\UserPolicy;
 use App\Policies\WebsiteAlertPolicy;
 use App\Policies\WebsitePolicy;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -36,6 +37,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        if (app()->isProduction()) {
+            URL::forceScheme('https');
+        }
+
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Client::class, ClientPolicy::class);
         Gate::policy(Opportunity::class, OpportunityPolicy::class);

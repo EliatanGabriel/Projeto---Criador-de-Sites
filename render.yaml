@@ -17,6 +17,12 @@ services:
     envVars:
       - key: APP_ENV
         value: production
+      - key: APP_NAME
+        value: "WebStudio OS"
+      - key: APP_LOCALE
+        value: pt-BR
+      - key: APP_FALLBACK_LOCALE
+        value: pt-BR
       - key: APP_DEBUG
         value: "false"
       - key: LOG_CHANNEL
