@@ -137,6 +137,11 @@ class DemandController extends Controller
     public function show(Demand $demand)
     {
         $this->authorize('view', $demand);
+        $viewer = auth()->user();
+        if ($viewer && $viewer->hasRole('DEVELOPER') && ! $viewer->hasRole('OWNER')) {
+            $demand->negotiated_value = null;
+            $demand->internal_notes = null;
+        }
         $demand->load(['client', 'opportunity', 'commercialOwner:id,name', 'technicalOwner:id,name', 'creator:id,name', 'briefing', 'attachments.uploader:id,name', 'histories.user:id,name']);
 
         $statusEnum = DemandStatus::tryFrom($demand->status);
@@ -160,6 +165,7 @@ class DemandController extends Controller
 
     public function edit(Demand $demand)
     {
+        $this->authorize('update', $demand);
         $demand->load('briefing');
         return Inertia::render('demands/edit', [
             'demand' => $demand,
@@ -171,6 +177,7 @@ class DemandController extends Controller
 
     public function update(UpdateDemandRequest $request, Demand $demand)
     {
+        $this->authorize('update', $demand);
         $data = $request->validated();
         $briefingData = $data['briefing'] ?? null;
         $files = $data['files'] ?? [];

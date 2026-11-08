@@ -90,6 +90,7 @@ class ProjectController extends Controller
 
     public function show(Project $project)
     {
+        $this->authorize('view', $project);
         $project->load([
             'client',
             'demand.briefing',
@@ -114,6 +115,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
+        $this->authorize('update', $project);
         return Inertia::render('projects/edit', [
             'project' => $project,
             'users' => User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
@@ -122,6 +124,7 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project)
     {
+        $this->authorize('update', $project);
         $from = $project->status;
         $project->update($request->validated());
 

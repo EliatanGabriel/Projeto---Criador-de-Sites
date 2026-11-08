@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Opportunity;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function __invoke()
+    public function __invoke(Request $request)
     {
+        if ($request->user()->hasRole('DEVELOPER') && ! $request->user()->hasRole('OWNER') && ! $request->user()->hasRole('COMMERCIAL')) {
+            return redirect('/developer');
+        }
         $stats = [
             'active_clients' => Client::where('status', 'ativo')->count(),
             'open_opportunities' => Opportunity::open()->count(),

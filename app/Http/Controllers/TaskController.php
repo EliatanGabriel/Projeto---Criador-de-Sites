@@ -72,6 +72,14 @@ class TaskController extends Controller
     {
         $data = $request->validated();
         $project = Project::findOrFail($data['project_id']);
+        if (! $request->user()->hasRole('OWNER')) {
+            if (! $request->user()->can('view', $project)) {
+                abort(403);
+            }
+            if (($data['assignee_id'] ?? null) && (string) $data['assignee_id'] !== (string) $request->user()->id) {
+                abort(403, 'DEVELOPER não pode atribuir tarefas a terceiros.');
+            }
+        }
         if ($project->isClosed()) {
             return back()->withErrors(['project_id' => 'Projeto encerrado não aceita novas tarefas.']);
         }
@@ -105,12 +113,14 @@ class TaskController extends Controller
 
     public function show(Task $task)
     {
+        $this->authorize('view', $task);
         $task->load(['project.client:id,name', 'assignee:id,name', 'creator:id,name', 'histories.user:id,name', 'comments.user:id,name']);
         return Inertia::render('tasks/show', ['task' => $task]);
     }
 
     public function edit(Task $task)
     {
+        $this->authorize('update', $task);
         return Inertia::render('tasks/edit', [
             'task' => $task,
             'users' => User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
@@ -189,6 +199,7 @@ class TaskController extends Controller
 
     public function comment(Request $request, Task $task)
     {
+        $this->authorize('view', $task);
         $request->validate(['comment' => 'required|string|max:2000']);
         $task->comments()->create(['user_id' => $request->user()->id, 'comment' => $request->comment]);
         $task->histories()->create([

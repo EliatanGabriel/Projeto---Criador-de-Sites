@@ -121,7 +121,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('projects/{project}', [ProjectController::class, 'show'])->middleware('can:projects.view')->name('projects.show');
     Route::get('projects/{project}/edit', [ProjectController::class, 'edit'])->middleware('can:projects.edit')->name('projects.edit');
     Route::put('projects/{project}', [ProjectController::class, 'update'])->middleware('can:projects.edit')->name('projects.update');
-    Route::patch('projects/{project}/status', [ProjectController::class, 'updateStatus'])->name('projects.update-status');
+    Route::patch('projects/{project}/status', [ProjectController::class, 'updateStatus'])->middleware('can:projects.view')->name('projects.update-status');
 
     Route::get('tasks', [TaskController::class, 'index'])->middleware('can:tasks.view')->name('tasks.index');
     Route::get('tasks/my', [TaskController::class, 'myTasks'])->middleware('can:tasks.view')->name('tasks.my');
