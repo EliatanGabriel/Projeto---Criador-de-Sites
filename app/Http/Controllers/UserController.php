@@ -63,15 +63,20 @@ class UserController extends Controller
 
         $this->guardLastOwner($user, $newRole, $targetIsActive, $request->user());
 
-        $user->update([
+        $user->update(array_filter([
             'name' => $data['name'],
             'email' => $data['email'],
             'is_active' => $targetIsActive,
-        ]);
+            'password' => ! empty($data['password']) ? Hash::make($data['password']) : null,
+        ], fn ($value) => $value !== null));
 
         $user->syncRoles([$newRole]);
 
-        return redirect()->route('team.index')->with('success', 'Usuário atualizado com sucesso.');
+        $message = ! empty($data['password'])
+            ? 'Usuário atualizado e senha redefinida com sucesso.'
+            : 'Usuário atualizado com sucesso.';
+
+        return redirect()->route('team.index')->with('success', $message);
     }
 
     public function toggleActive(User $user)

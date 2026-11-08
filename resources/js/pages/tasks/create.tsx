@@ -27,7 +27,7 @@ export default function TasksCreate({ projects, users, projectId }: { projects: 
   return (
     <AuthenticatedLayout>
       <Head title="Nova tarefa" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Nova tarefa</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Nova tarefa</h2>
       <Card className="max-w-3xl">
         <CardHeader>
           <CardTitle>Dados da tarefa</CardTitle>
@@ -40,11 +40,11 @@ export default function TasksCreate({ projects, users, projectId }: { projects: 
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="description">Descrição</Label>
-              <textarea id="description" value={form.data.description} onChange={(e) => form.setData('description', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" rows={2} />
+              <textarea id="description" value={form.data.description} onChange={(e) => form.setData('description', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm" rows={2} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="project_id">Projeto *</Label>
-              <select id="project_id" value={form.data.project_id} onChange={(e) => form.setData('project_id', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" required>
+              <select id="project_id" value={form.data.project_id} onChange={(e) => form.setData('project_id', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm" required>
                 <option value="">— Selecione —</option>
                 {projects.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -55,7 +55,7 @@ export default function TasksCreate({ projects, users, projectId }: { projects: 
             </div>
             <div className="space-y-2">
               <Label htmlFor="assignee_id">Responsável</Label>
-              <select id="assignee_id" value={form.data.assignee_id} onChange={(e) => form.setData('assignee_id', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="assignee_id" value={form.data.assignee_id} onChange={(e) => form.setData('assignee_id', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 <option value="">— Sem responsável —</option>
                 {users.map((u) => (
                   <option key={u.id} value={u.id}>
@@ -66,7 +66,7 @@ export default function TasksCreate({ projects, users, projectId }: { projects: 
             </div>
             <div className="space-y-2">
               <Label htmlFor="priority">Prioridade *</Label>
-              <select id="priority" value={form.data.priority} onChange={(e) => form.setData('priority', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="priority" value={form.data.priority} onChange={(e) => form.setData('priority', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 <option value="low">Baixa</option>
                 <option value="medium">Normal</option>
                 <option value="high">Alta</option>
@@ -75,7 +75,7 @@ export default function TasksCreate({ projects, users, projectId }: { projects: 
             </div>
             <div className="space-y-2">
               <Label htmlFor="status">Status *</Label>
-              <select id="status" value={form.data.status} onChange={(e) => form.setData('status', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="status" value={form.data.status} onChange={(e) => form.setData('status', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 <option value="todo">A fazer</option>
                 <option value="in_progress">Em andamento</option>
                 <option value="in_review">Em revisão</option>

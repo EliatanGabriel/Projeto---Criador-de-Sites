@@ -36,8 +36,8 @@ export default function OpportunitiesIndex({ opportunities, filters, users }: { 
       <Head title="Oportunidades" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Oportunidades comerciais</h2>
-          <p className="mt-1 text-sm text-gray-600">{opportunities.total} oportunidades registradas</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Oportunidades comerciais</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{opportunities.total} oportunidades registradas</p>
         </div>
         <Link href="/opportunities/create">
           <Button>Nova oportunidade</Button>
@@ -51,7 +51,7 @@ export default function OpportunitiesIndex({ opportunities, filters, users }: { 
         <CardContent>
           <form onSubmit={applyFilters} className="flex flex-col gap-3 sm:flex-row">
             <Input placeholder="Buscar por título, contato, descrição..." value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-sm" />
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os status</option>
               {Object.entries(STATUS_LABELS).map(([v, l]) => (
                 <option key={v} value={v}>
@@ -59,7 +59,7 @@ export default function OpportunitiesIndex({ opportunities, filters, users }: { 
                 </option>
               ))}
             </select>
-            <select value={responsibleId} onChange={(e) => setResponsibleId(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={responsibleId} onChange={(e) => setResponsibleId(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os responsáveis</option>
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
@@ -79,7 +79,7 @@ export default function OpportunitiesIndex({ opportunities, filters, users }: { 
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Título</th>
                   <th className="pb-2">Cliente</th>
                   <th className="pb-2">Responsável</th>
@@ -92,7 +92,7 @@ export default function OpportunitiesIndex({ opportunities, filters, users }: { 
               <tbody>
                 {opportunities.data.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-gray-500">
+                    <td colSpan={7} className="py-8 text-center text-gray-500 dark:text-gray-400">
                       Nenhuma oportunidade encontrada.
                     </td>
                   </tr>
@@ -104,7 +104,7 @@ export default function OpportunitiesIndex({ opportunities, filters, users }: { 
                     <td className="py-3">{o.responsible?.name ?? '—'}</td>
                     <td className="py-3">{STATUS_LABELS[o.status] ?? o.status}</td>
                     <td className="py-3">{o.estimated_value ? Number(o.estimated_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '—'}</td>
-                    <td className="py-3 text-gray-500">{o.expected_close_at ? new Date(o.expected_close_at).toLocaleDateString('pt-BR') : '—'}</td>
+                    <td className="py-3 text-gray-500 dark:text-gray-400">{o.expected_close_at ? new Date(o.expected_close_at).toLocaleDateString('pt-BR') : '—'}</td>
                     <td className="py-3 text-right">
                       <Link href={`/opportunities/${o.id}`} className="mr-3 text-blue-600 hover:underline">
                         Ver

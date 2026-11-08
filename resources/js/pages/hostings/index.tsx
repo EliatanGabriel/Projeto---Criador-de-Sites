@@ -24,8 +24,8 @@ export default function HostingsIndex({ hostings, filters }: { hostings: Paginat
       <Head title="Hospedagens" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Hospedagens</h2>
-          <p className="mt-1 text-sm text-gray-600">{hostings.total} hospedagens</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Hospedagens</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{hostings.total} hospedagens</p>
         </div>
         <Link href="/hostings/create">
           <Button>Nova hospedagem</Button>
@@ -56,7 +56,7 @@ export default function HostingsIndex({ hostings, filters }: { hostings: Paginat
         <CardContent className="pt-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-gray-600">
+              <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                 <th className="pb-2">Nome</th>
                 <th className="pb-2">Provedor</th>
                 <th className="pb-2">Plano</th>
@@ -67,7 +67,7 @@ export default function HostingsIndex({ hostings, filters }: { hostings: Paginat
             <tbody>
               {hostings.data.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-gray-500">
+                  <td colSpan={5} className="py-8 text-center text-gray-500 dark:text-gray-400">
                     Nenhuma hospedagem encontrada.
                   </td>
                 </tr>

@@ -28,8 +28,8 @@ export default function SitesIndex({ sites, filters, clients }: { sites: Paginat
       <Head title="Sites" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Sites</h2>
-          <p className="mt-1 text-sm text-gray-600">{sites.total} sites sob gestão</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sites</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{sites.total} sites sob gestão</p>
         </div>
         <Link href="/sites/create">
           <Button>Novo site</Button>
@@ -70,7 +70,7 @@ export default function SitesIndex({ sites, filters, clients }: { sites: Paginat
         <CardContent className="pt-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-gray-600">
+              <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                 <th className="pb-2">Nome</th>
                 <th className="pb-2">Cliente</th>
                 <th className="pb-2">Tipo</th>
@@ -84,7 +84,7 @@ export default function SitesIndex({ sites, filters, clients }: { sites: Paginat
             <tbody>
               {sites.data.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-8 text-center text-gray-500">
+                  <td colSpan={8} className="py-8 text-center text-gray-500 dark:text-gray-400">
                     Nenhum site encontrado.
                   </td>
                 </tr>

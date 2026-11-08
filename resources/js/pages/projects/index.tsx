@@ -30,8 +30,8 @@ export default function ProjectsIndex({ projects, filters, clients, users }: { p
       <Head title="Projetos" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Projetos</h2>
-          <p className="mt-1 text-sm text-gray-600">{projects.total} projetos</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Projetos</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{projects.total} projetos</p>
         </div>
         <Link href="/projects/create">
           <Button>Converter demanda</Button>
@@ -45,7 +45,7 @@ export default function ProjectsIndex({ projects, filters, clients, users }: { p
         <CardContent>
           <form onSubmit={applyFilters} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Input placeholder="Buscar por título ou cliente..." value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-sm" />
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os status</option>
               {Object.entries(STATUS).map(([v, l]) => (
                 <option key={v} value={v}>
@@ -53,7 +53,7 @@ export default function ProjectsIndex({ projects, filters, clients, users }: { p
                 </option>
               ))}
             </select>
-            <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os clientes</option>
               {clients.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -61,7 +61,7 @@ export default function ProjectsIndex({ projects, filters, clients, users }: { p
                 </option>
               ))}
             </select>
-            <select value={owner} onChange={(e) => setOwner(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={owner} onChange={(e) => setOwner(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os técnicos</option>
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
@@ -81,7 +81,7 @@ export default function ProjectsIndex({ projects, filters, clients, users }: { p
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Título</th>
                   <th className="pb-2">Cliente</th>
                   <th className="pb-2">Status</th>
@@ -93,7 +93,7 @@ export default function ProjectsIndex({ projects, filters, clients, users }: { p
               <tbody>
                 {projects.data.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-gray-500">
+                    <td colSpan={6} className="py-8 text-center text-gray-500 dark:text-gray-400">
                       Nenhum projeto encontrado.
                     </td>
                   </tr>
@@ -104,7 +104,7 @@ export default function ProjectsIndex({ projects, filters, clients, users }: { p
                     <td className="py-3">{p.client?.name ?? '—'}</td>
                     <td className="py-3">{STATUS[p.status] ?? p.status}</td>
                     <td className="py-3">{p.technical_owner?.name ?? '—'}</td>
-                    <td className="py-3 text-gray-500">{p.planned_deadline ? new Date(p.planned_deadline).toLocaleDateString('pt-BR') : '—'}</td>
+                    <td className="py-3 text-gray-500 dark:text-gray-400">{p.planned_deadline ? new Date(p.planned_deadline).toLocaleDateString('pt-BR') : '—'}</td>
                     <td className="py-3 text-right">
                       <Link href={`/projects/${p.id}`} className="mr-3 text-blue-600 hover:underline">
                         Ver

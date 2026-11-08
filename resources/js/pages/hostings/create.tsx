@@ -16,7 +16,7 @@ export default function HostingsCreate() {
   return (
     <AuthenticatedLayout>
       <Head title="Nova hospedagem" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Nova hospedagem</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Nova hospedagem</h2>
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle>Dados da hospedagem</CardTitle>

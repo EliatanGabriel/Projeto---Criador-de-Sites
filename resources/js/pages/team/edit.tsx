@@ -11,6 +11,8 @@ export default function TeamEdit({ user, roles, currentRole }: { user: { id: str
     email: user.email,
     role: currentRole ?? 'COMMERCIAL',
     is_active: user.is_active,
+    password: '',
+    password_confirmation: '',
   });
 
   function submit(e: React.FormEvent) {
@@ -21,7 +23,7 @@ export default function TeamEdit({ user, roles, currentRole }: { user: { id: str
   return (
     <AuthenticatedLayout>
       <Head title="Editar usuário" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Editar usuário</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Editar usuário</h2>
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle>{user.name}</CardTitle>
@@ -40,7 +42,7 @@ export default function TeamEdit({ user, roles, currentRole }: { user: { id: str
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Perfil</Label>
-              <select id="role" value={form.data.role} onChange={(e) => form.setData('role', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="role" value={form.data.role} onChange={(e) => form.setData('role', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 {roles.map((r) => (
                   <option key={r} value={r}>
                     {r}
@@ -52,6 +54,17 @@ export default function TeamEdit({ user, roles, currentRole }: { user: { id: str
               <input type="checkbox" checked={form.data.is_active} onChange={(e) => form.setData('is_active', e.target.checked)} />
               Usuário ativo
             </label>
+            <div className="space-y-2 border-t pt-4">
+              <Label htmlFor="password">Redefinir senha (opcional)</Label>
+              <Input id="password" type="password" autoComplete="new-password" value={form.data.password} onChange={(e) => form.setData('password', e.target.value)} placeholder="Deixe vazio para manter a atual" />
+              {form.errors.password && <p className="text-sm text-red-600">{form.errors.password}</p>}
+              <p className="text-xs text-gray-500 dark:text-gray-400">A senha atual não pode ser exibida (fica salva como hash). Ao redefinir, informe a nova senha ao usuário por canal seguro.</p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password_confirmation">Confirmar nova senha</Label>
+              <Input id="password_confirmation" type="password" autoComplete="new-password" value={form.data.password_confirmation} onChange={(e) => form.setData('password_confirmation', e.target.value)} />
+              {form.errors.password_confirmation && <p className="text-sm text-red-600">{form.errors.password_confirmation}</p>}
+            </div>
             <Button type="submit" disabled={form.processing}>
               {form.processing ? 'Salvando...' : 'Salvar alterações'}
             </Button>

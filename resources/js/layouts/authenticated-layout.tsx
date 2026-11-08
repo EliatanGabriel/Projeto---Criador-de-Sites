@@ -13,7 +13,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   const { flash } = usePage<PageProps>().props;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
       <Sidebar
         collapsed={collapsed}
         onToggle={() => setCollapsed(!collapsed)}
@@ -48,7 +48,7 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
             {children}
           </div>
         </main>
-        <footer className="border-t bg-white px-6 py-4 text-xs text-gray-500">
+        <footer className="border-t bg-white dark:bg-gray-900 px-6 py-4 text-xs text-gray-500 dark:text-gray-400">
           WebStudio OS — Fase 1 (Fundação técnica). Acesso interno da equipe.
         </footer>
       </div>

@@ -40,8 +40,8 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
       <Head title="Demandas" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Demandas</h2>
-          <p className="mt-1 text-sm text-gray-600">{demands.total} demandas registradas</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Demandas</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{demands.total} demandas registradas</p>
         </div>
         <Link href="/demands/create">
           <Button>Nova demanda</Button>
@@ -55,7 +55,7 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
         <CardContent>
           <form onSubmit={applyFilters} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Input placeholder="Buscar por título ou cliente..." value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-sm" />
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os status</option>
               {Object.entries(STATUS).map(([v, l]) => (
                 <option key={v} value={v}>
@@ -63,7 +63,7 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
                 </option>
               ))}
             </select>
-            <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os clientes</option>
               {clients.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -71,7 +71,7 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
                 </option>
               ))}
             </select>
-            <select value={responsibleId} onChange={(e) => setResponsibleId(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={responsibleId} onChange={(e) => setResponsibleId(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os responsáveis</option>
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
@@ -79,7 +79,7 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
                 </option>
               ))}
             </select>
-            <select value={period} onChange={(e) => setPeriod(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={period} onChange={(e) => setPeriod(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Período</option>
               <option value="7d">Últimos 7 dias</option>
               <option value="30d">Últimos 30 dias</option>
@@ -97,7 +97,7 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Título</th>
                   <th className="pb-2">Cliente</th>
                   <th className="pb-2">Status</th>
@@ -110,7 +110,7 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
               <tbody>
                 {demands.data.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-gray-500">
+                    <td colSpan={7} className="py-8 text-center text-gray-500 dark:text-gray-400">
                       Nenhuma demanda encontrada.
                     </td>
                   </tr>
@@ -121,8 +121,8 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
                     <td className="py-3">{d.client?.name ?? '—'}</td>
                     <td className="py-3">{STATUS[d.status] ?? d.status}</td>
                     <td className="py-3">{d.commercial_owner?.name ?? '—'}</td>
-                    <td className="py-3 text-gray-500">{d.desired_deadline ? new Date(d.desired_deadline).toLocaleDateString('pt-BR') : '—'}</td>
-                    <td className="py-3 text-gray-500">{new Date(d.updated_at).toLocaleDateString('pt-BR')}</td>
+                    <td className="py-3 text-gray-500 dark:text-gray-400">{d.desired_deadline ? new Date(d.desired_deadline).toLocaleDateString('pt-BR') : '—'}</td>
+                    <td className="py-3 text-gray-500 dark:text-gray-400">{new Date(d.updated_at).toLocaleDateString('pt-BR')}</td>
                     <td className="py-3 text-right">
                       <Link href={`/demands/${d.id}`} className="mr-3 text-blue-600 hover:underline">
                         Ver

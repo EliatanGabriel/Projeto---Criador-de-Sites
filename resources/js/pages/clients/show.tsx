@@ -14,8 +14,8 @@ export default function ClientsShow({ client }: ShowProps) {
       <Head title={client.name} />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{client.name}</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{client.name}</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {client.type === 'pf' ? 'Pessoa física' : 'Pessoa jurídica'} • {client.status === 'ativo' ? 'Ativo' : 'Inativo'} • Cadastro em {new Date(client.created_at).toLocaleDateString('pt-BR')}
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function ClientsShow({ client }: ShowProps) {
           </CardHeader>
           <CardContent>
             {(client.opportunities?.length ?? 0) === 0 ? (
-              <p className="text-sm text-gray-500">Nenhuma oportunidade registrada para este cliente.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Nenhuma oportunidade registrada para este cliente.</p>
             ) : (
               <ul className="space-y-3">
                 {client.opportunities!.map((o) => (
@@ -56,7 +56,7 @@ export default function ClientsShow({ client }: ShowProps) {
                       <Link href={`/opportunities/${o.id}`} className="font-medium text-blue-600 hover:underline">
                         {o.title}
                       </Link>
-                      <p className="text-xs text-gray-500">{new Date(o.created_at).toLocaleDateString('pt-BR')} • {o.status}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(o.created_at).toLocaleDateString('pt-BR')} • {o.status}</p>
                     </div>
                     <span className="text-sm font-medium">{o.estimated_value ? Number(o.estimated_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '—'}</span>
                   </li>

@@ -27,8 +27,8 @@ export default function TeamIndex({ users }: { users: Paginator<TeamUser> }) {
       <Head title="Equipe" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Equipe</h2>
-          <p className="mt-1 text-sm text-gray-600">{users.total} usuários cadastrados</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Equipe</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{users.total} usuários cadastrados</p>
         </div>
         <Link href="/team/create">
           <Button>Novo usuário</Button>
@@ -43,7 +43,7 @@ export default function TeamIndex({ users }: { users: Paginator<TeamUser> }) {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Nome</th>
                   <th className="pb-2">E-mail</th>
                   <th className="pb-2">Perfil</th>
@@ -55,7 +55,7 @@ export default function TeamIndex({ users }: { users: Paginator<TeamUser> }) {
               <tbody>
                 {users.data.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="py-8 text-center text-gray-500">
+                    <td colSpan={6} className="py-8 text-center text-gray-500 dark:text-gray-400">
                       Nenhum usuário encontrado.
                     </td>
                   </tr>
@@ -70,7 +70,7 @@ export default function TeamIndex({ users }: { users: Paginator<TeamUser> }) {
                         {u.is_active ? 'Ativo' : 'Inativo'}
                       </span>
                     </td>
-                    <td className="py-3 text-gray-500">{u.last_login_at ? new Date(u.last_login_at).toLocaleString('pt-BR') : '—'}</td>
+                    <td className="py-3 text-gray-500 dark:text-gray-400">{u.last_login_at ? new Date(u.last_login_at).toLocaleString('pt-BR') : '—'}</td>
                     <td className="py-3 text-right">
                       <Link href={`/team/${u.id}/edit`} className="mr-3 text-blue-600 hover:underline">
                         Editar

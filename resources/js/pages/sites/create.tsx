@@ -34,7 +34,7 @@ export default function SitesCreate({ clients, projects, users }: { clients: { i
   return (
     <AuthenticatedLayout>
       <Head title="Novo site" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Novo site</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Novo site</h2>
       <form onSubmit={submit} className="space-y-6">
         <Card className="max-w-3xl">
           <CardHeader>
@@ -103,7 +103,7 @@ export default function SitesCreate({ clients, projects, users }: { clients: { i
             <div className="space-y-2 sm:col-span-2">
               <Label>Projetos vinculados</Label>
               <div className="max-h-40 overflow-y-auto rounded-md border p-2">
-                {filteredProjects.length === 0 && <p className="text-sm text-gray-500">Nenhum projeto do cliente selecionado.</p>}
+                {filteredProjects.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">Nenhum projeto do cliente selecionado.</p>}
                 {filteredProjects.map((p) => (
                   <label key={p.id} className="flex items-center gap-2 py-1 text-sm">
                     <input
@@ -116,12 +116,12 @@ export default function SitesCreate({ clients, projects, users }: { clients: { i
                       }}
                     />
                     {p.title}
-                    <span className="text-xs text-gray-500">— origem?</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">— origem?</span>
                     <input type="radio" name="origin" checked={form.data.origin_project_id === p.id} onChange={() => form.setData('origin_project_id', p.id)} />
                   </label>
                 ))}
               </div>
-              <p className="text-xs text-gray-500">Selecione projetos e marque um como origem (máximo 1).</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Selecione projetos e marque um como origem (máximo 1).</p>
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="notes">Observações internas</Label>

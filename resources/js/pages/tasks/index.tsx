@@ -30,8 +30,8 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
       <Head title="Tarefas" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Tarefas</h2>
-          <p className="mt-1 text-sm text-gray-600">{tasks.total} tarefas</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Tarefas</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{tasks.total} tarefas</p>
         </div>
         <div className="flex gap-2">
           <Link href="/tasks/my">
@@ -50,7 +50,7 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
         <CardContent>
           <form onSubmit={applyFilters} className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Input placeholder="Buscar título..." value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-xs" />
-            <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={projectId} onChange={(e) => setProjectId(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os projetos</option>
               {projects.map((p: any) => (
                 <option key={p.id} value={p.id}>
@@ -58,7 +58,7 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
                 </option>
               ))}
             </select>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os status</option>
               {Object.entries(T_STATUS).map(([v, l]) => (
                 <option key={v} value={v}>
@@ -66,7 +66,7 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
                 </option>
               ))}
             </select>
-            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todas prioridades</option>
               <option value="low">Baixa</option>
               <option value="medium">Normal</option>
@@ -84,7 +84,7 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
         <CardContent className="pt-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-gray-600">
+              <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                 <th className="pb-2">Título</th>
                 <th className="pb-2">Projeto</th>
                 <th className="pb-2">Responsável</th>
@@ -97,7 +97,7 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
             <tbody>
               {tasks.data.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-gray-500">
+                  <td colSpan={7} className="py-8 text-center text-gray-500 dark:text-gray-400">
                     Nenhuma tarefa encontrada.
                   </td>
                 </tr>
@@ -109,7 +109,7 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
                   <td className="py-3">{t.assignee?.name ?? '—'}</td>
                   <td className="py-3">{T_STATUS[t.status] ?? t.status}</td>
                   <td className="py-3">{t.priority}</td>
-                  <td className="py-3 text-gray-500">{t.due_at ? new Date(t.due_at).toLocaleDateString('pt-BR') : '—'}</td>
+                  <td className="py-3 text-gray-500 dark:text-gray-400">{t.due_at ? new Date(t.due_at).toLocaleDateString('pt-BR') : '—'}</td>
                   <td className="py-3 text-right">
                     <Link href={`/tasks/${t.id}`} className="mr-3 text-blue-600 hover:underline">
                       Ver

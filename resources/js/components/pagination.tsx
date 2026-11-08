@@ -11,7 +11,7 @@ export default function Pagination({ links }: { links: { url: string | null; lab
               className={
                 link.active
                   ? 'rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white'
-                  : 'rounded-md px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100'
+                  : 'rounded-md px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:bg-gray-800'
               }
               dangerouslySetInnerHTML={{ __html: link.label }}
             />

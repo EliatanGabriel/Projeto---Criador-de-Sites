@@ -25,8 +25,8 @@ export default function CommercialDashboard({
       <Head title="Painel Comercial" />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Painel Comercial</h2>
-          <p className="mt-1 text-sm text-gray-600">Envie demandas para análise técnica do admin.</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Painel Comercial</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Envie demandas para análise técnica do admin.</p>
         </div>
         <Link href="/demands/create">
           <Button>+ Nova demanda</Button>
@@ -61,7 +61,7 @@ export default function CommercialDashboard({
         </CardHeader>
         <CardContent>
           {demands.length === 0 ? (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Nenhuma demanda ainda.{' '}
               <Link href="/demands/create" className="text-blue-600 hover:underline">
                 Criar a primeira →
@@ -75,11 +75,11 @@ export default function CommercialDashboard({
                     <Link href={`/demands/${d.id}`} className="font-medium text-blue-600 hover:underline">
                       {d.title}
                     </Link>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {d.client?.name ?? 'Sem cliente'} • {d.status} • {d.priority}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-500">{d.submitted_at ? new Date(d.submitted_at).toLocaleString('pt-BR') : '—'}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{d.submitted_at ? new Date(d.submitted_at).toLocaleString('pt-BR') : '—'}</span>
                 </li>
               ))}
             </ul>

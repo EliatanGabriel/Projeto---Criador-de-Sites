@@ -58,7 +58,7 @@ export default function TemplatesCreate({ categories }: { categories: string[] }
   return (
     <AuthenticatedLayout>
       <Head title="Novo template" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Novo template</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Novo template</h2>
       <form onSubmit={submit} className="space-y-6">
         <Card className="max-w-3xl">
           <CardHeader>
@@ -71,11 +71,11 @@ export default function TemplatesCreate({ categories }: { categories: string[] }
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="description">Descrição</Label>
-              <textarea id="description" value={form.data.description} onChange={(e) => form.setData('description', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" rows={2} />
+              <textarea id="description" value={form.data.description} onChange={(e) => form.setData('description', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm" rows={2} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="category">Categoria *</Label>
-              <select id="category" value={form.data.category} onChange={(e) => form.setData('category', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="category" value={form.data.category} onChange={(e) => form.setData('category', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 {categories.map((c) => (
                   <option key={c} value={c}>
                     {c}

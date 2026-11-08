@@ -20,6 +20,8 @@ class UpdateUserRequest extends FormRequest
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$userId],
             'role' => ['required', 'string', 'in:OWNER,COMMERCIAL,DEVELOPER'],
             'is_active' => ['sometimes', 'boolean'],
+            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
+            'password_confirmation' => ['nullable', 'string', 'min:8'],
         ];
     }
 

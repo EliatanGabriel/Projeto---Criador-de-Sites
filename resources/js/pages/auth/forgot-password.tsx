@@ -16,8 +16,8 @@ export default function ForgotPassword({ status }: { status?: string }) {
   return (
     <GuestLayout>
       <Head title="Recuperar senha" />
-      <h1 className="text-xl font-semibold text-gray-900">Recuperar senha</h1>
-      <p className="mt-1 text-sm text-gray-600">Informe seu e-mail para receber o link de redefinição.</p>
+      <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Recuperar senha</h1>
+      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Informe seu e-mail para receber o link de redefinição.</p>
 
       {status && (
         <Alert className="mt-4" variant="success">

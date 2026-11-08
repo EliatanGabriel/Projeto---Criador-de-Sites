@@ -25,7 +25,7 @@ export default function Settings({ settings, flash }: any) {
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-bold">Configurações</h1>
-          <p className="text-gray-500 mt-1">Gerencie as configurações da aplicação</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Gerencie as configurações da aplicação</p>
         </div>
 
         {flash?.success && (
@@ -70,7 +70,7 @@ export default function Settings({ settings, flash }: any) {
                   id="notifications_enabled"
                   checked={form.data.notifications_enabled}
                   onChange={(e) => form.setData('notifications_enabled', e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="rounded border-gray-300 dark:border-gray-700"
                 />
                 <Label htmlFor="notifications_enabled">Notificações ativadas</Label>
               </div>
@@ -81,7 +81,7 @@ export default function Settings({ settings, flash }: any) {
                   id="maintenance_mode"
                   checked={form.data.maintenance_mode}
                   onChange={(e) => form.setData('maintenance_mode', e.target.checked)}
-                  className="rounded border-gray-300"
+                  className="rounded border-gray-300 dark:border-gray-700"
                 />
                 <Label htmlFor="maintenance_mode">Modo de manutenção</Label>
               </div>

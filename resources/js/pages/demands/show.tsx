@@ -21,8 +21,8 @@ export default function DemandsShow({ demand, statusHint, can }: { demand: any; 
       <Head title={demand.title} />
       <div className="mb-4 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{demand.title}</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{demand.title}</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {demand.client?.name ?? '—'} • Status: <span className="font-medium">{demand.status}</span> • {statusHint}
           </p>
         </div>
@@ -45,7 +45,7 @@ export default function DemandsShow({ demand, statusHint, can }: { demand: any; 
             <p><span className="font-medium">Técnica:</span> {demand.technical_owner?.name ?? '—'}</p>
             <p><span className="font-medium">Serviço:</span> {demand.service_type ?? '—'}</p>
             <p><span className="font-medium">Valor negociado:</span> {demand.negotiated_value ? Number(demand.negotiated_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : '—'}</p>
-            <p><span className="font-medium">Prazo desejado:</span> {demand.desired_deadline ? new Date(demand.desired_deadline).toLocaleDateString('pt-BR') : '—'} <span className="text-xs text-gray-500">(desejado, não técnico)</span></p>
+            <p><span className="font-medium">Prazo desejado:</span> {demand.desired_deadline ? new Date(demand.desired_deadline).toLocaleDateString('pt-BR') : '—'} <span className="text-xs text-gray-500 dark:text-gray-400">(desejado, não técnico)</span></p>
             <p><span className="font-medium">Prioridade:</span> {demand.priority}</p>
             <p><span className="font-medium">Descrição:</span> {demand.description ?? '—'}</p>
             <p><span className="font-medium">Escopo:</span> {demand.contracted_scope ?? '—'}</p>
@@ -79,14 +79,14 @@ export default function DemandsShow({ demand, statusHint, can }: { demand: any; 
           </CardHeader>
           <CardContent>
             {(demand.attachments?.length ?? 0) === 0 ? (
-              <p className="text-sm text-gray-500">Nenhum anexo enviado.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Nenhum anexo enviado.</p>
             ) : (
               <ul className="space-y-2 text-sm">
                 {demand.attachments.map((a: any) => (
                   <li key={a.id} className="flex items-center justify-between border-b pb-2">
                     <div>
                       <p className="font-medium">{a.original_name}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
                         {a.mime} • {a.size ? (a.mime ?? '') : ''} {a.uploader?.name ?? ''} • {new Date(a.created_at).toLocaleDateString('pt-BR')}
                       </p>
                     </div>
@@ -192,7 +192,7 @@ export default function DemandsShow({ demand, statusHint, can }: { demand: any; 
                 </Button>
               </div>
             )}
-            {!can.submit && !can.startReview && !can.requestInformation && !can.approve && !can.reject && !can.cancel && <p className="text-gray-500">Nenhuma ação disponível no status atual.</p>}
+            {!can.submit && !can.startReview && !can.requestInformation && !can.approve && !can.reject && !can.cancel && <p className="text-gray-500 dark:text-gray-400">Nenhuma ação disponível no status atual.</p>}
           </CardContent>
         </Card>
 
@@ -202,7 +202,7 @@ export default function DemandsShow({ demand, statusHint, can }: { demand: any; 
           </CardHeader>
           <CardContent>
             {histories.length === 0 ? (
-              <p className="text-sm text-gray-500">Sem histórico.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Sem histórico.</p>
             ) : (
               <ul className="space-y-3 text-sm">
                 {histories.map((h: any) => (
@@ -210,8 +210,8 @@ export default function DemandsShow({ demand, statusHint, can }: { demand: any; 
                     <p className="font-medium">
                       {h.event} {h.from_status ? `(${h.from_status} → ${h.to_status})` : ''}
                     </p>
-                    {h.description && <p className="text-gray-600">{h.description}</p>}
-                    <p className="text-xs text-gray-500">
+                    {h.description && <p className="text-gray-600 dark:text-gray-400">{h.description}</p>}
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {h.user?.name ?? 'Sistema'} • {new Date(h.created_at).toLocaleString('pt-BR')}
                     </p>
                   </li>

@@ -20,8 +20,8 @@ export default function ResetPassword({ email, token }: { email?: string; token?
   return (
     <GuestLayout>
       <Head title="Redefinir senha" />
-      <h1 className="text-xl font-semibold text-gray-900">Redefinir senha</h1>
-      <p className="mt-1 text-sm text-gray-600">Crie uma nova senha para sua conta.</p>
+      <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Redefinir senha</h1>
+      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Crie uma nova senha para sua conta.</p>
 
       <form onSubmit={submit} className="mt-6 space-y-4">
         <div className="space-y-2">

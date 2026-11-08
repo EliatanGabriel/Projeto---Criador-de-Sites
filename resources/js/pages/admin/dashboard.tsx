@@ -31,8 +31,8 @@ export default function AdminDashboard({
       <Head title="Painel Admin" />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Painel Admin</h2>
-          <p className="mt-1 text-sm text-gray-600">Visão geral — demandas aguardando sua análise técnica.</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Painel Admin</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Visão geral — demandas aguardando sua análise técnica.</p>
         </div>
         <Link href="/demands">
           <Button>Ver demandas</Button>
@@ -69,7 +69,7 @@ export default function AdminDashboard({
         </CardHeader>
         <CardContent>
           {pendingDemands.length === 0 ? (
-            <p className="text-sm text-gray-500">Nenhuma demanda aguardando análise.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Nenhuma demanda aguardando análise.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {pendingDemands.map((d) => (
@@ -78,11 +78,11 @@ export default function AdminDashboard({
                     <Link href={`/demands/${d.id}`} className="font-medium text-blue-600 hover:underline">
                       {d.title}
                     </Link>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {d.client?.name ?? 'Sem cliente'} • {d.commercial_owner?.name ?? ''} • {d.status} • {d.priority}
                     </p>
                   </div>
-                  <span className="text-xs text-gray-500">{date(d.submitted_at)}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{date(d.submitted_at)}</span>
                 </li>
               ))}
             </ul>
@@ -96,7 +96,7 @@ export default function AdminDashboard({
         </CardHeader>
         <CardContent>
           {recentDemands.length === 0 ? (
-            <p className="text-sm text-gray-500">Nenhuma demanda ainda.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Nenhuma demanda ainda.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {recentDemands.map((d) => (
@@ -104,7 +104,7 @@ export default function AdminDashboard({
                   <Link href={`/demands/${d.id}`} className="font-medium text-blue-600 hover:underline">
                     {d.title}
                   </Link>
-                  <span className="text-xs text-gray-500">{d.status}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{d.status}</span>
                 </li>
               ))}
             </ul>

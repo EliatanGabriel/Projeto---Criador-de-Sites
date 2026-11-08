@@ -18,8 +18,8 @@ export default function OpportunitiesShow({ opportunity }: { opportunity: any })
       <Head title={opportunity.title} />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{opportunity.title}</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{opportunity.title}</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {opportunity.client?.name ?? opportunity.contact_name ?? 'Sem cliente'} • {opportunity.status} • Abertura {opportunity.opened_at ? new Date(opportunity.opened_at).toLocaleDateString('pt-BR') : '—'}
           </p>
         </div>
@@ -42,13 +42,13 @@ export default function OpportunitiesShow({ opportunity }: { opportunity: any })
             <p><span className="font-medium">Descrição:</span> {opportunity.description ?? '—'}</p>
             <p><span className="font-medium">Observações:</span> {opportunity.notes ?? '—'}</p>
             <div className="flex flex-wrap gap-2 pt-2">
-              <span className="text-xs text-gray-500">Atualizar status:</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">Atualizar status:</span>
               {['nova', 'em_contato', 'em_negociacao', 'aguardando_cliente', 'ganha', 'perdida', 'cancelada'].map((s) => (
                 <button
                   key={s}
                   onClick={() => updateStatus(s)}
                   disabled={statusForm.processing || opportunity.status === s}
-                  className={`rounded-full px-2.5 py-1 text-xs ${opportunity.status === s ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                  className={`rounded-full px-2.5 py-1 text-xs ${opportunity.status === s ? 'bg-gray-900 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:bg-gray-700'}`}
                 >
                   {s}
                 </button>
@@ -63,14 +63,14 @@ export default function OpportunitiesShow({ opportunity }: { opportunity: any })
           </CardHeader>
           <CardContent>
             {timeline.length === 0 ? (
-              <p className="text-sm text-gray-500">Sem histórico registrado.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Sem histórico registrado.</p>
             ) : (
               <ul className="space-y-3">
                 {timeline.map((a: any) => (
                   <li key={a.id} className="border-b pb-2 last:border-0 text-sm">
                     <p className="font-medium">{a.action}</p>
-                    {a.description && <p className="text-gray-600">{a.description}</p>}
-                    <p className="text-xs text-gray-500">
+                    {a.description && <p className="text-gray-600 dark:text-gray-400">{a.description}</p>}
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {a.user?.name ?? 'Sistema'} • {new Date(a.created_at).toLocaleString('pt-BR')}
                     </p>
                   </li>

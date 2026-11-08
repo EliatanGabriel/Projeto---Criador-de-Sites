@@ -24,8 +24,8 @@ export default function ClientsIndex({ clients, filters }: { clients: Paginator<
       <Head title="Clientes" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Clientes</h2>
-          <p className="mt-1 text-sm text-gray-600">{clients.total} clientes cadastrados</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Clientes</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{clients.total} clientes cadastrados</p>
         </div>
         <Link href="/clients/create">
           <Button>Novo cliente</Button>
@@ -39,7 +39,7 @@ export default function ClientsIndex({ clients, filters }: { clients: Paginator<
         <CardContent>
           <form onSubmit={applyFilters} className="flex flex-col gap-3 sm:flex-row">
             <Input placeholder="Buscar por nome, documento, e-mail, contato..." value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-sm" />
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os status</option>
               <option value="ativo">Ativo</option>
               <option value="inativo">Inativo</option>
@@ -56,7 +56,7 @@ export default function ClientsIndex({ clients, filters }: { clients: Paginator<
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Nome</th>
                   <th className="pb-2">Tipo</th>
                   <th className="pb-2">E-mail</th>
@@ -69,7 +69,7 @@ export default function ClientsIndex({ clients, filters }: { clients: Paginator<
               <tbody>
                 {clients.data.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="py-8 text-center text-gray-500">
+                    <td colSpan={7} className="py-8 text-center text-gray-500 dark:text-gray-400">
                       Nenhum cliente encontrado.
                     </td>
                   </tr>
@@ -81,11 +81,11 @@ export default function ClientsIndex({ clients, filters }: { clients: Paginator<
                     <td className="py-3">{c.email ?? '—'}</td>
                     <td className="py-3">{c.phone ?? '—'}</td>
                     <td className="py-3">
-                      <span className={c.status === 'ativo' ? 'rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700' : 'rounded-full bg-gray-200 px-2 py-0.5 text-xs text-gray-700'}>
+                      <span className={c.status === 'ativo' ? 'rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-700' : 'rounded-full bg-gray-200 dark:bg-gray-700 px-2 py-0.5 text-xs text-gray-700 dark:text-gray-300'}>
                         {c.status === 'ativo' ? 'Ativo' : 'Inativo'}
                       </span>
                     </td>
-                    <td className="py-3 text-gray-500">{new Date(c.created_at).toLocaleDateString('pt-BR')}</td>
+                    <td className="py-3 text-gray-500 dark:text-gray-400">{new Date(c.created_at).toLocaleDateString('pt-BR')}</td>
                     <td className="py-3 text-right">
                       <Link href={`/clients/${c.id}`} className="mr-3 text-blue-600 hover:underline">
                         Ver

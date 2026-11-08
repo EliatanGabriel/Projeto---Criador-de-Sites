@@ -11,7 +11,7 @@ export default function FinanceCategories({ categories, canManage }: { categorie
   return (
     <AuthenticatedLayout>
       <Head title="Categorias financeiras" />
-      <div className="mb-6"><h2 className="text-2xl font-bold text-gray-900">Categorias financeiras</h2></div>
+      <div className="mb-6"><h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Categorias financeiras</h2></div>
       <Card>
         <CardHeader><CardTitle>Categorias</CardTitle></CardHeader>
         <CardContent className="space-y-4">
@@ -32,7 +32,7 @@ export default function FinanceCategories({ categories, canManage }: { categorie
             </form>
           )}
           <table className="w-full text-sm">
-            <thead><tr className="border-b text-left text-gray-600"><th className="pb-2">Nome</th><th className="pb-2">Tipo</th></tr></thead>
+            <thead><tr className="border-b text-left text-gray-600 dark:text-gray-400"><th className="pb-2">Nome</th><th className="pb-2">Tipo</th></tr></thead>
             <tbody>
               {(categories ?? []).map((c: any) => (
                 <tr key={c.id} className="border-b last:border-0"><td className="py-2 font-medium">{c.name}</td><td className="py-2">{c.type}</td></tr>

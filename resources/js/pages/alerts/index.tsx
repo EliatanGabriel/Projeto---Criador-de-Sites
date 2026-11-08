@@ -30,8 +30,8 @@ export default function AlertsIndex({ alerts, filters, summary, websites, users 
     <AuthenticatedLayout>
       <Head title="Alertas" />
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Central de alertas</h2>
-        <p className="mt-1 text-sm text-gray-600">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Central de alertas</h2>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           Abertos: {summary.open} • Info: {summary.info} • Warning: {summary.warning} • Critical: {summary.critical}
         </p>
       </div>
@@ -73,7 +73,7 @@ export default function AlertsIndex({ alerts, filters, summary, websites, users 
         <CardContent className="pt-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-gray-600">
+              <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                 <th className="pb-2">Título</th>
                 <th className="pb-2">Site</th>
                 <th className="pb-2">Tipo</th>
@@ -86,7 +86,7 @@ export default function AlertsIndex({ alerts, filters, summary, websites, users 
             <tbody>
               {alerts.data.length === 0 && (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-gray-500">
+                  <td colSpan={7} className="py-8 text-center text-gray-500 dark:text-gray-400">
                     Nenhum alerta encontrado.
                   </td>
                 </tr>
@@ -97,7 +97,7 @@ export default function AlertsIndex({ alerts, filters, summary, websites, users 
                   <td className="py-3">{a.website?.name ?? '—'}</td>
                   <td className="py-3">{a.alert_type}</td>
                   <td className="py-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs ${SEVERITY_COLOR[a.severity] ?? 'bg-gray-100'}`}>{a.severity}</span>
+                    <span className={`rounded-full px-2 py-0.5 text-xs ${SEVERITY_COLOR[a.severity] ?? 'bg-gray-100 dark:bg-gray-800'}`}>{a.severity}</span>
                   </td>
                   <td className="py-3">{a.due_at ? new Date(a.due_at).toLocaleDateString('pt-BR') : '—'}</td>
                   <td className="py-3">{a.status}</td>

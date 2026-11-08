@@ -17,8 +17,8 @@ export default function TasksShow({ task }: { task: any }) {
       <Head title={task.title} />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{task.title}</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{task.title}</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {task.project?.title ?? '—'} • {task.status} • {task.priority}
           </p>
         </div>
@@ -56,14 +56,14 @@ export default function TasksShow({ task }: { task: any }) {
               </Button>
             </div>
             {(task.comments?.length ?? 0) === 0 ? (
-              <p className="text-sm text-gray-500">Nenhum comentário.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Nenhum comentário.</p>
             ) : (
               <ul className="space-y-3 text-sm">
                 {[...task.comments].reverse().map((c: any) => (
                   <li key={c.id} className="border-b pb-2">
                     <p className="font-medium">{c.user?.name ?? 'Usuário'}</p>
                     <p>{c.comment}</p>
-                    <p className="text-xs text-gray-500">{new Date(c.created_at).toLocaleString('pt-BR')}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{new Date(c.created_at).toLocaleString('pt-BR')}</p>
                   </li>
                 ))}
               </ul>
@@ -77,14 +77,14 @@ export default function TasksShow({ task }: { task: any }) {
           </CardHeader>
           <CardContent>
             {timeline.length === 0 ? (
-              <p className="text-sm text-gray-500">Sem histórico.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Sem histórico.</p>
             ) : (
               <ul className="space-y-2 text-sm">
                 {timeline.map((h: any) => (
                   <li key={h.id} className="border-b pb-2">
                     <p className="font-medium">{h.event}</p>
-                    {h.description && <p className="text-gray-600">{h.description}</p>}
-                    <p className="text-xs text-gray-500">
+                    {h.description && <p className="text-gray-600 dark:text-gray-400">{h.description}</p>}
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {h.user?.name ?? 'Sistema'} • {new Date(h.created_at).toLocaleString('pt-BR')}
                     </p>
                   </li>

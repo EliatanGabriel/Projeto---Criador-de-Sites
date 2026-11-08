@@ -9,8 +9,8 @@ export default function HostingsShow({ hosting }: { hosting: any }) {
       <Head title={hosting.name} />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{hosting.name}</h2>
-          <p className="mt-1 text-sm text-gray-600">{hosting.provider} • {hosting.status}</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{hosting.name}</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{hosting.provider} • {hosting.status}</p>
         </div>
         <Link href={`/hostings/${hosting.id}/edit`}>
           <Button>Editar</Button>
@@ -36,7 +36,7 @@ export default function HostingsShow({ hosting }: { hosting: any }) {
         <CardContent>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-gray-600">
+              <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                 <th className="pb-2">Site</th>
                 <th className="pb-2">Ambiente</th>
                 <th className="pb-2">Tipo</th>

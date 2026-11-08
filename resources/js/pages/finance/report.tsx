@@ -9,7 +9,7 @@ export default function FinanceReport({ month, summary, custosPorProjeto, transa
     <AuthenticatedLayout>
       <Head title={`Relatório ${month}`} />
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Relatório financeiro — {month}</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Relatório financeiro — {month}</h2>
         <Link href="/finance" className="text-blue-600 hover:underline">Voltar</Link>
       </div>
 
@@ -28,7 +28,7 @@ export default function FinanceReport({ month, summary, custosPorProjeto, transa
           {(custosPorProjeto ?? []).map((c: any) => (
             <p key={c.project} className="text-sm">{c.project} — {fmt(c.total)}</p>
           ))}
-          {(custosPorProjeto ?? []).length === 0 && <p className="text-sm text-gray-500">Sem despesas de projeto no período.</p>}
+          {(custosPorProjeto ?? []).length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">Sem despesas de projeto no período.</p>}
         </CardContent>
       </Card>
     </AuthenticatedLayout>

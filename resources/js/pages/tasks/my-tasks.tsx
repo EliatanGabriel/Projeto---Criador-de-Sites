@@ -23,7 +23,7 @@ export default function MyTasks({ tasks, filters }: { tasks: Paginator<any>; fil
   return (
     <AuthenticatedLayout>
       <Head title="Minhas tarefas" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Minhas tarefas</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Minhas tarefas</h2>
 
       <Card>
         <CardHeader>
@@ -31,7 +31,7 @@ export default function MyTasks({ tasks, filters }: { tasks: Paginator<any>; fil
         </CardHeader>
         <CardContent>
           <form onSubmit={applyFilters} className="flex gap-3">
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos os status</option>
               {Object.entries(T_STATUS).map(([v, l]) => (
                 <option key={v} value={v}>
@@ -39,7 +39,7 @@ export default function MyTasks({ tasks, filters }: { tasks: Paginator<any>; fil
                 </option>
               ))}
             </select>
-            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={priority} onChange={(e) => setPriority(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todas prioridades</option>
               <option value="low">Baixa</option>
               <option value="medium">Normal</option>
@@ -57,7 +57,7 @@ export default function MyTasks({ tasks, filters }: { tasks: Paginator<any>; fil
         <CardContent className="pt-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-gray-600">
+              <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                 <th className="pb-2">Tarefa</th>
                 <th className="pb-2">Projeto</th>
                 <th className="pb-2">Status</th>
@@ -68,7 +68,7 @@ export default function MyTasks({ tasks, filters }: { tasks: Paginator<any>; fil
             <tbody>
               {tasks.data.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-gray-500">
+                  <td colSpan={5} className="py-8 text-center text-gray-500 dark:text-gray-400">
                     Nenhuma tarefa atribuída a você.
                   </td>
                 </tr>
@@ -78,7 +78,7 @@ export default function MyTasks({ tasks, filters }: { tasks: Paginator<any>; fil
                   <td className="py-3 font-medium">{t.title}</td>
                   <td className="py-3">{t.project?.title ?? '—'}</td>
                   <td className="py-3">{T_STATUS[t.status] ?? t.status}</td>
-                  <td className="py-3 text-gray-500">{t.due_at ? new Date(t.due_at).toLocaleDateString('pt-BR') : '—'}</td>
+                  <td className="py-3 text-gray-500 dark:text-gray-400">{t.due_at ? new Date(t.due_at).toLocaleDateString('pt-BR') : '—'}</td>
                   <td className="py-3 text-right">
                     <Link href={`/tasks/${t.id}`} className="text-blue-600 hover:underline">
                       Ver

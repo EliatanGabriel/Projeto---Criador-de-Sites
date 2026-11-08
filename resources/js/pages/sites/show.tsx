@@ -31,8 +31,8 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
       <Head title={site.name} />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{site.name}</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{site.name}</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {site.client?.name ?? '—'} • {site.status} • {site.type ?? '—'}
           </p>
         </div>
@@ -45,7 +45,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
 
       <div className="mb-4 flex flex-wrap gap-2">
         {tabs.map(([k, l]) => (
-          <button key={k} onClick={() => setTab(k)} className={`rounded-full px-3 py-1.5 text-sm ${tab === k ? 'bg-gray-900 text-white' : 'bg-gray-100'}`}>
+          <button key={k} onClick={() => setTab(k)} className={`rounded-full px-3 py-1.5 text-sm ${tab === k ? 'bg-gray-900 text-white' : 'bg-gray-100 dark:bg-gray-800'}`}>
             {l}
           </button>
         ))}
@@ -71,7 +71,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
                     <Link href={`/projects/${p.id}`} className="text-blue-600 hover:underline">
                       {p.title}
                     </Link>{' '}
-                    <span className="text-xs text-gray-500">({p.status})</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">({p.status})</span>
                   </li>
                 ))}
               </ul>
@@ -126,7 +126,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
             )}
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Domínio</th>
                   <th className="pb-2">Principal</th>
                   <th className="pb-2">Vencimento</th>
@@ -196,7 +196,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
             )}
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Nome</th>
                   <th className="pb-2">Tipo</th>
                   <th className="pb-2">URL</th>
@@ -262,7 +262,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
             )}
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Nome</th>
                   <th className="pb-2">GitHub</th>
                   <th className="pb-2">Branch</th>
@@ -286,7 +286,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
                       {r.last_commit_sha ? (
                         <>
                           <code>{r.last_commit_sha.slice(0, 7)}</code>
-                          {r.last_commit_at && <span className="text-gray-500"> • {new Date(r.last_commit_at).toLocaleDateString('pt-BR')}</span>}
+                          {r.last_commit_at && <span className="text-gray-500 dark:text-gray-400"> • {new Date(r.last_commit_at).toLocaleDateString('pt-BR')}</span>}
                         </>
                       ) : (
                         '—'
@@ -299,7 +299,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
                       ) : r.last_sync_status ? (
                         <span className="text-red-600">{r.last_sync_error ?? 'Erro'}</span>
                       ) : (
-                        <span className="text-gray-500">Não sincronizado</span>
+                        <span className="text-gray-500 dark:text-gray-400">Não sincronizado</span>
                       )}
                       {r.last_sync_attempt_at && <div className="text-gray-400">{new Date(r.last_sync_attempt_at).toLocaleString('pt-BR')}</div>}
                     </td>
@@ -317,7 +317,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
                 ))}
               </tbody>
             </table>
-            {(site.repositories ?? []).length === 0 && <p className="text-sm text-gray-500">Nenhum repositório cadastrado.</p>}
+            {(site.repositories ?? []).length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">Nenhum repositório cadastrado.</p>}
           </CardContent>
         </Card>
       )}
@@ -378,7 +378,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
                   <p className="font-medium">
                     {p.version ?? 'Sem versão'} — {p.result} — {new Date(p.published_at).toLocaleString('pt-BR')}
                   </p>
-                  <p className="text-gray-600">{p.description ?? ''}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{p.description ?? ''}</p>
                 </li>
               ))}
             </ul>
@@ -457,7 +457,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
                   <p className="font-medium">
                     {m.type} — {m.status} — {m.opened_at ? new Date(m.opened_at).toLocaleDateString('pt-BR') : ''}
                   </p>
-                  <p className="text-gray-600">{m.description}</p>
+                  <p className="text-gray-600 dark:text-gray-400">{m.description}</p>
                 </li>
               ))}
             </ul>
@@ -516,7 +516,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
                         <span>
                           <b>{c.label}</b> • {c.username ?? '—'} • ••••••••
                         </span>
-                        <span className="text-xs text-gray-500">acesso auditado</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">acesso auditado</span>
                       </li>
                     ))}
                   </ul>
@@ -543,7 +543,7 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
             )}
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Domínio</th>
                   <th className="pb-2">Estado</th>
                   <th className="pb-2">Falhas</th>
@@ -563,12 +563,12 @@ export default function SitesShow({ site, healthStates, latestChecks, canManage,
                 ))}
               </tbody>
             </table>
-            {(healthStates ?? []).length === 0 && <p className="text-sm text-gray-500">Nenhuma verificação de saúde ainda.</p>}
+            {(healthStates ?? []).length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">Nenhuma verificação de saúde ainda.</p>}
             <div>
               <p className="mb-2 text-sm font-medium">Últimas verificações</p>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b text-left text-gray-600">
+                  <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                     <th className="pb-2">Início</th>
                     <th className="pb-2">Domínio</th>
                     <th className="pb-2">Origem</th>

@@ -20,10 +20,10 @@ export default function Login({ status, canResetPassword, panel }: { status?: st
   return (
     <GuestLayout>
       <Head title="Entrar" />
-      <h1 className="text-xl font-semibold text-gray-900">
+      <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
         {panel === 'admin' ? 'Entrar no Painel Admin' : panel === 'commercial' ? 'Entrar no Painel Comercial' : 'Entrar na plataforma'}
       </h1>
-      <p className="mt-1 text-sm text-gray-600">Informe suas credenciais de acesso.</p>
+      <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Informe suas credenciais de acesso.</p>
 
       {status && (
         <Alert className="mt-4" variant="success">
@@ -42,8 +42,8 @@ export default function Login({ status, canResetPassword, panel }: { status?: st
           <Input id="password" type="password" autoComplete="current-password" required value={form.data.password} onChange={(e) => form.setData('password', e.target.value)} placeholder="••••••••" />
           {form.errors.password && <p className="text-sm text-red-600">{form.errors.password}</p>}
         </div>
-        <label className="flex items-center gap-2 text-sm text-gray-700">
-          <input type="checkbox" checked={form.data.remember} onChange={(e) => form.setData('remember', e.target.checked)} className="rounded border-gray-300" />
+        <label className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+          <input type="checkbox" checked={form.data.remember} onChange={(e) => form.setData('remember', e.target.checked)} className="rounded border-gray-300 dark:border-gray-700" />
           Manter conectado
         </label>
         <Button type="submit" className="w-full" disabled={form.processing}>
@@ -57,7 +57,7 @@ export default function Login({ status, canResetPassword, panel }: { status?: st
           </p>
         )}
       </form>
-      <p className="mt-6 text-center text-xs text-gray-500">Contas criadas apenas por administrador autorizado.</p>
+      <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">Contas criadas apenas por administrador autorizado.</p>
     </GuestLayout>
   );
 }

@@ -78,6 +78,26 @@ test('owner pode editar usuário e alterar perfil', function () {
     expect($target->fresh()->hasRole('DEVELOPER'))->toBeTrue();
 });
 
+test('owner pode redefinir senha de usuário na edicao', function () {
+    $owner = ownerUser();
+    $target = User::factory()->create(['email' => 'reset@example.com']);
+    $target->assignRole('COMMERCIAL');
+    $oldHash = $target->password;
+
+    $this->actingAs($owner)->put("/team/{$target->id}", [
+        'name' => $target->name,
+        'email' => 'reset@example.com',
+        'role' => 'COMMERCIAL',
+        'is_active' => true,
+        'password' => 'NovaSenha@123',
+        'password_confirmation' => 'NovaSenha@123',
+    ])->assertRedirect('/team');
+
+    $fresh = $target->fresh();
+    expect($fresh->password)->not->toBe($oldHash);
+    expect(Hash::check('NovaSenha@123', $fresh->password))->toBeTrue();
+});
+
 test('commercial não pode promover usuário a OWNER por edição direta', function () {
     $owner = ownerUser();
     $commercial = User::factory()->create();

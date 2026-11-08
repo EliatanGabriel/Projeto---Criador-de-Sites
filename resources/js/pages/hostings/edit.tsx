@@ -23,7 +23,7 @@ export default function HostingsEdit({ hosting }: { hosting: any }) {
   return (
     <AuthenticatedLayout>
       <Head title="Editar hospedagem" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Editar hospedagem</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Editar hospedagem</h2>
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle>{hosting.name}</CardTitle>

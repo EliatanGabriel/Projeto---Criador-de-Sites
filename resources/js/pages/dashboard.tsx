@@ -9,8 +9,8 @@ export default function Dashboard({ stats, recentOpportunities }: { stats: { act
     <AuthenticatedLayout>
       <Head title="Dashboard" />
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-        <p className="mt-1 text-sm text-gray-600">Visão geral da operação — indicadores reais da base.</p>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h2>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Visão geral da operação — indicadores reais da base.</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -42,7 +42,7 @@ export default function Dashboard({ stats, recentOpportunities }: { stats: { act
             <CardTitle className="text-3xl">{stats.in_negotiation}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">Pipeline ativo</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Pipeline ativo</p>
           </CardContent>
         </Card>
         <Card>
@@ -51,7 +51,7 @@ export default function Dashboard({ stats, recentOpportunities }: { stats: { act
             <CardTitle className="text-3xl text-emerald-600">{stats.won}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">Vendas fechadas</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Vendas fechadas</p>
           </CardContent>
         </Card>
         <Card>
@@ -60,7 +60,7 @@ export default function Dashboard({ stats, recentOpportunities }: { stats: { act
             <CardTitle className="text-3xl text-red-600">{stats.lost}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">Perdas registradas</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Perdas registradas</p>
           </CardContent>
         </Card>
         <Card>
@@ -69,7 +69,7 @@ export default function Dashboard({ stats, recentOpportunities }: { stats: { act
             <CardTitle className="text-3xl">{brl(stats.open_estimated_total)}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-gray-500">Soma dos valores estimados</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Soma dos valores estimados</p>
           </CardContent>
         </Card>
       </div>
@@ -81,7 +81,7 @@ export default function Dashboard({ stats, recentOpportunities }: { stats: { act
         </CardHeader>
         <CardContent>
           {recentOpportunities.length === 0 ? (
-            <p className="text-sm text-gray-500">Nenhuma oportunidade registrada ainda.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Nenhuma oportunidade registrada ainda.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {recentOpportunities.map((o) => (
@@ -90,7 +90,7 @@ export default function Dashboard({ stats, recentOpportunities }: { stats: { act
                     <Link href={`/opportunities/${o.id}`} className="font-medium text-blue-600 hover:underline">
                       {o.title}
                     </Link>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {o.client?.name ?? 'Sem cliente'} • {o.status}
                     </p>
                   </div>

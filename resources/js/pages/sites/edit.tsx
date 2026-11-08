@@ -27,7 +27,7 @@ export default function SitesEdit({ site, users }: { site: any; users: { id: str
   return (
     <AuthenticatedLayout>
       <Head title="Editar site" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Editar site</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Editar site</h2>
       <form onSubmit={submit} className="space-y-6">
         <Card className="max-w-3xl">
           <CardHeader>

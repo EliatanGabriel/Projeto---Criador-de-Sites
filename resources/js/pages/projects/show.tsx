@@ -25,8 +25,8 @@ export default function ProjectsShow({ project, progress, canManage }: { project
       <Head title={project.title} />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{project.title}</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{project.title}</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {project.client?.name ?? '—'} • {P_STATUS[project.status] ?? project.status} • Progresso {progress.percentage}% ({progress.done}/{progress.total})
           </p>
         </div>
@@ -67,7 +67,7 @@ export default function ProjectsShow({ project, progress, canManage }: { project
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>Concluídas: <b>{progress.done}</b> / {progress.total} ({progress.percentage}%)</p>
-            <div className="h-2 w-full rounded bg-gray-200">
+            <div className="h-2 w-full rounded bg-gray-200 dark:bg-gray-700">
               <div className="h-2 rounded bg-emerald-500" style={{ width: `${progress.percentage}%` }} />
             </div>
             <p>A fazer: {progress.todo} • Em andamento: {progress.in_progress} • Em revisão: {progress.in_review} • Bloqueadas: {progress.blocked}</p>
@@ -85,7 +85,7 @@ export default function ProjectsShow({ project, progress, canManage }: { project
                 <Input id="blocked" value={blockedReason} onChange={(e) => setBlockedReason(e.target.value)} placeholder="Motivo do bloqueio" />
                 <div className="flex flex-wrap gap-2">
                   {['planning', 'in_progress', 'in_review', 'blocked', 'completed', 'cancelled'].map((s) => (
-                    <button key={s} onClick={() => setStatus(s)} disabled={statusForm.processing || project.status === s} className={`rounded-full px-2.5 py-1 text-xs ${project.status === s ? 'bg-gray-900 text-white' : 'bg-gray-100 hover:bg-gray-200'}`}>
+                    <button key={s} onClick={() => setStatus(s)} disabled={statusForm.processing || project.status === s} className={`rounded-full px-2.5 py-1 text-xs ${project.status === s ? 'bg-gray-900 text-white' : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:bg-gray-700'}`}>
                       {P_STATUS[s] ?? s}
                     </button>
                   ))}
@@ -101,7 +101,7 @@ export default function ProjectsShow({ project, progress, canManage }: { project
           </CardHeader>
           <CardContent>
             {(project.tasks?.length ?? 0) === 0 ? (
-              <p className="py-6 text-center text-sm text-gray-500">Nenhuma tarefa criada.</p>
+              <p className="py-6 text-center text-sm text-gray-500 dark:text-gray-400">Nenhuma tarefa criada.</p>
             ) : (
               (() => {
                 const grouped: Record<string, any[]> = {};
@@ -120,7 +120,7 @@ export default function ProjectsShow({ project, progress, canManage }: { project
                     <p className="mb-2 font-medium">{phase}</p>
                     <table className="w-full text-sm">
                       <thead>
-                        <tr className="border-b text-left text-gray-600">
+                        <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                           <th className="pb-2">Título</th>
                           <th className="pb-2">Responsável</th>
                           <th className="pb-2">Status</th>
@@ -136,7 +136,7 @@ export default function ProjectsShow({ project, progress, canManage }: { project
                             <td className="py-2">{t.assignee?.name ?? '—'}</td>
                             <td className="py-2">{T_STATUS[t.status] ?? t.status}</td>
                             <td className="py-2">{t.priority}</td>
-                            <td className="py-2 text-gray-500">{t.due_at ? new Date(t.due_at).toLocaleDateString('pt-BR') : '—'}</td>
+                            <td className="py-2 text-gray-500 dark:text-gray-400">{t.due_at ? new Date(t.due_at).toLocaleDateString('pt-BR') : '—'}</td>
                             <td className="py-2 text-right">
                               <Link href={`/tasks/${t.id}`} className="text-blue-600 hover:underline">
                                 Ver
@@ -159,14 +159,14 @@ export default function ProjectsShow({ project, progress, canManage }: { project
           </CardHeader>
           <CardContent>
             {timeline.length === 0 ? (
-              <p className="text-sm text-gray-500">Sem histórico.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Sem histórico.</p>
             ) : (
               <ul className="space-y-2 text-sm">
                 {timeline.map((h: any) => (
                   <li key={h.id} className="border-b pb-2">
                     <p className="font-medium">{h.event}</p>
-                    {h.description && <p className="text-gray-600">{h.description}</p>}
-                    <p className="text-xs text-gray-500">
+                    {h.description && <p className="text-gray-600 dark:text-gray-400">{h.description}</p>}
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {h.user?.name ?? 'Sistema'} • {new Date(h.created_at).toLocaleString('pt-BR')}
                     </p>
                   </li>

@@ -32,11 +32,11 @@ export default function ProjectsCreate({ demands, templates, users }: { demands:
   return (
     <AuthenticatedLayout>
       <Head title="Converter demanda" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Converter demanda em projeto</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Converter demanda em projeto</h2>
       {demands.length === 0 ? (
         <Card className="max-w-2xl">
           <CardContent className="pt-6">
-            <p className="text-sm text-gray-500">Nenhuma demanda aprovada sem projeto.</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">Nenhuma demanda aprovada sem projeto.</p>
           </CardContent>
         </Card>
       ) : (
@@ -66,7 +66,7 @@ export default function ProjectsCreate({ demands, templates, users }: { demands:
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500">Se selecionado, as tarefas do template serão geradas automaticamente com snapshot. Sem template, projeto é criado sem tarefas.</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Se selecionado, as tarefas do template serão geradas automaticamente com snapshot. Sem template, projeto é criado sem tarefas.</p>
               </div>
             </CardContent>
           </Card>
@@ -87,8 +87,8 @@ export default function ProjectsCreate({ demands, templates, users }: { demands:
                         <li key={t.id} className="flex flex-wrap items-center gap-3 border-b pb-2 last:border-0">
                           <input type="checkbox" checked={!excluded[t.id]} onChange={(e) => setExcluded((s) => ({ ...s, [t.id]: !e.target.checked }))} />
                           <span className="flex-1">
-                            {t.title} {!t.is_required && <span className="text-xs text-gray-500">(opcional)</span>}
-                            <span className="ml-2 text-xs text-gray-500">
+                            {t.title} {!t.is_required && <span className="text-xs text-gray-500 dark:text-gray-400">(opcional)</span>}
+                            <span className="ml-2 text-xs text-gray-500 dark:text-gray-400">
                               {t.priority} • {t.estimated_days != null ? `${t.estimated_days}d` : ''}
                             </span>
                           </span>
@@ -107,7 +107,7 @@ export default function ProjectsCreate({ demands, templates, users }: { demands:
                     </ul>
                   </div>
                 ))}
-                <p className="text-xs text-gray-500">Ajuste responsáveis e desmarque tarefas opcionais. Snapshot preserva o estado atual do template.</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Ajuste responsáveis e desmarque tarefas opcionais. Snapshot preserva o estado atual do template.</p>
               </CardContent>
             </Card>
           )}

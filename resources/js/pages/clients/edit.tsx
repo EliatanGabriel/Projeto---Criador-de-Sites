@@ -30,7 +30,7 @@ export default function ClientsEdit({ client }: { client: Client }) {
   return (
     <AuthenticatedLayout>
       <Head title="Editar cliente" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Editar cliente</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Editar cliente</h2>
       <Card className="max-w-3xl">
         <CardHeader>
           <CardTitle>{client.name}</CardTitle>
@@ -44,7 +44,7 @@ export default function ClientsEdit({ client }: { client: Client }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="type">Tipo *</Label>
-              <select id="type" value={form.data.type} onChange={(e) => form.setData('type', e.target.value as 'pj' | 'pf')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="type" value={form.data.type} onChange={(e) => form.setData('type', e.target.value as 'pj' | 'pf')} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 <option value="pj">Pessoa jurídica</option>
                 <option value="pf">Pessoa física</option>
               </select>
@@ -67,7 +67,7 @@ export default function ClientsEdit({ client }: { client: Client }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="status">Status *</Label>
-              <select id="status" value={form.data.status} onChange={(e) => form.setData('status', e.target.value as 'ativo' | 'inativo')} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="status" value={form.data.status} onChange={(e) => form.setData('status', e.target.value as 'ativo' | 'inativo')} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 <option value="ativo">Ativo</option>
                 <option value="inativo">Inativo</option>
               </select>
@@ -92,7 +92,7 @@ export default function ClientsEdit({ client }: { client: Client }) {
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="notes">Observações internas</Label>
-              <textarea id="notes" value={form.data.notes} onChange={(e) => form.setData('notes', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" rows={3} />
+              <textarea id="notes" value={form.data.notes} onChange={(e) => form.setData('notes', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm" rows={3} />
             </div>
             <div className="sm:col-span-2">
               <Button type="submit" disabled={form.processing}>

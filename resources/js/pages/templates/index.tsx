@@ -26,8 +26,8 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
       <Head title="Templates" />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Templates de projeto</h2>
-          <p className="mt-1 text-sm text-gray-600">{templates.total} templates</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Templates de projeto</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{templates.total} templates</p>
         </div>
         <Link href="/templates/create">
           <Button>Novo template</Button>
@@ -41,7 +41,7 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
         <CardContent>
           <form onSubmit={applyFilters} className="flex gap-3">
             <Input placeholder="Buscar nome..." value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-xs" />
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todas categorias</option>
               {categories.map((c) => (
                 <option key={c} value={c}>
@@ -49,7 +49,7 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
                 </option>
               ))}
             </select>
-            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
+            <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
               <option value="">Todos</option>
               <option value="ativo">Ativo</option>
               <option value="inativo">Inativo</option>
@@ -65,7 +65,7 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
         <CardContent className="pt-6">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-gray-600">
+              <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                 <th className="pb-2">Nome</th>
                 <th className="pb-2">Categoria</th>
                 <th className="pb-2">Versão</th>
@@ -77,7 +77,7 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
             <tbody>
               {templates.data.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-gray-500">
+                  <td colSpan={6} className="py-8 text-center text-gray-500 dark:text-gray-400">
                     Nenhum template encontrado.
                   </td>
                 </tr>

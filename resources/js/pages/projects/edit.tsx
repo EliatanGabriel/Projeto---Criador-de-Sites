@@ -26,7 +26,7 @@ export default function ProjectsEdit({ project, users }: { project: any; users: 
   return (
     <AuthenticatedLayout>
       <Head title="Editar projeto" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Editar projeto</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Editar projeto</h2>
       <Card className="max-w-3xl">
         <CardHeader>
           <CardTitle>{project.title}</CardTitle>
@@ -39,15 +39,15 @@ export default function ProjectsEdit({ project, users }: { project: any; users: 
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="description">Descrição</Label>
-              <textarea id="description" value={form.data.description} onChange={(e) => form.setData('description', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" rows={2} />
+              <textarea id="description" value={form.data.description} onChange={(e) => form.setData('description', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm" rows={2} />
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="scope">Escopo</Label>
-              <textarea id="scope" value={form.data.scope} onChange={(e) => form.setData('scope', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" rows={2} />
+              <textarea id="scope" value={form.data.scope} onChange={(e) => form.setData('scope', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm" rows={2} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="technical_owner_id">Responsável técnico</Label>
-              <select id="technical_owner_id" value={form.data.technical_owner_id} onChange={(e) => form.setData('technical_owner_id', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="technical_owner_id" value={form.data.technical_owner_id} onChange={(e) => form.setData('technical_owner_id', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 <option value="">— Selecione —</option>
                 {users.map((u) => (
                   <option key={u.id} value={u.id}>
@@ -58,7 +58,7 @@ export default function ProjectsEdit({ project, users }: { project: any; users: 
             </div>
             <div className="space-y-2">
               <Label htmlFor="priority">Prioridade *</Label>
-              <select id="priority" value={form.data.priority} onChange={(e) => form.setData('priority', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="priority" value={form.data.priority} onChange={(e) => form.setData('priority', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 <option value="low">Baixa</option>
                 <option value="medium">Normal</option>
                 <option value="high">Alta</option>
@@ -79,7 +79,7 @@ export default function ProjectsEdit({ project, users }: { project: any; users: 
             </div>
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="internal_notes">Observações internas</Label>
-              <textarea id="internal_notes" value={form.data.internal_notes} onChange={(e) => form.setData('internal_notes', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm" rows={2} />
+              <textarea id="internal_notes" value={form.data.internal_notes} onChange={(e) => form.setData('internal_notes', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm" rows={2} />
             </div>
             <div className="sm:col-span-2">
               <Button type="submit" disabled={form.processing}>

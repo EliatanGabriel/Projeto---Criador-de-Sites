@@ -11,8 +11,8 @@ export default function TemplatesShow({ template }: { template: any }) {
       <Head title={template.name} />
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">{template.name}</h2>
-          <p className="mt-1 text-sm text-gray-600">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{template.name}</h2>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
             {template.category} • v{template.version} • {template.is_active ? 'Ativo' : 'Inativo'}
           </p>
         </div>
@@ -31,7 +31,7 @@ export default function TemplatesShow({ template }: { template: any }) {
           <CardTitle>Descrição</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-700">{template.description ?? '—'}</p>
+          <p className="text-sm text-gray-700 dark:text-gray-300">{template.description ?? '—'}</p>
         </CardContent>
       </Card>
 
@@ -46,7 +46,7 @@ export default function TemplatesShow({ template }: { template: any }) {
           <CardContent>
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-gray-600">
+                <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                   <th className="pb-2">Tarefa</th>
                   <th className="pb-2">Prioridade</th>
                   <th className="pb-2">Sugerido</th>
@@ -59,7 +59,7 @@ export default function TemplatesShow({ template }: { template: any }) {
                   <tr key={t.id} className="border-b last:border-0">
                     <td className="py-2">
                       <p className="font-medium">{t.title}</p>
-                      {t.description && <p className="text-xs text-gray-500">{t.description}</p>}
+                      {t.description && <p className="text-xs text-gray-500 dark:text-gray-400">{t.description}</p>}
                     </td>
                     <td className="py-2">{t.priority}</td>
                     <td className="py-2">{t.suggested_role ?? '—'}</td>

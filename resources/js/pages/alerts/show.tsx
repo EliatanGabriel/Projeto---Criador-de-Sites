@@ -21,8 +21,8 @@ export default function AlertsShow({ alert, isRead, canRead, canResolve, users }
         <Link href="/alerts" className="text-sm text-blue-600 hover:underline">
           ← Voltar à central
         </Link>
-        <h2 className="mt-2 text-2xl font-bold text-gray-900">{alert.title}</h2>
-        <p className="mt-1 text-sm text-gray-600">
+        <h2 className="mt-2 text-2xl font-bold text-gray-900 dark:text-gray-100">{alert.title}</h2>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           {alert.website?.name ?? '—'} • {alert.alert_type} • {alert.severity} • {alert.status}
         </p>
       </div>
@@ -88,14 +88,14 @@ export default function AlertsShow({ alert, isRead, canRead, canResolve, users }
           </CardHeader>
           <CardContent>
             {timeline.length === 0 ? (
-              <p className="text-sm text-gray-500">Sem histórico.</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Sem histórico.</p>
             ) : (
               <ul className="space-y-2 text-sm">
                 {timeline.map((h: any) => (
                   <li key={h.id} className="border-b pb-2">
                     <p className="font-medium">{h.event}</p>
-                    {h.description && <p className="text-gray-600">{h.description}</p>}
-                    <p className="text-xs text-gray-500">
+                    {h.description && <p className="text-gray-600 dark:text-gray-400">{h.description}</p>}
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {h.user?.name ?? 'Sistema'} • {new Date(h.created_at).toLocaleString('pt-BR')}
                     </p>
                   </li>

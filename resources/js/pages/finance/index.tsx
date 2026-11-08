@@ -20,7 +20,7 @@ export default function FinanceIndex({ transactions, filters, categories, canMan
     <AuthenticatedLayout>
       <Head title="Financeiro" />
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Financeiro</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Financeiro</h2>
         <div className="flex gap-2">
           <Link href="/finance/report"><Button variant="outline">Relatório mensal</Button></Link>
           <Link href="/finance/categories"><Button variant="outline">Categorias</Button></Link>
@@ -63,7 +63,7 @@ export default function FinanceIndex({ transactions, filters, categories, canMan
         <CardContent>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b text-left text-gray-600">
+              <tr className="border-b text-left text-gray-600 dark:text-gray-400">
                 <th className="pb-2">Descrição</th>
                 <th className="pb-2">Tipo</th>
                 <th className="pb-2">Status</th>

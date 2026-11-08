@@ -23,7 +23,7 @@ export default function TeamCreate({ roles }: { roles: string[] }) {
   return (
     <AuthenticatedLayout>
       <Head title="Novo usuário" />
-      <h2 className="mb-6 text-2xl font-bold text-gray-900">Novo usuário interno</h2>
+      <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Novo usuário interno</h2>
       <Card className="max-w-2xl">
         <CardHeader>
           <CardTitle>Dados do usuário</CardTitle>
@@ -53,7 +53,7 @@ export default function TeamCreate({ roles }: { roles: string[] }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="role">Perfil</Label>
-              <select id="role" value={form.data.role} onChange={(e) => form.setData('role', e.target.value)} className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm">
+              <select id="role" value={form.data.role} onChange={(e) => form.setData('role', e.target.value)} className="w-full rounded-md border border-gray-300 dark:border-gray-700 px-3 py-2 text-sm">
                 {roles.map((r) => (
                   <option key={r} value={r}>
                     {r}
