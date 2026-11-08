@@ -26,17 +26,15 @@ RUN apk add --no-cache \
     postgresql-client \
     libzip-dev \
     oniguruma-dev \
+    libxml2-dev \
     zip \
     gettext \
     && docker-php-ext-install \
-        pdo \
         pdo_pgsql \
         pgsql \
         mbstring \
         zip \
         bcmath \
-        openssl \
-        tokenizer \
         xml
 
 # Set working directory
