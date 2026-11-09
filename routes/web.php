@@ -131,6 +131,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('tasks/{task}', [TaskController::class, 'show'])->middleware('can:tasks.view')->name('tasks.show');
     Route::get('tasks/{task}/edit', [TaskController::class, 'edit'])->middleware('can:tasks.edit')->name('tasks.edit');
     Route::put('tasks/{task}', [TaskController::class, 'update'])->middleware('can:tasks.edit')->name('tasks.update');
+    Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->middleware('can:tasks.edit')->name('tasks.update-status');
     Route::post('tasks/{task}/comments', [TaskController::class, 'comment'])->middleware('can:tasks.edit')->name('tasks.comments.store');
 
     Route::get('templates', [ProjectTemplateController::class, 'index'])->middleware('can:templates.view')->name('templates.index');

@@ -34,7 +34,7 @@ class WebsitePolicy
 
     public function create(User $user): bool
     {
-        return $user->can('websites.manage') && $user->hasRole('OWNER');
+        return $user->can('websites.manage');
     }
 
     public function update(User $user, Website $website): bool

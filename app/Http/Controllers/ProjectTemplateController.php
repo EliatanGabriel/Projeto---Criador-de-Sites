@@ -25,6 +25,7 @@ class ProjectTemplateController extends Controller
             'templates' => $query->paginate(15)->withQueryString(),
             'filters' => $request->only(['search', 'category', 'status']),
             'categories' => ['Site institucional', 'Landing page', 'Loja virtual', 'Portfólio', 'Site personalizado', 'Outros'],
+            'canManage' => $request->user()->can('templates.manage'),
         ]);
     }
 
@@ -78,7 +79,10 @@ class ProjectTemplateController extends Controller
     public function show(ProjectTemplate $template)
     {
         $template->load(['phases.tasks', 'creator:id,name']);
-        return Inertia::render('templates/show', ['template' => $template]);
+        return Inertia::render('templates/show', [
+            'template' => $template,
+            'canManage' => auth()->user()?->can('templates.manage') ?? false,
+        ]);
     }
 
     public function edit(ProjectTemplate $template)

@@ -2,7 +2,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
-export default function TemplatesShow({ template }: { template: any }) {
+export default function TemplatesShow({ template, canManage }: { template: any; canManage?: boolean }) {
   const toggle = useForm({});
 
   return (
@@ -15,14 +15,16 @@ export default function TemplatesShow({ template }: { template: any }) {
             {template.category} • v{template.version} • {template.is_active ? 'Ativo' : 'Inativo'}
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" onClick={() => toggle.post(`/templates/${template.id}/toggle-active`)} disabled={toggle.processing}>
-            {template.is_active ? 'Inativar' : 'Ativar'}
-          </Button>
-          <Link href={`/templates/${template.id}/edit`}>
-            <Button>Editar</Button>
-          </Link>
-        </div>
+        {canManage && (
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={() => toggle.post(`/templates/${template.id}/toggle-active`)} disabled={toggle.processing}>
+              {template.is_active ? 'Inativar' : 'Ativar'}
+            </Button>
+            <Link href={`/templates/${template.id}/edit`}>
+              <Button>Editar</Button>
+            </Link>
+          </div>
+        )}
       </div>
 
       <Card className="max-w-4xl">

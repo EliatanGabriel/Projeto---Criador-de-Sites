@@ -35,7 +35,8 @@ class WebsiteAlertController extends Controller
                                     ->whereColumn('wp.website_id', 'websites.id')
                                     ->where(function ($w) use ($user) {
                                         $w->where('p.technical_owner_id', $user->id)
-                                            ->orWhereHas('members', fn ($ww) => $ww->where('user_id', $user->id) ?? true);
+                                            ->orWhereExists(fn ($m) => $m->select(\DB::raw(1))->from('project_members')->whereColumn('project_members.project_id', 'p.id')->where('project_members.user_id', $user->id))
+                                            ->orWhereExists(fn ($t) => $t->select(\DB::raw(1))->from('tasks')->whereColumn('tasks.project_id', 'p.id')->where('tasks.assignee_id', $user->id)->whereNull('tasks.deleted_at'));
                                     });
                             });
                         } else {

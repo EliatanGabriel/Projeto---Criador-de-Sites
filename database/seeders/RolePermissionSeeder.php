@@ -54,7 +54,8 @@ class RolePermissionSeeder extends Seeder
             'view-dashboard',
             'projects.view', 'tasks.view', 'tasks.create', 'tasks.edit',
             'demands.view',
-            'templates.view', 'websites.view',
+            'templates.view', 'websites.view', 'websites.manage',
+            'hostings.view', 'hostings.manage',
             'alerts.view', 'alerts.read',
         ]);
 

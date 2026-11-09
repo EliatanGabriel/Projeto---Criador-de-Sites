@@ -52,10 +52,81 @@ class TaskController extends Controller
         if ($request->status) $query->where('status', $request->status);
         if ($request->priority) $query->where('priority', $request->priority);
 
+        $tasks = $query->paginate(15)->withQueryString();
+
+        $boardQuery = Task::query()
+            ->with(['project:id,title,status'])
+            ->where('assignee_id', $request->user()->id)
+            ->orderByDesc('created_at');
+
+        $board = $boardQuery->get(['id', 'title', 'status', 'priority', 'due_at', 'blocked_reason', 'project_id', 'created_at'])
+            ->groupBy('status');
+
         return Inertia::render('tasks/my-tasks', [
-            'tasks' => $query->paginate(15)->withQueryString(),
+            'tasks' => $tasks,
+            'board' => $board,
             'filters' => $request->only(['status', 'priority']),
         ]);
+    }
+
+    public function updateStatus(Request $request, Task $task)
+    {
+        $this->authorize('update', $task);
+        $request->validate([
+            'status' => ['required', 'in:todo,in_progress,in_review,blocked,done,cancelled'],
+            'blocked_reason' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $user = $request->user();
+        $isOwner = $user->hasRole('OWNER');
+
+        if ($task->project?->isClosed()) {
+            return back()->withErrors(['status' => 'Projeto encerrado: tarefas não podem ser alteradas.']);
+        }
+
+        if (! $isOwner && (string) $task->assignee_id !== (string) $user->id) {
+            abort(403, 'Só é possível atualizar tarefas atribuídas a você.');
+        }
+
+        $status = $request->status;
+        $blockedReason = $request->blocked_reason ?? $task->blocked_reason;
+
+        if ($status === 'blocked' && empty($blockedReason)) {
+            return back()->withErrors(['blocked_reason' => 'Justificativa obrigatória para tarefas bloqueadas.']);
+        }
+
+        $from = $task->status;
+
+        DB::transaction(function () use ($task, $status, $blockedReason, $user, $from) {
+            $updates = ['status' => $status];
+            if ($status === 'done') {
+                $updates['completed_at'] = now();
+                $updates['completed_by'] = $user->id;
+            } else {
+                $updates['completed_at'] = null;
+                $updates['completed_by'] = null;
+            }
+            $updates['blocked_reason'] = $status === 'blocked' ? $blockedReason : null;
+
+            $task->update($updates);
+
+            $task->histories()->create([
+                'user_id' => $user->id,
+                'event' => $from !== $task->status ? 'status_changed' : 'updated',
+                'description' => $from !== $task->status ? "Status alterado de {$from} para {$task->status}." : 'Tarefa atualizada.',
+                'from_status' => $from,
+                'to_status' => $task->status,
+            ]);
+        });
+
+        if ($task->status === 'blocked') {
+            User::where('is_active', true)->whereHas('roles', fn ($q) => $q->where('name', 'OWNER'))->get()->each(fn ($o) => $o->notify(new TaskBlocked($task)));
+        }
+        if ($task->status === 'done') {
+            User::where('is_active', true)->whereHas('roles', fn ($q) => $q->where('name', 'OWNER'))->get()->each(fn ($o) => $o->notify(new TaskCompleted($task)));
+        }
+
+        return back()->with('success', 'Status atualizado.');
     }
 
     public function create(Request $request)

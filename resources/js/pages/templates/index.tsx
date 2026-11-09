@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import Pagination from '@/components/pagination';
 import type { Paginator } from '@/types';
 
-export default function TemplatesIndex({ templates, filters, categories }: { templates: Paginator<any>; filters: Record<string, string>; categories: string[] }) {
+export default function TemplatesIndex({ templates, filters, categories, canManage }: { templates: Paginator<any>; filters: Record<string, string>; categories: string[]; canManage?: boolean }) {
   const [search, setSearch] = useState(filters.search ?? '');
   const [category, setCategory] = useState(filters.category ?? '');
   const [status, setStatus] = useState(filters.status ?? '');
@@ -28,9 +28,11 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Templates de projeto</h2>
           <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{templates.total} templates</p>
         </div>
-        <Link href="/templates/create">
-          <Button>Novo template</Button>
-        </Link>
+        {canManage && (
+          <Link href="/templates/create">
+            <Button>Novo template</Button>
+          </Link>
+        )}
       </div>
 
       <Card>
@@ -92,9 +94,11 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
                     <Link href={`/templates/${t.id}`} className="mr-3 text-blue-600 hover:underline">
                       Ver
                     </Link>
-                    <Link href={`/templates/${t.id}/edit`} className="text-blue-600 hover:underline">
-                      Editar
-                    </Link>
+                    {canManage && (
+                      <Link href={`/templates/${t.id}/edit`} className="text-blue-600 hover:underline">
+                        Editar
+                      </Link>
+                    )}
                   </td>
                 </tr>
               ))}
