@@ -56,6 +56,7 @@
 | D-047 | Performance produção (Render): OPcache (`validate_timestamps=0`), `php artisan optimize` no entrypoint, nginx `gzip` + `Cache-Control: immutable` em `/build/`, cache `file` (Spatie/permissão local reduz latência Render→Supabase) e `prefetch` hover nos links da sidebar/perfil — sem mudar regras de negócio. Limite restante: spin-down do plano free do Render (20-50s na 1ª carga após 15min parado) exige plano pago para eliminar | Demora relatada na navegação em produção em 2026-11-08 | Aprovada |
 | D-048 | `webstudio:ensure-admin` e `webstudio:create-user` passam a garantir o perfil mesmo quando o usuário já existe (`syncRoles` + `is_active=true`), permitindo corrigir 403 em produção sem apagar/recriar o usuário | 403 em `/developer` com Eliatan/Roger em produção em 2026-11-08 | Aprovada |
 | D-049 | Layout persistente Inertia (`app.tsx` registra `layout`), `memo` em Sidebar/Header, remoção de props/eager mortos (todas as páginas sem layout local); `SESSION_DRIVER=cookie` em produção e `PDO::ATTR_PERSISTENT` no Postgres para reduzir roundtrips remotos Render→Supabase | Investigação profunda de lentidão em 2026-11-08 (prod ~2.8s vs local ~0.06s) | Aprovada |
+| D-050 | Profiler temporário (`PERF_PROFILER`, Server-Timing + `[perf]`/`[perf-sql]` sem PII) para isolar onde os ~2.5s adicionais são consumidos (bootstrap/middleware/sessão/DB/SQL) — desativado por padrão, sem endpoint público | Investigação definitiva do TTFB em 2026-11-08 | Aprovada (temporária) |
 
 ## Decisões Pendentes
 
@@ -89,3 +90,4 @@
 - **2026-11-08 (Performance prod):** D-047 (OPcache/optimize/gzip/cache file/prefetch; ver `Dockerfile`, `docker/`, `render.yaml`, `sidebar.tsx`).
 - **2026-11-08 (403 Developer):** D-048 (`ensure-admin`/`create-user` garantem perfil idempotente; comando para reparar: `php artisan webstudio:create-user <email> --role=DEVELOPER`).
 - **2026-11-08 (Investigação):** D-049 (layout persistente + sessão cookie + PDO persistent; evidências: prod /login 2.7s vs local 0.06s).
+- **2026-11-08 (Profiler):** D-050 (instrumentação temporária para medir bootstrap/middleware/SQL sem PII).

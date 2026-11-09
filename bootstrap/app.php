@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->validateCsrfTokens(except: ['webhooks/github']);
         $middleware->web(append: [
+            \App\Http\Middleware\PerformanceProfiler::class,
             \App\Http\Middleware\HandleInertiaRequests::class,
             \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
