@@ -24,7 +24,17 @@ class TaskController extends Controller
 
         $user = $request->user();
         if (! $user->hasRole('OWNER')) {
-            $query->where('assignee_id', $user->id);
+            if ($user->hasRole('DEVELOPER')) {
+                $query->where(function ($q) use ($user) {
+                    $q->where('assignee_id', $user->id)
+                        ->orWhereHas('project', function ($pq) use ($user) {
+                            $pq->where('technical_owner_id', $user->id)
+                                ->orWhereHas('members', fn ($m) => $m->where('user_id', $user->id));
+                        });
+                });
+            } else {
+                $query->where('assignee_id', $user->id);
+            }
         }
 
         if ($request->search) {
@@ -44,9 +54,24 @@ class TaskController extends Controller
 
     public function myTasks(Request $request)
     {
+        $user = $request->user();
+        $scope = function ($q) use ($user) {
+            if ($user->hasRole('OWNER') || $user->hasRole('COMMERCIAL')) {
+                $q->where('assignee_id', $user->id);
+                return;
+            }
+            $q->where(function ($qq) use ($user) {
+                $qq->where('assignee_id', $user->id)
+                    ->orWhereHas('project', function ($pq) use ($user) {
+                        $pq->where('technical_owner_id', $user->id)
+                            ->orWhereHas('members', fn ($m) => $m->where('user_id', $user->id));
+                    });
+            });
+        };
+
         $query = Task::query()
             ->with(['project:id,title,status', 'assignee:id,name'])
-            ->where('assignee_id', $request->user()->id)
+            ->where($scope)
             ->orderByDesc('created_at');
 
         if ($request->status) $query->where('status', $request->status);
@@ -56,7 +81,7 @@ class TaskController extends Controller
 
         $boardQuery = Task::query()
             ->with(['project:id,title,status'])
-            ->where('assignee_id', $request->user()->id)
+            ->where($scope)
             ->orderByDesc('created_at');
 
         $board = $boardQuery->get(['id', 'title', 'status', 'priority', 'due_at', 'blocked_reason', 'project_id', 'created_at'])
@@ -84,7 +109,7 @@ class TaskController extends Controller
             return back()->withErrors(['status' => 'Projeto encerrado: tarefas não podem ser alteradas.']);
         }
 
-        if (! $isOwner && (string) $task->assignee_id !== (string) $user->id) {
+        if (! $isOwner && $task->assignee_id !== null && (string) $task->assignee_id !== (string) $user->id) {
             abort(403, 'Só é possível atualizar tarefas atribuídas a você.');
         }
 
@@ -99,6 +124,9 @@ class TaskController extends Controller
 
         DB::transaction(function () use ($task, $status, $blockedReason, $user, $from) {
             $updates = ['status' => $status];
+            if ($task->assignee_id === null) {
+                $updates['assignee_id'] = $user->id;
+            }
             if ($status === 'done') {
                 $updates['completed_at'] = now();
                 $updates['completed_by'] = $user->id;
@@ -208,14 +236,17 @@ class TaskController extends Controller
 
         $isOwner = $user->hasRole('OWNER');
         if (! $isOwner) {
-            // DEVELOPER: só pode atualizar próprias, sem reatribuir
-            if ((string) $task->assignee_id !== (string) $user->id) {
+            // DEVELOPER: só próprias ou não atribuídas em projeto vinculado (claim), sem reatribuir
+            if ($task->assignee_id !== null && (string) $task->assignee_id !== (string) $user->id) {
                 abort(403, 'Só é possível atualizar tarefas atribuídas a você.');
             }
             if (isset($data['assignee_id']) && $data['assignee_id'] !== $task->assignee_id) {
                 abort(403, 'DEVELOPER não pode atribuir tarefas.');
             }
             unset($data['assignee_id']);
+            if ($task->assignee_id === null) {
+                $data['assignee_id'] = $user->id;
+            }
         }
 
         if ($data['status'] === 'blocked' && empty($data['blocked_reason'] ?? $task->blocked_reason)) {

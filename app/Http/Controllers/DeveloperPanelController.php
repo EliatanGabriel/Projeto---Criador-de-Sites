@@ -16,15 +16,25 @@ class DeveloperPanelController extends Controller
 
         $today = now()->toDateString();
 
+        $scopeTasks = function ($q) use ($user) {
+            $q->where(function ($qq) use ($user) {
+                $qq->where('assignee_id', $user->id)
+                    ->orWhereHas('project', function ($pq) use ($user) {
+                        $pq->where('technical_owner_id', $user->id)
+                            ->orWhereHas('members', fn ($m) => $m->where('user_id', $user->id));
+                    });
+            });
+        };
+
         $taskCounts = Task::query()
-            ->where('assignee_id', $user->id)
+            ->where($scopeTasks)
             ->selectRaw('status, COUNT(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status')
             ->toArray();
 
         $overdue = Task::query()
-            ->where('assignee_id', $user->id)
+            ->where($scopeTasks)
             ->whereNotIn('status', ['done', 'cancelled'])
             ->whereNotNull('due_at')
             ->where('due_at', '<', $today)
@@ -56,7 +66,7 @@ class DeveloperPanelController extends Controller
 
         $tasksQuery = Task::query()
             ->with(['project:id,title,status'])
-            ->where('assignee_id', $user->id)
+            ->where($scopeTasks)
             ->orderByDesc('created_at');
 
         return Inertia::render('developer/dashboard', [
