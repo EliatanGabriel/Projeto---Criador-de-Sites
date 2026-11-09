@@ -32,7 +32,6 @@ function SidebarBase({ collapsed, onToggle, mobileOpen, onMobileClose }: Sidebar
     { label: 'Tarefas', href: '/tasks', icon: CheckSquare, visible: can('tasks.view'), active: currentPath.startsWith('/tasks'), disabled: false },
     { label: 'Templates', href: '/templates', icon: Layers, visible: can('templates.view'), active: currentPath.startsWith('/templates'), disabled: false },
     { label: 'Sites', href: '/sites', icon: Globe, visible: can('websites.view'), active: currentPath.startsWith('/sites'), disabled: false },
-    { label: 'Hospedagens', href: '/hostings', icon: Layers, visible: can('websites.view'), active: currentPath.startsWith('/hostings'), disabled: false },
     { label: 'Alertas', href: '/alerts', icon: Bell, visible: can('alerts.view'), active: currentPath.startsWith('/alerts'), disabled: false },
     { label: 'Financeiro', href: '/finance', icon: Wallet, visible: can('finance.view'), active: currentPath.startsWith('/finance'), disabled: false },
     { label: 'Relatórios', href: '/finance/report', icon: BarChart3, visible: can('reports.view') || can('finance.view'), active: currentPath.startsWith('/finance/report'), disabled: false },
