@@ -52,7 +52,7 @@ services:
       - key: CACHE_STORE
         value: file
       - key: SESSION_DRIVER
-        value: database
+        value: cookie
     # Persistência de uploads locais (storage/app/private) — plano pago no Render
     disk:
       name: webstudio-storage
