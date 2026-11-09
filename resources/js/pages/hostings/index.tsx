@@ -1,6 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,7 +19,7 @@ export default function HostingsIndex({ hostings, filters }: { hostings: Paginat
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Hospedagens" />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -95,6 +94,6 @@ export default function HostingsIndex({ hostings, filters }: { hostings: Paginat
           </div>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

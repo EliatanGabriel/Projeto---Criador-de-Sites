@@ -34,7 +34,7 @@ class HostingController extends Controller
 
     public function show(Hosting $hosting)
     {
-        $hosting->load(['environments.website:id,name', 'credentials' => fn ($q) => $q->select('id', 'hosting_id', 'type', 'label', 'username')]);
+        $hosting->load(['environments.website:id,name']);
         return Inertia::render('hostings/show', [
             'hosting' => $hosting,
             'canCredentials' => auth()->user()->can('credentials.view'),

@@ -1,5 +1,4 @@
 import { Head, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +8,7 @@ export default function FinanceCategories({ categories, canManage }: { categorie
   const form = useForm({ name: '', type: 'receita' });
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Categorias financeiras" />
       <div className="mb-6"><h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Categorias financeiras</h2></div>
       <Card>
@@ -41,6 +40,6 @@ export default function FinanceCategories({ categories, canManage }: { categorie
           </table>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

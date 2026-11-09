@@ -1,5 +1,4 @@
 import { Head, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,7 +19,7 @@ export default function Settings({ settings, flash }: any) {
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Configurações" />
       <div className="max-w-3xl mx-auto space-y-6">
         <div>
@@ -95,6 +94,6 @@ export default function Settings({ settings, flash }: any) {
           </Card>
         </form>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }

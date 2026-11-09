@@ -1,6 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +16,7 @@ export default function FinanceIndex({ transactions, filters, canManage }: { tra
   };
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Financeiro" />
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Financeiro</h2>
@@ -87,6 +86,6 @@ export default function FinanceIndex({ transactions, filters, canManage }: { tra
           </table>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

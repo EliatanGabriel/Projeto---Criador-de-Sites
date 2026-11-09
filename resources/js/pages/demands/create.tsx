@@ -1,5 +1,4 @@
 import { Head, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -48,7 +47,7 @@ export default function DemandsCreate({ clients, opportunities }: { clients: { i
   const filteredOpps = opportunities.filter((o) => !form.data.client_id || o.client_id === form.data.client_id);
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Nova demanda" />
       <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Nova demanda</h2>
       <form onSubmit={submit} className="space-y-6">
@@ -178,6 +177,6 @@ export default function DemandsCreate({ clients, opportunities }: { clients: { i
           {form.processing ? 'Salvando...' : 'Salvar rascunho'}
         </Button>
       </form>
-    </AuthenticatedLayout>
+    </>
   );
 }

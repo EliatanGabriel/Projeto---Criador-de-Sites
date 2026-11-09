@@ -1,6 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,7 +29,7 @@ export default function ProjectsCreate({ demands, templates, users }: { demands:
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Converter demanda" />
       <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Converter demanda em projeto</h2>
       {demands.length === 0 ? (
@@ -117,6 +116,6 @@ export default function ProjectsCreate({ demands, templates, users }: { demands:
           </Button>
         </form>
       )}
-    </AuthenticatedLayout>
+    </>
   );
 }

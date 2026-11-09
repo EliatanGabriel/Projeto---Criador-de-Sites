@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { LayoutDashboard, Users, Briefcase, FileText, FolderKanban, CheckSquare, Layers, Globe, Wallet, BarChart3, Settings, ChevronLeft, ChevronRight, X, Bell, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -10,7 +11,7 @@ interface SidebarProps {
   onMobileClose: () => void;
 }
 
-export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
+function SidebarBase({ collapsed, onToggle, mobileOpen, onMobileClose }: SidebarProps) {
   const { auth } = usePage<PageProps>().props;
   const permissions = auth.user?.permissions ?? [];
   const can = (p: string) => permissions.includes(p);
@@ -152,3 +153,6 @@ export default function Sidebar({ collapsed, onToggle, mobileOpen, onMobileClose
     </>
   );
 }
+
+const Sidebar = memo(SidebarBase);
+export default Sidebar;

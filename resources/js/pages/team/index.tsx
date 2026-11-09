@@ -1,5 +1,4 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/pagination';
@@ -23,7 +22,7 @@ export default function TeamIndex({ users }: { users: Paginator<TeamUser> }) {
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Equipe" />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -89,6 +88,6 @@ export default function TeamIndex({ users }: { users: Paginator<TeamUser> }) {
           </div>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

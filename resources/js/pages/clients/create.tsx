@@ -1,5 +1,4 @@
 import { Head, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,7 +26,7 @@ export default function ClientsCreate() {
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Novo cliente" />
       <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Novo cliente</h2>
       <Card className="max-w-3xl">
@@ -102,6 +101,6 @@ export default function ClientsCreate() {
           </form>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

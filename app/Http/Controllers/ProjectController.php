@@ -48,8 +48,8 @@ class ProjectController extends Controller
         return Inertia::render('projects/index', [
             'projects' => $query->paginate(15)->withQueryString(),
             'filters' => $request->only(['search', 'status', 'client_id', 'technical_owner_id']),
-            'clients' => Client::orderBy('name')->get(['id', 'name']),
-            'users' => User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
+            'clients' => Client::orderBy('name')->limit(200)->get(['id', 'name']),
+            'users' => User::where('is_active', true)->orderBy('name')->limit(200)->get(['id', 'name']),
         ]);
     }
 
@@ -68,7 +68,6 @@ class ProjectController extends Controller
 
         return Inertia::render('projects/create', [
             'demands' => $approvedDemands,
-            'clients' => Client::orderBy('name')->get(['id', 'name']),
             'users' => User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
             'templates' => $templates,
         ]);
@@ -92,9 +91,8 @@ class ProjectController extends Controller
     {
         $this->authorize('view', $project);
         $project->load([
-            'client',
-            'demand.briefing',
-            'demand.attachments',
+            'client:id,name',
+            'demand:id,title,status',
             'technicalOwner:id,name',
             'tasks' => fn ($q) => $q->orderBy('due_at')->orderBy('created_at'),
             'tasks.assignee:id,name',

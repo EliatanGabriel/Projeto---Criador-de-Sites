@@ -1,5 +1,4 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/pagination';
@@ -10,7 +9,7 @@ export default function NotificationsIndex({ notifications, unreadCount }: { not
   const markOne = useForm({});
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Notificações" />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -64,6 +63,6 @@ export default function NotificationsIndex({ notifications, unreadCount }: { not
           </div>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

@@ -1,5 +1,4 @@
 import { Head, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,7 +20,7 @@ export default function TeamCreate({ roles }: { roles: string[] }) {
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Novo usuário" />
       <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Novo usuário interno</h2>
       <Card className="max-w-2xl">
@@ -72,6 +71,6 @@ export default function TeamCreate({ roles }: { roles: string[] }) {
           </form>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

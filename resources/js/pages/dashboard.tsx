@@ -1,12 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 export default function Dashboard({ stats, recentOpportunities }: { stats: { active_clients: number; open_opportunities: number; in_negotiation: number; won: number; lost: number; open_estimated_total: number }; recentOpportunities: { id: string; title: string; status: string; estimated_value: string | null; created_at: string; client?: { name: string } | null }[] }) {
   const brl = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Dashboard" />
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h2>
@@ -101,6 +100,6 @@ export default function Dashboard({ stats, recentOpportunities }: { stats: { act
           )}
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

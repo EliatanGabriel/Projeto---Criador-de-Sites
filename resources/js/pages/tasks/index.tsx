@@ -1,6 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +8,7 @@ import type { Paginator } from '@/types';
 
 const T_STATUS: Record<string, string> = { todo: 'A fazer', in_progress: 'Em andamento', in_review: 'Em revisão', blocked: 'Bloqueada', done: 'Concluída', cancelled: 'Cancelada' };
 
-export default function TasksIndex({ tasks, filters, projects, users }: { tasks: Paginator<any>; filters: Record<string, string>; projects: { id: string; title: string }[]; users: { id: string; name: string }[] }) {
+export default function TasksIndex({ tasks, filters, projects }: { tasks: Paginator<any>; filters: Record<string, string>; projects: { id: string; title: string }[] }) {
   const [search, setSearch] = useState(filters.search ?? '');
   const [projectId, setProjectId] = useState(filters.project_id ?? '');
   const [status, setStatus] = useState(filters.status ?? '');
@@ -26,7 +25,7 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Tarefas" />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -127,6 +126,6 @@ export default function TasksIndex({ tasks, filters, projects, users }: { tasks:
           </div>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

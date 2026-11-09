@@ -1,5 +1,4 @@
 import { Head, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +13,7 @@ export default function HostingsCreate() {
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Nova hospedagem" />
       <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Nova hospedagem</h2>
       <Card className="max-w-2xl">
@@ -59,6 +58,6 @@ export default function HostingsCreate() {
           </form>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

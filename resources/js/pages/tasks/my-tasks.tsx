@@ -1,6 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/pagination';
@@ -21,7 +20,7 @@ export default function MyTasks({ tasks, filters }: { tasks: Paginator<any>; fil
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Minhas tarefas" />
       <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Minhas tarefas</h2>
 
@@ -93,6 +92,6 @@ export default function MyTasks({ tasks, filters }: { tasks: Paginator<any>; fil
           </div>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

@@ -1,5 +1,4 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,7 +23,7 @@ export default function FinanceCreate({ categories, clients, projects }: { categ
   };
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Novo lançamento" />
       <div className="mb-6"><Link href="/finance" className="text-blue-600 hover:underline">← Voltar</Link></div>
       <Card>
@@ -91,6 +90,6 @@ export default function FinanceCreate({ categories, clients, projects }: { categ
           </form>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

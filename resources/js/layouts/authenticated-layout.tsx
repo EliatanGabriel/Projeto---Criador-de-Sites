@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import Sidebar from './sidebar';
 import Header from './header';
 import { usePage } from '@inertiajs/react';
@@ -11,17 +11,15 @@ export default function AuthenticatedLayout({ children }: { children: ReactNode 
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { flash } = usePage<PageProps>().props;
+  const onToggle = useCallback(() => setCollapsed((v) => !v), []);
+  const onMobileClose = useCallback(() => setMobileOpen(false), []);
+  const onMenuClick = useCallback(() => setMobileOpen(true), []);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
-      <Sidebar
-        collapsed={collapsed}
-        onToggle={() => setCollapsed(!collapsed)}
-        mobileOpen={mobileOpen}
-        onMobileClose={() => setMobileOpen(false)}
-      />
+      <Sidebar collapsed={collapsed} onToggle={onToggle} mobileOpen={mobileOpen} onMobileClose={onMobileClose} />
       <div className={cn('flex min-h-screen flex-col transition-all duration-200', collapsed ? 'lg:pl-16' : 'lg:pl-64')}>
-        <Header onMenuClick={() => setMobileOpen(true)} />
+        <Header onMenuClick={onMenuClick} />
         <main className="flex-1 p-4 sm:p-6 lg:p-8" role="main">
           <div className="mx-auto max-w-7xl">
             {flash.success && (

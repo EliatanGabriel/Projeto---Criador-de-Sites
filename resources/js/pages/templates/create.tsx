@@ -1,6 +1,5 @@
 import { Head, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -56,7 +55,7 @@ export default function TemplatesCreate({ categories }: { categories: string[] }
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Novo template" />
       <h2 className="mb-6 text-2xl font-bold text-gray-900 dark:text-gray-100">Novo template</h2>
       <form onSubmit={submit} className="space-y-6">
@@ -176,6 +175,6 @@ export default function TemplatesCreate({ categories }: { categories: string[] }
           </Button>
         </div>
       </form>
-    </AuthenticatedLayout>
+    </>
   );
 }

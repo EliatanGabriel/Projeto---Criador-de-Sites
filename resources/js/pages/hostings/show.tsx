@@ -1,11 +1,10 @@
 import { Head, Link } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
 export default function HostingsShow({ hosting }: { hosting: any }) {
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={hosting.name} />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -56,6 +55,6 @@ export default function HostingsShow({ hosting }: { hosting: any }) {
           </table>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

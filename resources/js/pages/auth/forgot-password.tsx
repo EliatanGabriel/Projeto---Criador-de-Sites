@@ -1,5 +1,4 @@
 import { useForm, Head, Link } from '@inertiajs/react';
-import GuestLayout from '@/layouts/guest-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -14,7 +13,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
   }
 
   return (
-    <GuestLayout>
+    <>
       <Head title="Recuperar senha" />
       <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Recuperar senha</h1>
       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Informe seu e-mail para receber o link de redefinição.</p>
@@ -40,6 +39,6 @@ export default function ForgotPassword({ status }: { status?: string }) {
           </Link>
         </p>
       </form>
-    </GuestLayout>
+    </>
   );
 }

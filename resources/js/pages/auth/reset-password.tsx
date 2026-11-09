@@ -1,5 +1,4 @@
 import { useForm, Head } from '@inertiajs/react';
-import GuestLayout from '@/layouts/guest-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -18,7 +17,7 @@ export default function ResetPassword({ email, token }: { email?: string; token?
   }
 
   return (
-    <GuestLayout>
+    <>
       <Head title="Redefinir senha" />
       <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Redefinir senha</h1>
       <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Crie uma nova senha para sua conta.</p>
@@ -42,6 +41,6 @@ export default function ResetPassword({ email, token }: { email?: string; token?
           {form.processing ? 'Salvando...' : 'Redefinir senha'}
         </Button>
       </form>
-    </GuestLayout>
+    </>
   );
 }

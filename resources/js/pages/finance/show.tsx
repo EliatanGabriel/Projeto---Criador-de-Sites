@@ -1,5 +1,4 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +15,7 @@ export default function FinanceShow({ transaction, canManage }: { transaction: a
   };
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={transaction.description} />
       <div className="mb-6"><Link href="/finance" className="text-blue-600 hover:underline">← Voltar para Financeiro</Link></div>
       <Card>
@@ -71,6 +70,6 @@ export default function FinanceShow({ transaction, canManage }: { transaction: a
           )}
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

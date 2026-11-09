@@ -1,5 +1,4 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -7,7 +6,7 @@ export default function TemplatesShow({ template }: { template: any }) {
   const toggle = useForm({});
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={template.name} />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -72,6 +71,6 @@ export default function TemplatesShow({ template }: { template: any }) {
           </CardContent>
         </Card>
       ))}
-    </AuthenticatedLayout>
+    </>
   );
 }

@@ -1,6 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -13,7 +12,7 @@ export default function TasksShow({ task }: { task: any }) {
   const timeline = [...(task.histories ?? [])].reverse();
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={task.title} />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -94,6 +93,6 @@ export default function TasksShow({ task }: { task: any }) {
           </CardContent>
         </Card>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }

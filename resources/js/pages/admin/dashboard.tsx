@@ -1,5 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -27,7 +26,7 @@ export default function AdminDashboard({
   const date = (v: string | null) => (v ? new Date(v).toLocaleString('pt-BR') : '—');
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Painel Admin" />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
@@ -111,6 +110,6 @@ export default function AdminDashboard({
           )}
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

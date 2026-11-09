@@ -114,7 +114,7 @@ class WebsiteController extends Controller
         $this->authorize('view', $website);
 
         $website->load([
-            'client',
+            'client:id,name',
             'technicalOwner:id,name',
             'projects:id,title,status,client_id',
             'domains',
@@ -151,6 +151,8 @@ class WebsiteController extends Controller
                 'checked_at' => $c->checked_at,
                 'cycle_id' => $c->cycle_id,
             ]),
+            'hostings' => \App\Models\Hosting::select('id', 'name', 'provider')->orderBy('name')->limit(100)->get(),
+            'users' => \App\Models\User::where('is_active', true)->select('id', 'name')->orderBy('name')->limit(100)->get(),
             'canManage' => auth()->user()->can('websites.manage'),
             'canPublish' => auth()->user()->can('publish', $website),
             'canMaintenance' => auth()->user()->can('maintenance', $website),

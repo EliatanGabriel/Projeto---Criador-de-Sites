@@ -74,7 +74,7 @@ class Project extends Model
 
     public function progressData(): array
     {
-        $tasks = $this->tasks()->get(['status']);
+        $tasks = $this->relationLoaded('tasks') ? $this->getRelation('tasks') : $this->tasks()->get(['status']);
         $total = $tasks->count();
         $done = $tasks->where('status', 'done')->count();
         $byStatus = $tasks->groupBy('status')->map->count()->toArray();

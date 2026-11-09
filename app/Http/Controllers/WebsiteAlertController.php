@@ -71,8 +71,7 @@ class WebsiteAlertController extends Controller
             'alerts' => $alerts,
             'filters' => $request->only(['severity', 'status', 'alert_type', 'website_id', 'assigned_to']),
             'summary' => $summary,
-            'websites' => Website::select('id', 'name')->orderBy('name')->get(),
-            'users' => \App\Models\User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
+            'websites' => Website::select('id', 'name')->orderBy('name')->limit(200)->get(),
         ]);
     }
 
@@ -88,6 +87,7 @@ class WebsiteAlertController extends Controller
             'isRead' => (bool) $read,
             'canRead' => auth()->user()->can('read', $alert),
             'canResolve' => auth()->user()->can('resolve', $alert),
+            'users' => \App\Models\User::where('is_active', true)->select('id', 'name')->orderBy('name')->limit(100)->get(),
         ]);
     }
 

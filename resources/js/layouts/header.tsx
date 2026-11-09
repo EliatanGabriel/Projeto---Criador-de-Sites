@@ -1,10 +1,10 @@
+import { memo, useState, useRef, useEffect } from 'react';
 import { Link, usePage, useForm } from '@inertiajs/react';
 import { Menu, LogOut, Bell, User } from 'lucide-react';
 import type { PageProps } from '@/types';
-import { useState, useRef, useEffect } from 'react';
 import ThemeToggle from '@/components/theme-toggle';
 
-export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
+function HeaderBase({ onMenuClick }: { onMenuClick: () => void }) {
   const { auth, notifications } = usePage<PageProps & { notifications: { unreadCount: number } }>().props;
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -65,3 +65,6 @@ export default function Header({ onMenuClick }: { onMenuClick: () => void }) {
     </header>
   );
 }
+
+const Header = memo(HeaderBase);
+export default Header;

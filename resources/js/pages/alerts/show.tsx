@@ -1,6 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -15,7 +14,7 @@ export default function AlertsShow({ alert, isRead, canRead, canResolve, users }
   const timeline = [...(alert.activities ?? [])].reverse();
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={alert.title} />
       <div className="mb-6">
         <Link href="/alerts" className="text-sm text-blue-600 hover:underline">
@@ -105,6 +104,6 @@ export default function AlertsShow({ alert, isRead, canRead, canResolve, users }
           </CardContent>
         </Card>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }

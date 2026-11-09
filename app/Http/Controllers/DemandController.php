@@ -66,8 +66,8 @@ class DemandController extends Controller
         return Inertia::render('demands/index', [
             'demands' => $query->paginate(15)->withQueryString(),
             'filters' => $request->only(['search', 'status', 'client_id', 'responsible_id', 'period']),
-            'clients' => Client::orderBy('name')->get(['id', 'name']),
-            'users' => User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
+            'clients' => Client::orderBy('name')->limit(200)->get(['id', 'name']),
+            'users' => User::where('is_active', true)->orderBy('name')->limit(200)->get(['id', 'name']),
         ]);
     }
 
@@ -76,7 +76,6 @@ class DemandController extends Controller
         return Inertia::render('demands/create', [
             'clients' => Client::orderBy('name')->get(['id', 'name']),
             'opportunities' => Opportunity::orderByDesc('created_at')->limit(100)->get(['id', 'title', 'client_id']),
-            'users' => User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 
@@ -142,7 +141,7 @@ class DemandController extends Controller
             $demand->negotiated_value = null;
             $demand->internal_notes = null;
         }
-        $demand->load(['client', 'opportunity', 'commercialOwner:id,name', 'technicalOwner:id,name', 'creator:id,name', 'briefing', 'attachments.uploader:id,name', 'histories.user:id,name']);
+        $demand->load(['client:id,name', 'opportunity:id,title', 'commercialOwner:id,name', 'technicalOwner:id,name', 'briefing', 'attachments.uploader:id,name', 'histories.user:id,name']);
 
         $statusEnum = DemandStatus::tryFrom($demand->status);
         $can = [
@@ -171,7 +170,6 @@ class DemandController extends Controller
             'demand' => $demand,
             'clients' => Client::orderBy('name')->get(['id', 'name']),
             'opportunities' => Opportunity::orderByDesc('created_at')->limit(100)->get(['id', 'title', 'client_id']),
-            'users' => User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 

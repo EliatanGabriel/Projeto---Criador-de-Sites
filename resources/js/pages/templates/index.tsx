@@ -1,6 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,7 +21,7 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Templates" />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -106,6 +105,6 @@ export default function TemplatesIndex({ templates, filters, categories }: { tem
           </div>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

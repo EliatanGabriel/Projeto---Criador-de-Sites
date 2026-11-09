@@ -1,12 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const fmt = (v: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(v);
 
 export default function FinanceReport({ month, summary, custosPorProjeto }: { month: string; summary: any; custosPorProjeto: any[] }) {
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={`Relatório ${month}`} />
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Relatório financeiro — {month}</h2>
@@ -31,6 +30,6 @@ export default function FinanceReport({ month, summary, custosPorProjeto }: { mo
           {(custosPorProjeto ?? []).length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400">Sem despesas de projeto no período.</p>}
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

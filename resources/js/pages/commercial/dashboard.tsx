@@ -1,5 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -21,7 +20,7 @@ export default function CommercialDashboard({
   demands: DemandItem[];
 }) {
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Painel Comercial" />
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
         <div>
@@ -86,6 +85,6 @@ export default function CommercialDashboard({
           )}
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

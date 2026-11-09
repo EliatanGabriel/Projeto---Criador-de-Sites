@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useForm, Head, Link } from '@inertiajs/react';
-import GuestLayout from '@/layouts/guest-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,7 +20,7 @@ export default function Login({ status, canResetPassword, panel }: { status?: st
   }
 
   return (
-    <GuestLayout>
+    <>
       <Head title="Entrar" />
       <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
         {panel === 'admin' ? 'Entrar no Painel Admin' : panel === 'commercial' ? 'Entrar no Painel Comercial' : panel === 'developer' ? 'Entrar no Painel Developer' : 'Entrar na plataforma'}
@@ -66,6 +65,6 @@ export default function Login({ status, canResetPassword, panel }: { status?: st
         )}
       </form>
       <p className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">Contas criadas apenas por administrador autorizado.</p>
-    </GuestLayout>
+    </>
   );
 }

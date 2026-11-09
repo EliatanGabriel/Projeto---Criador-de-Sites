@@ -1,6 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Pagination from '@/components/pagination';
@@ -12,7 +11,7 @@ const SEVERITY_COLOR: Record<string, string> = {
   critical: 'bg-red-100 text-red-700',
 };
 
-export default function AlertsIndex({ alerts, filters, summary, websites, users }: { alerts: Paginator<any>; filters: Record<string, string>; summary: { open: number; info: number; warning: number; critical: number }; websites: { id: string; name: string }[]; users: { id: string; name: string }[] }) {
+export default function AlertsIndex({ alerts, filters, summary, websites }: { alerts: Paginator<any>; filters: Record<string, string>; summary: { open: number; info: number; warning: number; critical: number }; websites: { id: string; name: string }[] }) {
   const [severity, setSeverity] = useState(filters.severity ?? '');
   const [status, setStatus] = useState(filters.status ?? '');
   const [websiteId, setWebsiteId] = useState(filters.website_id ?? '');
@@ -27,7 +26,7 @@ export default function AlertsIndex({ alerts, filters, summary, websites, users 
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Alertas" />
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Central de alertas</h2>
@@ -115,6 +114,6 @@ export default function AlertsIndex({ alerts, filters, summary, websites, users 
           </div>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

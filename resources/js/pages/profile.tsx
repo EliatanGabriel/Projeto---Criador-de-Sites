@@ -1,5 +1,4 @@
 import { Head } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface Profile {
@@ -33,7 +32,7 @@ export default function Profile({ profile }: { profile: Profile }) {
     .flatMap((r) => (r === 'OWNER' ? ['Painel Admin', 'Painel Comercial', 'Painel Developer'] : [PANEL_LABELS[r]].filter(Boolean)))
     .filter((v, i, a) => a.indexOf(v) === i);
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Meu Perfil" />
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Meu Perfil</h2>
@@ -117,6 +116,6 @@ export default function Profile({ profile }: { profile: Profile }) {
           </CardContent>
         </Card>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }

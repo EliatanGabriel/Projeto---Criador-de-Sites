@@ -1,6 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,7 +35,7 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
   }
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title="Demandas" />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -141,6 +140,6 @@ export default function DemandsIndex({ demands, filters, clients, users }: { dem
           </div>
         </CardContent>
       </Card>
-    </AuthenticatedLayout>
+    </>
   );
 }

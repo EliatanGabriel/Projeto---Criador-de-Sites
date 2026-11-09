@@ -1,6 +1,5 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,7 +20,7 @@ export default function ProjectsShow({ project, progress, canManage, canUpdateSt
   const timeline = [...(project.histories ?? [])].reverse();
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={project.title} />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -176,6 +175,6 @@ export default function ProjectsShow({ project, progress, canManage, canUpdateSt
           </CardContent>
         </Card>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }

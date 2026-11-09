@@ -1,5 +1,4 @@
 import { Head, Link, useForm } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -14,7 +13,7 @@ export default function OpportunitiesShow({ opportunity }: { opportunity: any })
   const timeline = [...(opportunity.activities ?? [])].reverse();
 
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={opportunity.title} />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -80,6 +79,6 @@ export default function OpportunitiesShow({ opportunity }: { opportunity: any })
           </CardContent>
         </Card>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }

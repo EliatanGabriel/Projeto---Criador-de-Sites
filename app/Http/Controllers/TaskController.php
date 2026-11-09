@@ -39,7 +39,6 @@ class TaskController extends Controller
             'tasks' => $query->paginate(15)->withQueryString(),
             'filters' => $request->only(['search', 'project_id', 'responsible_id', 'status', 'priority']),
             'projects' => $this->accessibleProjects($user),
-            'users' => User::where('is_active', true)->orderBy('name')->get(['id', 'name']),
         ]);
     }
 

@@ -1,5 +1,4 @@
 import { Head, Link } from '@inertiajs/react';
-import AuthenticatedLayout from '@/layouts/authenticated-layout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import type { Client, Opportunity } from '@/types';
@@ -10,7 +9,7 @@ interface ShowProps {
 
 export default function ClientsShow({ client }: ShowProps) {
   return (
-    <AuthenticatedLayout>
+    <>
       <Head title={client.name} />
       <div className="mb-6 flex items-center justify-between">
         <div>
@@ -66,6 +65,6 @@ export default function ClientsShow({ client }: ShowProps) {
           </CardContent>
         </Card>
       </div>
-    </AuthenticatedLayout>
+    </>
   );
 }
