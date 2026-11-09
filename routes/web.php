@@ -30,8 +30,7 @@ use Inertia\Inertia;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        $user = Auth::user();
-        return redirect($user->hasRole('OWNER') ? '/admin' : ($user->hasRole('DEVELOPER') ? '/developer' : '/commercial'));
+        return redirect(Auth::user()->homePanelPath());
     }
     return redirect('/login');
 })->name('home');
@@ -47,7 +46,7 @@ foreach (['admin' => '/admin', 'commercial' => '/commercial', 'developer' => '/d
                 default => false,
             };
             if (! $allowed) {
-                return redirect($user->hasRole('OWNER') ? '/admin' : ($user->hasRole('DEVELOPER') ? '/developer' : '/commercial'));
+                return redirect($user->homePanelPath());
             }
             return redirect($target);
         }

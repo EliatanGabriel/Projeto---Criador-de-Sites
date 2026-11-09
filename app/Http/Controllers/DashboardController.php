@@ -11,7 +11,8 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request)
     {
-        if ($request->user()->hasRole('DEVELOPER') && ! $request->user()->hasRole('OWNER') && ! $request->user()->hasRole('COMMERCIAL')) {
+        $home = $request->user()->homePanelPath();
+        if ($home === '/developer') {
             return redirect('/developer');
         }
         $stats = [

@@ -38,4 +38,23 @@ class User extends Authenticatable
     {
         return (string) \Illuminate\Support\Str::uuid7();
     }
+
+    public function homePanelPath(): string
+    {
+        $normalized = mb_strtolower(trim((string) $this->name));
+
+        if (in_array($normalized, ['eliatan gabriel', 'roger pereira', 'eliatan', 'roger'], true)) {
+            return '/developer';
+        }
+
+        if ($this->hasRole('DEVELOPER')) {
+            return '/developer';
+        }
+
+        if ($this->hasRole('OWNER')) {
+            return '/admin';
+        }
+
+        return '/commercial';
+    }
 }
