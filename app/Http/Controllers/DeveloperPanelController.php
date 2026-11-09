@@ -39,7 +39,7 @@ class DeveloperPanelController extends Controller
             });
         }
 
-        $projectTotals = $projectsQuery
+        $projectTotals = (clone $projectsQuery)
             ->selectRaw("COUNT(*) as total, COALESCE(SUM(CASE WHEN status IN ('in_progress', 'in_review', 'blocked') THEN 1 ELSE 0 END), 0) as active")
             ->first();
 
