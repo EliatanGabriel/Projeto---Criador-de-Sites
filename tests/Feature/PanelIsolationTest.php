@@ -45,12 +45,14 @@ test('áreas owner-only são separadas de comercial e developer', function () {
     $developer = isoUser('DEVELOPER');
     $owner = isoUser('OWNER');
 
-    foreach (['/finance', '/team', '/settings', '/templates/create'] as $url) {
+    foreach (['/team', '/settings', '/templates/create'] as $url) {
         $this->actingAs($commercial)->get($url)->assertForbidden("commercial não deve acessar {$url}");
         $this->actingAs($developer)->get($url)->assertForbidden("developer não deve acessar {$url}");
     }
+    $this->actingAs($developer)->get('/finance')->assertForbidden('developer não deve acessar /finance');
 
     $this->actingAs($owner)->get('/finance')->assertOk();
+    $this->actingAs($commercial)->get('/finance')->assertOk();
     $this->actingAs($owner)->get('/team')->assertOk();
     $this->actingAs($owner)->get('/settings')->assertOk();
 });
@@ -155,8 +157,8 @@ test('dashboard genérico é separado: developer usa o painel developer', functi
     $owner = isoUser('OWNER');
 
     $this->actingAs($developer)->get('/dashboard')->assertRedirect('/developer');
-    $this->actingAs($commercial)->get('/dashboard')->assertOk()->assertInertia(fn ($p) => $p->component('dashboard'));
-    $this->actingAs($owner)->get('/dashboard')->assertOk()->assertInertia(fn ($p) => $p->component('dashboard'));
+    $this->actingAs($commercial)->get('/dashboard')->assertRedirect('/commercial');
+    $this->actingAs($owner)->get('/dashboard')->assertRedirect('/admin');
 });
 
 test('painéis são conectados: comercial envia, owner aprova e converte, developer executa', function () {

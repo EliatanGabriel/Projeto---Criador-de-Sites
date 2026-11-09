@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Shared\UserScope;
 use App\Models\Website;
 use App\Models\WebsiteAlert;
 use App\Models\WebsiteAlertRead;
@@ -17,34 +18,7 @@ class WebsiteAlertController extends Controller
             ->orderByDesc('due_at');
 
         $user = $request->user();
-        if (! $user->hasRole('OWNER')) {
-            $query->whereIn('website_id', function ($q) use ($user) {
-                $q->select('id')->from('websites')->whereNull('deleted_at')
-                    ->where(function ($qq) use ($user) {
-                        if ($user->hasRole('COMMERCIAL')) {
-                            $qq->whereIn('client_id', function ($qqq) use ($user) {
-                                $qqq->select('client_id')->from('opportunities')->where('responsible_id', $user->id)
-                                    ->union(function ($qqq) use ($user) {
-                                        $qqq->select('client_id')->from('demands')->where('commercial_owner_id', $user->id);
-                                    });
-                            });
-                        } elseif ($user->hasRole('DEVELOPER')) {
-                            $qq->whereExists(function ($qqq) use ($user) {
-                                $qqq->select(\DB::raw(1))->from('website_projects AS wp')
-                                    ->join('projects AS p', 'p.id', '=', 'wp.project_id')
-                                    ->whereColumn('wp.website_id', 'websites.id')
-                                    ->where(function ($w) use ($user) {
-                                        $w->where('p.technical_owner_id', $user->id)
-                                            ->orWhereExists(fn ($m) => $m->select(\DB::raw(1))->from('project_members')->whereColumn('project_members.project_id', 'p.id')->where('project_members.user_id', $user->id))
-                                            ->orWhereExists(fn ($t) => $t->select(\DB::raw(1))->from('tasks')->whereColumn('tasks.project_id', 'p.id')->where('tasks.assignee_id', $user->id)->whereNull('tasks.deleted_at'));
-                                    });
-                            });
-                        } else {
-                            $qq->whereRaw('1=0');
-                        }
-                    });
-            });
-        }
+        UserScope::alertWebsites($query, $user);
 
         if ($request->severity) $query->where('severity', $request->severity);
         if ($request->status) $query->where('status', $request->status);
@@ -55,6 +29,7 @@ class WebsiteAlertController extends Controller
         $alerts = $query->paginate(15)->withQueryString();
 
         $openCounts = (clone $query)
+            ->reorder()
             ->where('status', 'open')
             ->groupBy('severity')
             ->selectRaw('severity, COUNT(*) as total')

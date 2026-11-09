@@ -11,10 +11,7 @@ class DashboardController extends Controller
 {
     public function __invoke(Request $request)
     {
-        $home = $request->user()->homePanelPath();
-        if ($home === '/developer') {
-            return redirect('/developer');
-        }
+        return redirect($request->user()->homePanelPath());
         $stats = [
             'active_clients' => Client::where('status', 'ativo')->count(),
             'open_opportunities' => Opportunity::open()->count(),

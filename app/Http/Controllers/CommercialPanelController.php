@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Shared\UserScope;
 use App\Models\Client;
 use App\Models\Demand;
 use App\Models\FinancialTransaction;
@@ -17,12 +18,7 @@ class CommercialPanelController extends Controller
         abort_unless($user->hasRole('COMMERCIAL') || $user->hasRole('OWNER'), 403);
 
         $base = Demand::query();
-        if (! $user->hasRole('OWNER')) {
-            $base->where(function ($q) use ($user) {
-                $q->where('commercial_owner_id', $user->id)
-                    ->orWhere('created_by', $user->id);
-            });
-        }
+        UserScope::demands($base, $user);
 
         $counts = (clone $base)
             ->groupBy('status')
@@ -66,7 +62,7 @@ class CommercialPanelController extends Controller
             ->selectRaw("
                 COALESCE(SUM(CASE WHEN type = 'receita' AND status IN ('previsto', 'pendente') THEN amount ELSE 0 END), 0) as receita_pendente,
                 COALESCE(SUM(CASE WHEN type = 'receita' AND status IN ('previsto', 'pendente') AND due_at < ? THEN amount ELSE 0 END), 0) as receita_vencida,
-                COALESCE(SUM(CASE WHEN type = 'receita' AND status = 'recebido' AND due_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as receita_recebida_mes
+                COALESCE(SUM(CASE WHEN type = 'receita' AND status = 'recebido' AND paid_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as receita_recebida_mes
             ", [$today, now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString()])
             ->first();
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Projects\Actions\ConvertDemandToProjectAction;
+use App\Domain\Shared\UserScope;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Client;
@@ -22,17 +23,7 @@ class ProjectController extends Controller
             ->orderByDesc('created_at');
 
         $user = $request->user();
-        if (! $user->hasRole('OWNER')) {
-            if ($user->hasRole('DEVELOPER')) {
-                $query->where(function ($q) use ($user) {
-                    $q->where('technical_owner_id', $user->id)
-                        ->orWhereHas('members', fn ($qq) => $qq->where('user_id', $user->id))
-                        ->orWhereHas('tasks', fn ($qq) => $qq->where('assignee_id', $user->id));
-                });
-            } elseif ($user->hasRole('COMMERCIAL')) {
-                $query->whereHas('demand', fn ($q) => $q->where('commercial_owner_id', $user->id));
-            }
-        }
+        UserScope::projects($query, $user);
 
         if ($request->search) {
             $s = $request->search;

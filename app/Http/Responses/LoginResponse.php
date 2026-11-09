@@ -15,13 +15,8 @@ class LoginResponse implements LoginResponseContract
         }
 
         $user = $request->user();
-        if ($user && $user->homePanelPath() === '/developer') {
-            $intended = $request->session()->pull('url.intended');
-            if ($intended && str_contains($intended, '/developer')) {
-                return redirect()->intended('/developer');
-            }
-
-            return redirect('/developer');
+        if ($user) {
+            return redirect()->intended($user->homePanelPath());
         }
 
         return redirect()->intended(Fortify::redirects('login'));

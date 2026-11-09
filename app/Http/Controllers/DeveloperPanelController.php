@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Shared\UserScope;
 use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Http\Request;
@@ -16,15 +17,7 @@ class DeveloperPanelController extends Controller
 
         $today = now()->toDateString();
 
-        $scopeTasks = function ($q) use ($user) {
-            $q->where(function ($qq) use ($user) {
-                $qq->where('assignee_id', $user->id)
-                    ->orWhereHas('project', function ($pq) use ($user) {
-                        $pq->where('technical_owner_id', $user->id)
-                            ->orWhereHas('members', fn ($m) => $m->where('user_id', $user->id));
-                    });
-            });
-        };
+        $scopeTasks = fn ($q) => UserScope::tasks($q, $user);
 
         $taskCounts = Task::query()
             ->where($scopeTasks)
@@ -41,13 +34,7 @@ class DeveloperPanelController extends Controller
             ->count();
 
         $projectsQuery = Project::query();
-        if (! $user->hasRole('OWNER')) {
-            $projectsQuery->where(function ($q) use ($user) {
-                $q->where('technical_owner_id', $user->id)
-                    ->orWhereHas('members', fn ($qq) => $qq->where('user_id', $user->id))
-                    ->orWhereHas('tasks', fn ($qq) => $qq->where('assignee_id', $user->id));
-            });
-        }
+        UserScope::projects($projectsQuery, $user);
 
         $projectTotals = (clone $projectsQuery)
             ->selectRaw("COUNT(*) as total, COALESCE(SUM(CASE WHEN status IN ('in_progress', 'in_review', 'blocked') THEN 1 ELSE 0 END), 0) as active")

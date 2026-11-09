@@ -48,5 +48,5 @@ test('usuário ativo consegue autenticar e acessa dashboard', function () {
     $user->assignRole('OWNER');
 
     $response = $this->actingAs($user)->get('/dashboard');
-    $response->assertOk();
+    $response->assertRedirect('/admin');
 });

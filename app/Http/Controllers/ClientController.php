@@ -51,6 +51,7 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
+        $this->authorize('view', $client);
         $client->load(['creator:id,name', 'opportunities' => fn ($q) => $q->orderByDesc('created_at')]);
 
         return Inertia::render('clients/show', ['client' => $client]);
@@ -58,11 +59,13 @@ class ClientController extends Controller
 
     public function edit(Client $client)
     {
+        $this->authorize('update', $client);
         return Inertia::render('clients/edit', ['client' => $client]);
     }
 
     public function update(UpdateClientRequest $request, Client $client)
     {
+        $this->authorize('update', $client);
         $client->update($request->validated());
 
         return redirect()->route('clients.show', $client)->with('success', 'Cliente atualizado com sucesso.');

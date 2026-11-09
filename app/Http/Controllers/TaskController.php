@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Shared\UserScope;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Project;
@@ -23,19 +24,7 @@ class TaskController extends Controller
             ->orderByDesc('created_at');
 
         $user = $request->user();
-        if (! $user->hasRole('OWNER')) {
-            if ($user->hasRole('DEVELOPER')) {
-                $query->where(function ($q) use ($user) {
-                    $q->where('assignee_id', $user->id)
-                        ->orWhereHas('project', function ($pq) use ($user) {
-                            $pq->where('technical_owner_id', $user->id)
-                                ->orWhereHas('members', fn ($m) => $m->where('user_id', $user->id));
-                        });
-                });
-            } else {
-                $query->where('assignee_id', $user->id);
-            }
-        }
+        UserScope::tasks($query, $user);
 
         if ($request->search) {
             $query->where('title', 'like', "%{$request->search}%");
@@ -55,19 +44,7 @@ class TaskController extends Controller
     public function myTasks(Request $request)
     {
         $user = $request->user();
-        $scope = function ($q) use ($user) {
-            if ($user->hasRole('OWNER') || $user->hasRole('COMMERCIAL')) {
-                $q->where('assignee_id', $user->id);
-                return;
-            }
-            $q->where(function ($qq) use ($user) {
-                $qq->where('assignee_id', $user->id)
-                    ->orWhereHas('project', function ($pq) use ($user) {
-                        $pq->where('technical_owner_id', $user->id)
-                            ->orWhereHas('members', fn ($m) => $m->where('user_id', $user->id));
-                    });
-            });
-        };
+        $scope = fn ($q) => UserScope::myTasks($q, $user);
 
         $query = Task::query()
             ->with(['project:id,title,status', 'assignee:id,name'])
@@ -234,6 +211,8 @@ class TaskController extends Controller
             return back()->withErrors(['status' => 'Projeto encerrado: tarefas não podem ser alteradas.']);
         }
 
+        $this->authorize('update', $task);
+
         $isOwner = $user->hasRole('OWNER');
         if (! $isOwner) {
             // DEVELOPER: só próprias ou não atribuídas em projeto vinculado (claim), sem reatribuir
@@ -261,6 +240,9 @@ class TaskController extends Controller
             if (($updates['status'] ?? null) === 'done') {
                 $updates['completed_at'] = now();
                 $updates['completed_by'] = $user->id;
+            } elseif (isset($updates['status'])) {
+                $updates['completed_at'] = null;
+                $updates['completed_by'] = null;
             }
             if (isset($updates['status']) && $updates['status'] !== 'blocked') {
                 $updates['blocked_reason'] = null;
@@ -313,14 +295,8 @@ class TaskController extends Controller
 
     protected function accessibleProjects($user)
     {
-        if ($user->hasRole('OWNER')) return Project::orderBy('title');
-        if ($user->hasRole('DEVELOPER')) {
-            return Project::where(function ($q) use ($user) {
-                $q->where('technical_owner_id', $user->id)
-                    ->orWhereHas('members', fn ($qq) => $qq->where('user_id', $user->id))
-                    ->orWhereHas('tasks', fn ($qq) => $qq->where('assignee_id', $user->id));
-            })->orderBy('title');
-        }
-        return Project::whereRaw('1 = 0')->orderBy('title');
+        $q = Project::query()->orderBy('title');
+        UserScope::projects($q, $user);
+        return $q;
     }
 }

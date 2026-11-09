@@ -44,7 +44,7 @@ class RolePermissionSeeder extends Seeder
             'clients.view', 'clients.create', 'clients.edit',
             'commercial.view', 'commercial.create', 'commercial.edit',
             'demands.view', 'demands.create', 'demands.edit', 'demands.send',
-            'projects.view', 'reports.view',
+            'projects.view', 'reports.view', 'finance.view',
             'websites.view',
             'alerts.view', 'alerts.read',
         ]);
@@ -56,7 +56,7 @@ class RolePermissionSeeder extends Seeder
             'demands.view',
             'templates.view', 'websites.view', 'websites.manage',
             'hostings.view', 'hostings.manage',
-            'alerts.view', 'alerts.read',
+            'alerts.view', 'alerts.read', 'alerts.resolve',
         ]);
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();

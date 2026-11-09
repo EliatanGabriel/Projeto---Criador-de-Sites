@@ -92,10 +92,5 @@ test('dashboard exibe indicadores reais', function () {
     Opportunity::factory()->create(['status' => 'ganha', 'estimated_value' => 2000]);
 
     $response = $this->actingAs($commercial)->get('/dashboard');
-    $response->assertOk();
-    $response->assertInertia(function ($page) {
-        $page->component('dashboard')
-            ->where('stats.active_clients', 1)
-            ->where('stats.won', 1);
-    });
+    $response->assertRedirect('/commercial');
 });

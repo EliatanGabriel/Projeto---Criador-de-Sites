@@ -29,8 +29,7 @@ class FinancialTransactionPolicy
         }
 
         if ($user->hasRole('DEVELOPER')) {
-            return $transaction->project_id !== null && $transaction->project
-                && $transaction->project->technical_owner_id === $user->id;
+            return false;
         }
 
         return false;

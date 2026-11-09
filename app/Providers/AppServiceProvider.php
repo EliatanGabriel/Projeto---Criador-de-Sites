@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Models\Client;
 use App\Models\Credential;
 use App\Models\Demand;
+use App\Models\FinancialCategory;
+use App\Models\FinancialTransaction;
 use App\Models\Hosting;
 use App\Models\Opportunity;
 use App\Models\Project;
@@ -16,6 +18,8 @@ use App\Models\WebsiteAlert;
 use App\Policies\ClientPolicy;
 use App\Policies\CredentialPolicy;
 use App\Policies\DemandPolicy;
+use App\Policies\FinancialCategoryPolicy;
+use App\Policies\FinancialTransactionPolicy;
 use App\Policies\HostingPolicy;
 use App\Policies\OpportunityPolicy;
 use App\Policies\ProjectPolicy;
@@ -52,6 +56,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Hosting::class, HostingPolicy::class);
         Gate::policy(Credential::class, CredentialPolicy::class);
         Gate::policy(WebsiteAlert::class, WebsiteAlertPolicy::class);
+        Gate::policy(FinancialTransaction::class, FinancialTransactionPolicy::class);
+        Gate::policy(FinancialCategory::class, FinancialCategoryPolicy::class);
         Gate::define('view-reports', fn (User $user) => $user->can('reports.view') || $user->can('finance.view'));
     }
 }

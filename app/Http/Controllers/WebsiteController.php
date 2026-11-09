@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Shared\UserScope;
 use App\Http\Requests\StoreWebsiteRequest;
 use App\Http\Requests\UpdateWebsiteRequest;
 use App\Models\Client;
@@ -21,21 +22,7 @@ class WebsiteController extends Controller
             ->orderByDesc('created_at');
 
         $user = $request->user();
-        if (! $user->hasRole('OWNER')) {
-            $query->whereHas('projects', function ($q) use ($user) {
-                if ($user->hasRole('COMMERCIAL')) {
-                    $q->whereHas('demand', fn ($qq) => $qq->where('commercial_owner_id', $user->id));
-                } elseif ($user->hasRole('DEVELOPER')) {
-                    $q->where(function ($qq) use ($user) {
-                        $qq->where('technical_owner_id', $user->id)
-                            ->orWhereHas('members', fn ($qqq) => $qqq->where('user_id', $user->id))
-                            ->orWhereHas('tasks', fn ($qqq) => $qqq->where('assignee_id', $user->id));
-                    });
-                } else {
-                    $q->whereRaw('1=0');
-                }
-            });
-        }
+        UserScope::websites($query, $user);
 
         if ($request->search) {
             $s = $request->search;
@@ -162,6 +149,7 @@ class WebsiteController extends Controller
 
     public function edit(Website $website)
     {
+        $this->authorize('update', $website);
         return Inertia::render('sites/edit', [
             'site' => $website,
             'clients' => Client::orderBy('name')->get(['id', 'name']),
@@ -171,6 +159,7 @@ class WebsiteController extends Controller
 
     public function update(UpdateWebsiteRequest $request, Website $website)
     {
+        $this->authorize('update', $website);
         $website->update($request->validated());
         return redirect()->route('sites.show', $website)->with('success', 'Site atualizado.');
     }

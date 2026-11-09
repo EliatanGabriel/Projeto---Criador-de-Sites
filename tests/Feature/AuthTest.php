@@ -22,7 +22,7 @@ test('usuário consegue autenticar com credenciais válidas', function () {
         'password' => 'Secreta@123',
     ]);
 
-    $response->assertRedirect('/dashboard');
+    $response->assertRedirect('/admin');
     $this->assertAuthenticatedAs($user);
 });
 
@@ -36,10 +36,7 @@ test('usuário autenticado acessa o dashboard', function () {
     $user->assignRole('OWNER');
 
     $response = $this->actingAs($user)->get('/dashboard');
-    $response->assertOk();
-    $response->assertInertia(function ($page) {
-        $page->component('dashboard');
-    });
+    $response->assertRedirect('/admin');
 });
 
 test('logout encerra a sessão', function () {

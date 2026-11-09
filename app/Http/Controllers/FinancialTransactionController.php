@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Domain\Finance\Actions\CancelFinancialTransactionAction;
 use App\Domain\Finance\Actions\RegisterFinancialTransactionAction;
+use App\Domain\Shared\UserScope;
 use App\Domain\Finance\Actions\RegisterPaymentAction;
 use App\Http\Requests\StoreFinancialTransactionRequest;
 use App\Http\Requests\StorePaymentRequest;
@@ -21,24 +22,12 @@ class FinancialTransactionController extends Controller
     {
         $query = FinancialTransaction::query()->with(['category', 'client:id,name', 'project:id,title'])->orderByDesc('created_at');
         $user = $request->user();
-
-        if ($user->hasRole('COMMERCIAL')) {
-            $query->where(function ($q) use ($user) {
-                $q->whereExists(function ($sub) use ($user) {
-                    $sub->selectRaw(1)->from('opportunities')->whereColumn('opportunities.client_id', 'financial_transactions.client_id')->where('opportunities.responsible_id', $user->id);
-                })->orWhereExists(function ($sub) use ($user) {
-                    $sub->selectRaw(1)->from('demands')->whereColumn('demands.client_id', 'financial_transactions.client_id')->where('demands.commercial_owner_id', $user->id);
-                });
-            });
-        } elseif (! $user->hasRole('OWNER')) {
-            $query->where(function ($q) use ($user) {
-                $q->whereHas('project', fn ($qq) => $qq->where('technical_owner_id', $user->id));
-            });
-        }
+        UserScope::financialByClient($query, $user);
 
         if ($request->month) {
-            $month = $request->month;
-            $query->where('due_at', 'like', $month.'%');
+            $request->validate(['month' => 'date_format:Y-m']);
+            $start = \Carbon\Carbon::createFromFormat('Y-m', $request->month)->startOfMonth();
+            $query->whereBetween('due_at', [$start->toDateString(), $start->copy()->endOfMonth()->toDateString()]);
         }
         if ($request->type) $query->where('type', $request->type);
         if ($request->status) $query->where('status', $request->status);

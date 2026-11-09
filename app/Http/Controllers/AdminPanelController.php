@@ -60,8 +60,8 @@ class AdminPanelController extends Controller
             ->selectRaw("
                 COALESCE(SUM(CASE WHEN type = 'receita' AND status IN ('previsto', 'pendente') THEN amount ELSE 0 END), 0) as receita_pendente,
                 COALESCE(SUM(CASE WHEN type = 'receita' AND status IN ('previsto', 'pendente') AND due_at < ? THEN amount ELSE 0 END), 0) as receita_vencida,
-                COALESCE(SUM(CASE WHEN type = 'receita' AND status = 'recebido' AND due_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as receita_recebida_mes,
-                COALESCE(SUM(CASE WHEN type = 'despesa' AND status = 'pago' AND due_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as despesa_paga_mes
+                COALESCE(SUM(CASE WHEN type = 'receita' AND status = 'recebido' AND paid_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as receita_recebida_mes,
+                COALESCE(SUM(CASE WHEN type = 'despesa' AND status = 'pago' AND paid_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as despesa_paga_mes
             ", [$today, now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString(), now()->startOfMonth()->toDateString(), now()->endOfMonth()->toDateString()])
             ->where('status', '!=', 'cancelado')
             ->first();

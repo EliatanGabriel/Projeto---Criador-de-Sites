@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Demands\Actions\TransitionDemandAction;
+use App\Domain\Shared\UserScope;
 use App\Enums\DemandStatus;
 use App\Http\Requests\StoreDemandRequest;
 use App\Http\Requests\UpdateDemandRequest;
@@ -24,27 +25,7 @@ class DemandController extends Controller
             ->orderByDesc('created_at');
 
         $user = $request->user();
-        if (! $user->hasRole('OWNER')) {
-            if ($user->hasRole('DEVELOPER')) {
-                $query->where(function ($q) use ($user) {
-                    $q->where('technical_owner_id', $user->id)
-                        ->orWhereExists(function ($qq) use ($user) {
-                            $qq->selectRaw(1)->from('projects')
-                                ->whereColumn('projects.demand_id', 'demands.id')
-                                ->where(function ($p) use ($user) {
-                                    $p->where('projects.technical_owner_id', $user->id)
-                                        ->orWhereExists(fn ($m) => $m->selectRaw(1)->from('project_members')->whereColumn('project_members.project_id', 'projects.id')->where('project_members.user_id', $user->id))
-                                        ->orWhereExists(fn ($t) => $t->selectRaw(1)->from('tasks')->whereColumn('tasks.project_id', 'projects.id')->where('tasks.assignee_id', $user->id));
-                                });
-                        });
-                });
-            } else {
-                $query->where(function ($q) use ($user) {
-                    $q->where('commercial_owner_id', $user->id)
-                        ->orWhere('created_by', $user->id);
-                });
-            }
-        }
+        UserScope::demands($query, $user);
 
         if ($request->search) {
             $s = $request->search;

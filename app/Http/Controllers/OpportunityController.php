@@ -67,6 +67,7 @@ class OpportunityController extends Controller
 
     public function show(Opportunity $opportunity)
     {
+        $this->authorize('view', $opportunity);
         $opportunity->load(['client', 'responsible:id,name', 'creator:id,name', 'activities.user:id,name']);
 
         return Inertia::render('opportunities/show', ['opportunity' => $opportunity]);
@@ -74,6 +75,7 @@ class OpportunityController extends Controller
 
     public function edit(Opportunity $opportunity)
     {
+        $this->authorize('update', $opportunity);
         return Inertia::render('opportunities/edit', [
             'opportunity' => $opportunity,
             'clients' => Client::orderBy('name')->get(['id', 'name']),
@@ -83,6 +85,7 @@ class OpportunityController extends Controller
 
     public function update(UpdateOpportunityRequest $request, Opportunity $opportunity)
     {
+        $this->authorize('update', $opportunity);
         $data = $request->validated();
         $fromStatus = $opportunity->status;
         $opportunity->update($data);
@@ -102,6 +105,7 @@ class OpportunityController extends Controller
 
     public function updateStatus(Request $request, Opportunity $opportunity)
     {
+        $this->authorize('update', $opportunity);
         $request->validate(['status' => 'required|in:nova,em_contato,em_negociacao,aguardando_cliente,ganha,perdida,cancelada']);
         $from = $opportunity->status;
         $opportunity->update(['status' => $request->status]);

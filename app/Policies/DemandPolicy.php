@@ -18,20 +18,23 @@ class DemandPolicy
         if (! $user->can('demands.view')) {
             return false;
         }
-        if (! $user->hasRole('DEVELOPER')) {
+        if ($user->hasRole('OWNER')) {
             return true;
         }
-        if ($demand->technical_owner_id === $user->id) {
-            return true;
-        }
-        $project = Project::where('demand_id', $demand->id)->first();
-        if (! $project) {
-            return false;
-        }
+        if ($user->hasRole('DEVELOPER')) {
+            if ($demand->technical_owner_id === $user->id) {
+                return true;
+            }
+            $project = Project::where('demand_id', $demand->id)->first();
+            if (! $project) {
+                return false;
+            }
 
-        return $project->technical_owner_id === $user->id
-            || $project->members()->where('user_id', $user->id)->exists()
-            || $project->tasks()->where('assignee_id', $user->id)->exists();
+            return $project->technical_owner_id === $user->id
+                || $project->members()->where('user_id', $user->id)->exists()
+                || $project->tasks()->where('assignee_id', $user->id)->exists();
+        }
+        return $demand->commercial_owner_id === $user->id || $demand->created_by === $user->id;
     }
 
     public function create(User $user): bool

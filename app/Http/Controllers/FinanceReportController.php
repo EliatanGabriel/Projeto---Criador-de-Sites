@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Shared\UserScope;
 use App\Models\FinancialTransaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -12,31 +13,43 @@ class FinanceReportController extends Controller
 {
     public function show(Request $request)
     {
-        $month = $request->string('month')->toString() ?: now()->toDateString();
-        $yMonth = substr($month, 0, 7);
-        $start = Carbon::parse($yMonth.'-01');
+        $request->validate(['month' => ['nullable', 'date_format:Y-m']]);
+        $month = $request->string('month')->toString() ?: now()->format('Y-m');
+        $start = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
         $end = $start->copy()->endOfMonth();
+        $yMonth = $start->format('Y-m');
 
-        $summaryRows = FinancialTransaction::query()
-            ->where('due_at', '>=', $start->toDateString())
-            ->where('due_at', '<=', $end->toDateString())
-            ->where('status', '!=', 'cancelado')
+        $user = $request->user();
+        $base = FinancialTransaction::query()->where('status', '!=', 'cancelado');
+        UserScope::financialByClient($base, $user);
+
+        $summaryRows = (clone $base)
             ->selectRaw("
-                COALESCE(SUM(CASE WHEN type = 'receita' THEN amount ELSE 0 END), 0) as revenue_previsto,
-                COALESCE(SUM(CASE WHEN type = 'receita' AND status = 'recebido' THEN amount ELSE 0 END), 0) as revenue_recebido,
+                COALESCE(SUM(CASE WHEN type = 'receita' AND due_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as revenue_previsto,
+                COALESCE(SUM(CASE WHEN type = 'receita' AND status = 'recebido' AND paid_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as revenue_recebido,
                 COALESCE(SUM(CASE WHEN type = 'receita' AND status IN ('previsto', 'pendente') THEN amount ELSE 0 END), 0) as revenue_pendente,
-                COALESCE(SUM(CASE WHEN type = 'despesa' THEN amount ELSE 0 END), 0) as despesa_prevista,
-                COALESCE(SUM(CASE WHEN type = 'despesa' AND status = 'pago' THEN amount ELSE 0 END), 0) as despesa_paga
-            ")
+                COALESCE(SUM(CASE WHEN type = 'despesa' AND due_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as despesa_prevista,
+                COALESCE(SUM(CASE WHEN type = 'despesa' AND status = 'pago' AND paid_at BETWEEN ? AND ? THEN amount ELSE 0 END), 0) as despesa_paga
+            ", [$start->toDateString(), $end->toDateString(), $start->toDateString(), $end->toDateString(), $start->toDateString(), $end->toDateString(), $start->toDateString(), $end->toDateString()])
             ->first();
 
-        $custosPorProjeto = DB::table('financial_transactions')
+        $custosQuery = DB::table('financial_transactions')
             ->join('projects', 'projects.id', '=', 'financial_transactions.project_id')
-            ->where('financial_transactions.due_at', '>=', $start->toDateString())
-            ->where('financial_transactions.due_at', '<=', $end->toDateString())
-            ->where('financial_transactions.status', '!=', 'cancelado')
+            ->where('financial_transactions.status', '=', 'pago')
+            ->where('financial_transactions.paid_at', '!=', null)
+            ->where('financial_transactions.paid_at', '>=', $start->toDateString())
+            ->where('financial_transactions.paid_at', '<=', $end->toDateString())
             ->where('financial_transactions.type', 'despesa')
-            ->whereNotNull('financial_transactions.project_id')
+            ->whereNotNull('financial_transactions.project_id');
+        if (! $user->hasRole('OWNER')) {
+            $custosQuery->where(function ($q) use ($user) {
+                $q->where('projects.technical_owner_id', $user->id)
+                    ->orWhereExists(function ($sub) use ($user) {
+                        $sub->selectRaw(1)->from('demands')->whereColumn('demands.client_id', 'financial_transactions.client_id')->where('demands.commercial_owner_id', $user->id);
+                    });
+            });
+        }
+        $custosPorProjeto = $custosQuery
             ->groupBy('financial_transactions.project_id', 'projects.title')
             ->select('financial_transactions.project_id as project_id', 'projects.title as project', DB::raw('SUM(financial_transactions.amount) as total'))
             ->get()

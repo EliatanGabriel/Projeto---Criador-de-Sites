@@ -39,12 +39,12 @@ class WebsitePolicy
 
     public function update(User $user, Website $website): bool
     {
-        return $user->can('websites.manage');
+        return $user->can('websites.manage') && $this->view($user, $website);
     }
 
     public function delete(User $user, Website $website): bool
     {
-        return $user->can('websites.manage');
+        return $user->can('websites.manage') && $this->view($user, $website);
     }
 
     public function publish(User $user, Website $website): bool

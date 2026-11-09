@@ -89,7 +89,7 @@ test('download autorizado e não autorizado', function () {
     $commercial = commercialUserSale();
     $developer = developerUserSale();
     $client = Client::factory()->create();
-    $demand = Demand::factory()->create(['client_id' => $client->id, 'status' => 'draft']);
+    $demand = Demand::factory()->create(['client_id' => $client->id, 'status' => 'draft', 'commercial_owner_id' => $commercial->id, 'created_by' => $commercial->id]);
     $file = UploadedFile::fake()->create('doc.pdf', 50, 'application/pdf');
     $path = $file->store('demand-attachments', 'local');
     $att = $demand->attachments()->create(['disk' => 'local', 'path' => $path, 'original_name' => 'doc.pdf', 'mime' => 'application/pdf', 'size' => 51200, 'uploaded_by' => $commercial->id]);

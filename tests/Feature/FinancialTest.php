@@ -115,7 +115,7 @@ test('permissões: OWNER gerencia; COMMERCIAL escopado apenas visualiza; DEVELOP
     $category = fCategory('receita');
     $transaction = FinancialTransaction::factory()->create(['type' => 'receita', 'category_id' => $category->id, 'client_id' => $client->id, 'status' => 'previsto']);
 
-    $this->actingAs($commercial)->get("/finance/{$transaction->id}")->assertForbidden();
+    $this->actingAs($commercial)->get("/finance/{$transaction->id}")->assertOk();
     $this->actingAs($commercial)->post('/finance', [
         'type' => 'receita', 'category_id' => $category->id, 'description' => 'Teste', 'amount' => '10.00',
     ])->assertForbidden();
@@ -154,9 +154,9 @@ test('relatório mensal: receitas e resultado operacional (recebido menos pago)'
     $dc = fCategory('despesa');
     $month = now()->toDateString();
 
-    FinancialTransaction::factory()->create(['type' => 'receita', 'category_id' => $rc->id, 'amount' => '2000.00', 'status' => 'recebido', 'due_at' => $month]);
+    FinancialTransaction::factory()->create(['type' => 'receita', 'category_id' => $rc->id, 'amount' => '2000.00', 'status' => 'recebido', 'due_at' => $month, 'paid_at' => $month]);
     FinancialTransaction::factory()->create(['type' => 'receita', 'category_id' => $rc->id, 'amount' => '500.00', 'status' => 'previsto', 'due_at' => $month]);
-    FinancialTransaction::factory()->create(['type' => 'despesa', 'category_id' => $dc->id, 'amount' => '800.00', 'status' => 'pago', 'due_at' => $month]);
+    FinancialTransaction::factory()->create(['type' => 'despesa', 'category_id' => $dc->id, 'amount' => '800.00', 'status' => 'pago', 'due_at' => $month, 'paid_at' => $month]);
     FinancialTransaction::factory()->create(['type' => 'despesa', 'category_id' => $dc->id, 'amount' => '100.00', 'status' => 'previsto', 'due_at' => $month]);
 
     $this->actingAs($owner)->get('/finance/report')->assertOk()->assertInertia(function (\Inertia\Testing\AssertableInertia $page) {
