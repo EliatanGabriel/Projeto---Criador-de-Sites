@@ -26,8 +26,15 @@ class EnsureAdminCommand extends Command
             return self::SUCCESS;
         }
 
-        if (User::where('email', $email)->exists()) {
-            $this->info("Usuario {$email} ja existe; nada alterado.");
+        $user = User::where('email', $email)->first();
+        if ($user) {
+            $user->syncRoles(['OWNER']);
+            $user->forceFill([
+                'name' => $name,
+                'is_active' => true,
+            ])->save();
+
+            $this->info("Admin inicial {$email} ja existe; perfil OWNER garantido.");
 
             return self::SUCCESS;
         }

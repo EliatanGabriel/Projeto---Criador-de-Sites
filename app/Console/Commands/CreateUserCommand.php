@@ -15,20 +15,23 @@ class CreateUserCommand extends Command
     public function handle(): int
     {
         $email = $this->argument('email');
-        $name = $this->option('name') ?? $this->ask('Nome completo');
         $roleName = strtoupper($this->option('role') ?? $this->choice('Role', ['OWNER', 'COMMERCIAL', 'DEVELOPER']));
-        $password = $this->option('password') ?? $this->secret('Senha');
-
-        if (User::where('email', $email)->exists()) {
-            $this->error("Usuário {$email} já existe.");
-            return self::FAILURE;
-        }
 
         $role = Role::where('name', $roleName)->first();
         if (! $role) {
             $this->error("Role {$roleName} não encontrada. Execute php artisan db:seed primeiro.");
             return self::FAILURE;
         }
+
+        if (($existing = User::where('email', $email)->first()) !== null) {
+            $existing->syncRoles([$roleName]);
+            $existing->forceFill(['is_active' => true])->save();
+            $this->info("Usuário {$email} já existe; perfil {$roleName} garantido.");
+            return self::SUCCESS;
+        }
+
+        $name = $this->option('name') ?? $this->ask('Nome completo');
+        $password = $this->option('password') ?? $this->secret('Senha');
 
         $user = User::create([
             'name' => $name,
